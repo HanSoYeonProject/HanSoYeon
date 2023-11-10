@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { Form, Button, InputGroup, Row, Col } from 'react-bootstrap';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
@@ -22,6 +22,84 @@ const MemberSignUpPage = () => {
         prefer: '',
         introduction: ''
     });
+
+    // useEffect(() => {
+    //     const script = document.createElement('script');
+    //     script.src = "//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js";
+    //     script.async = true;
+    //     document.body.appendChild(script);
+    //
+    //     return () => {
+    //         document.body.removeChild(script);
+    //     };
+    // }, []);
+    //
+    // const searchAddress = () => {
+    //     new window.daum.Postcode({
+    //         oncomplete: function(data) {
+    //             let addr = ''; // 주소 변수
+    //             // 사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
+    //             if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
+    //                 addr = data.roadAddress;
+    //             } else { // 사용자가 지번 주소를 선택했을 경우(J)
+    //                 addr = data.jibunAddress;
+    //             }
+    //             // React 상태 업데이트
+    //             setUserAddress(addr); // state 업데이트 함수는 상황에 맞게 수정하세요.
+    //         }
+    //     }).open();
+    // };
+    //
+    // const validateForm = () => {
+    //     let errors = {};
+    //
+    //     // 이메일 유효성 검사
+    //     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    //     if (!emailPattern.test(userEmail)) {
+    //         errors.userEmail = "올바른 이메일 주소를 입력해주세요.";
+    //     }
+    //
+    //     // 비밀번호 유효성 검사
+    //     const passwordPattern = /^(?=.*[a-zA-Z])(?=.*[0-9]).{4,12}$/;
+    //     if (!passwordPattern.test(userPassword)) {
+    //         errors.userPassword = "비밀번호는 4~12자의 영문 대소문자, 숫자로만 입력해야 합니다.";
+    //     }
+    //
+    //     // 비밀번호 확인 검사
+    //     if (userPassword !== userPasswordCheck) {
+    //         errors.userPasswordCheck = "비밀번호가 일치하지 않습니다.";
+    //     }
+    //
+    //     // 이름 유효성 검사
+    //     const namePattern = /^[가-힣]{2,4}$/;
+    //     if (!namePattern.test(userName)) {
+    //         errors.userName = "이름이 올바르지 않습니다.";
+    //     }
+    //
+    //     // 주소 유효성 검사
+    //     if (!userAddress || !userAddressDetail) {
+    //         errors.userAddress = "주소 정보를 모두 입력해주세요.";
+    //     }
+    //
+    //     // 닉네임 유효성 검사
+    //     if (!userNickname) {
+    //         errors.userNickname = "닉네임을 입력해주세요.";
+    //     }
+    //
+    //     // 휴대폰 번호 유효성 검사
+    //     const phonePattern = /^[0-9]{10,11}$/;
+    //     if (!phonePattern.test(userPhoneNumber)) {
+    //         errors.userPhoneNumber = "올바른 휴대폰 번호를 입력해주세요.";
+    //     }
+    //
+    //     // 상세 주소 유효성 검사
+    //     if (!userAddressDetail) {
+    //         errors.userAddressDetail = "상세 주소를 입력해주세요.";
+    //     }
+    //
+    //     setValidationErrors(errors);
+    //     return Object.keys(errors).length === 0;
+    // };
 
     const handleSignUp = (event) => {
         event.preventDefault();
