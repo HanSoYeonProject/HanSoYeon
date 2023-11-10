@@ -29,6 +29,18 @@ const SignupPage = (props) => {
         setShowMemberForm(true);
     };
 
+    const handleKakaoRegisterImageClick = () => {
+        navigate("/memberRegister")
+    };
+
+    const handleGoogleRegisterImageClick = () => {
+        navigate("/memberRegister")
+    };
+
+    const handleEmailRegisterImageClick = () => {
+        navigate("/memberRegister")
+    };
+
     const handleBack = () => {
         setShowCompanyForm(false);
         setShowMemberForm(false);
@@ -52,13 +64,13 @@ const SignupPage = (props) => {
         return (
             <StyledContainer>
                 <Title>일반회원가입</Title>
-                <UserImg onClick={handleCompanyImageClick}>
+                <UserImg onClick={handleKakaoRegisterImageClick}>
                     <RegisterSelectImg alt="kakao" src={kakao} />
                 </UserImg>
-                <UserImg onClick={handleMemberImageClick}>
+                <UserImg onClick={handleGoogleRegisterImageClick}>
                     <RegisterSelectImg alt="google" src={google} />
                 </UserImg>
-                <UserImg onClick={handleMemberImageClick}>
+                <UserImg onClick={handleEmailRegisterImageClick}>
                     <RegisterEmailImg alt="email" src={email} />
                 </UserImg>
             </StyledContainer>
