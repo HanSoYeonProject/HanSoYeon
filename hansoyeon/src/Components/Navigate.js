@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {Navbar, Nav, Container} from 'react-bootstrap';
+import {Navbar, Nav, Container, Button} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import styled from "styled-components";
 import {useNavigate} from 'react-router-dom';
@@ -11,22 +11,53 @@ const Navigate = () => {
     const MainButton = () => {      //로고 클릭시 메인페이지 이동
         navigate("/");
     }
+
+    const handleLogin = () => {
+        navigate("/login")
+    };
+
+    const handleSignUp = () => {
+        navigate("/register")
+    };
+
     return (
 
-        <Navbar style={{position: "fixed", backgroundColor : "white", boxShadow : "1.5px 1.5px 1.5px 1.5px #F3F4F6", width: "100vw", height: "10vh", zIndex: "1000"}} >
-                <Navbar.Brand>
-                    <Nav_Str>
-                        <UserImg onClick={MainButton}>
-                            <LogoImg className="LogoImage" alt="LogoImage" src={logo}/>
-                        </UserImg>
-                    </Nav_Str>
+        <Navbar fixed="top" style={{ position: "fixed", backgroundColor: "white", boxShadow: "1.5px 1.5px 1.5px 1.5px #F3F4F6", width: "100%", zIndex: "1000" }}>
+            <NavContainer>
+                <Navbar.Brand >
+                    <UserImg onClick={MainButton}>
+                        <LogoImg alt="Logo" src={logo} />
+                    </UserImg>
                 </Navbar.Brand>
-                <Nav className="me-auto">
-
-                </Nav>
+                <div>
+                    <Button color="inherit" variant="light" onClick={handleLogin} style={{ marginRight: '0.5rem' }}>로그인</Button>
+                    <Button color="inherit" variant="light" onClick={handleSignUp}>회원가입</Button>
+                </div>
+            </NavContainer>
         </Navbar>
     )
 }
+
+const NavContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 0 1rem; 
+  height: 10vh;
+`;
+
+const LogoImg = styled.img`
+  height: 10vh;
+  width: auto; 
+  cursor: pointer;
+`;
+
+const UserImg = styled.button`
+  background: none;
+  border: none;
+  cursor: pointer;
+`;
 
 const Nav_Str = styled.div`
 
@@ -37,19 +68,5 @@ const Nav_Str = styled.div`
   align-items: center;
   
 `
-const LogoImg = styled.img`
-
-  height: 10vh;
-  width: 170px;// 원하는 크기로 조절해주세요.
-`
-const UserImg = styled.button`
-  background: none;
-  border: none;
-  position: relative;
-  left: 2rem;
-  height: 10vh;
-
-`
-
 
 export default Navigate;
