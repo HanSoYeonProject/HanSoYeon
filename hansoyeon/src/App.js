@@ -4,6 +4,8 @@ import { BrowserRouter, Routes, Route} from 'react-router-dom';
 import Navigate from "./Components/Navigate";
 import MainPage from "./Pages/MainPage";
 import AnnouncementPage from "./Pages/AnnouncementPage";
+import LoginPage from "./Pages/SigninPage"
+import RegisterPage from "./Pages/SignupPage"
 
 function App() {
   return (
@@ -13,6 +15,8 @@ function App() {
         <Routes>
           <Route path = "/" element={<MainPage/>}></Route>
             <Route path ="/Announcement" element={<AnnouncementPage/>}></Route>
+            <Route path = "/login" element={<LoginPage />}></Route>
+            <Route path = "/register" element={<RegisterPage />}></Route>
         </Routes>
       </BrowserRouter>
     </div>
