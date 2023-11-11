@@ -1,4 +1,6 @@
 import React, {useEffect, useState} from 'react';
+import axios from "axios"
+import { useLocation } from 'react-router-dom';
 import { Form, Button, InputGroup, Row, Col } from 'react-bootstrap';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
@@ -7,13 +9,27 @@ import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import logo from "../imgs/logo2.png";
 
 const MemberSignUpPage = () => {
+    const location = useLocation();
     const navigate = useNavigate();
+    const [isKakaoOrGoogleEmail, setIsKakaoOrGoogleEmail] = useState(false);
+
+    useEffect(() => {
+        if (location.state && location.state.email) {
+            setFormData(prevFormData => ({
+                ...prevFormData,
+                userEmail: location.state.email
+            }));
+            setIsKakaoOrGoogleEmail(true);
+        }
+    }, [location]);
+
     const [showSecondPart, setShowSecondPart] = useState(false);
     const [formData, setFormData] = useState({
         userId: '',
         userName: '',
         userEmail: '',
         userPassword: '',
+        userPasswordCheck: '',
         userGender: '',
         userInfo: '',
         userPrefer: '',
@@ -83,11 +99,6 @@ const MemberSignUpPage = () => {
             errors.userPasswordCheck = "비밀번호가 일치하지 않습니다.";
         }
 
-        // 주소 유효성 검사
-        if (!formData.userAddress) {
-            errors.userAddress = "주소 정보를 입력해주세요.";
-        }
-
         // 휴대폰 번호 유효성 검사
         const phonePattern = /^[0-9]{10,11}$/;
         if (!phonePattern.test(formData.userPhone)) {
@@ -99,11 +110,18 @@ const MemberSignUpPage = () => {
             errors.userPrefer = "선호 지역을 입력해주세요.";
         }
 
+        if (!formData.userGender) {
+            errors.userGender = "성별을 선택해주세요.";
+        }
+
         // 자기소개 유효성 검사
         if (!formData.userInfo) {
             errors.userInfo = "자기소개를 입력해주세요.";
         }
 
+        console.log(errors); // 오류 객체 출력
+
+        console.log(Object.keys(errors).length);
 
         setValidationErrors(errors);
         return Object.keys(errors).length === 0;
@@ -133,8 +151,20 @@ const MemberSignUpPage = () => {
         event.preventDefault();
         if (validateForm()) {
             const combinedAddress = `${addressFields.postalCode} ${addressFields.address} ${addressFields.detailAddress}`.trim();
-            setFormData({ ...formData, userAddress: combinedAddress });
-            // Now use formData for your submission logic
+            const signUpData = {
+                ...formData,
+                userAddress: combinedAddress
+            };
+
+            axios.post('http://localhost:8050/api/auth/signUp', signUpData)
+                .then(response => {
+                    console.log("회원가입 성공: ", response.data);
+                    navigate("/login");
+                })
+                .catch(error => {
+                    // 에러 처리
+                    console.error("회원가입 실패: ", error);
+                });
         }
     };
 
@@ -177,6 +207,7 @@ const MemberSignUpPage = () => {
                                     name="userEmail"
                                     value={formData.userEmail}
                                     onChange={handleChange}
+                                    disabled={isKakaoOrGoogleEmail}
                                 />
                                 {validationErrors.userEmail && <ErrorText>{validationErrors.userEmail}</ErrorText>}
                             </StyledFormGroup>
@@ -197,6 +228,7 @@ const MemberSignUpPage = () => {
                                     type="password"
                                     placeholder="비밀번호 확인"
                                     name="userPasswordCheck"
+                                    value={formData.userPasswordCheck}
                                     onChange={handleChange}
                                 />
                                 {validationErrors.userPasswordCheck && <ErrorText>{validationErrors.userPasswordCheck}</ErrorText>}
@@ -267,6 +299,15 @@ const MemberSignUpPage = () => {
                                     onChange={handleChange}
                                 />
                                 {validationErrors.userPrefer && <ErrorText>{validationErrors.userPrefer}</ErrorText>}
+                            </StyledFormGroup>
+
+                            <StyledFormGroup controlId="formBasicGender">
+                                <Form.Control as="select" name="userGender" value={formData.userGender} onChange={handleChange}>
+                                    <option value="">성별 선택</option>
+                                    <option value="male">남성</option>
+                                    <option value="female">여성</option>
+                                </Form.Control>
+                                {validationErrors.userGender && <ErrorText>{validationErrors.userGender}</ErrorText>}
                             </StyledFormGroup>
 
                             <StyledFormGroup controlId="formBasicIntroduction">

@@ -7,6 +7,7 @@ import AnnouncementPage from "./Pages/AnnouncementPage";
 import LoginPage from "./Pages/SigninPage"
 import RegisterPage from "./Pages/SignupPage"
 import MemberSignUpPage from "./AuthPage/MemberSignupPage";
+import GoogleCallbackPage from "./AuthPage/GoogleLoginPage"
 import CompanySignUpPage from "./AuthPage/CompanySignupPage";
 
 function App() {
@@ -20,7 +21,8 @@ function App() {
             <Route path = "/login" element={<LoginPage />}></Route>
             <Route path = "/register" element={<RegisterPage />}></Route>
             <Route path = "/memberRegister" element={<MemberSignUpPage />}></Route>
-            <Route path = "/companyRegister" element={<CompanySignUpPage />}></Route>
+            <Route path = "/googleCallback" element={<GoogleCallbackPage />}></Route>
+            {/*<Route path = "/companyRegister" element={<CompanySignUpPage />}></Route>*/}
         </Routes>
       </BrowserRouter>
     </div>

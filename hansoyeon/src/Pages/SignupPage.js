@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import styled from 'styled-components';
 import {useNavigate} from 'react-router-dom';
 import company from "../imgs/company.png"
@@ -8,18 +8,26 @@ import {faArrowLeft, faEye, faEyeSlash} from '@fortawesome/free-solid-svg-icons'
 import kakao from "../imgs/kakaoRegister.png";
 import google from "../imgs/googleRegister.png";
 import email from "../imgs/emailRegister.png"
+import GoogleLogin from "react-google-login";
 const SignupPage = (props) => {
     const [showMemberForm, setShowMemberForm] = useState(false);
     const [showCompanyForm, setShowCompanyForm] = useState(false);
     const navigate = useNavigate();
 
-    const handleRegister = (event) => {
-        event.preventDefault();
-    };
+    useEffect(() => {
+        const script = document.createElement('script');
+        script.src = "https://developers.kakao.com/sdk/js/kakao.min.js";
+        script.async = true;
+        document.body.appendChild(script);
 
-    const handleSignIp = () => {
-        navigate("/login")
-    };
+        if (window.Kakao && !window.Kakao.isInitialized()) {
+            window.Kakao.init('af3894518c9ad04274d8c7c098885abd');
+        }
+
+        return () => {
+            document.body.removeChild(script);
+        };
+    }, []);
 
     const handleCompanyImageClick = () => {
         setShowCompanyForm(true);
@@ -29,12 +37,13 @@ const SignupPage = (props) => {
         setShowMemberForm(true);
     };
 
-    const handleKakaoRegisterImageClick = () => {
-        navigate("/memberRegister")
-    };
-
     const handleGoogleRegisterImageClick = () => {
-        navigate("/memberRegister")
+        const clientId = "234889770604-vcqi694q1kvfblt30ajhq77gsh5s8j2t.apps.googleusercontent.com";
+        const redirectUri = "http://localhost:3000/googleCallback";
+        const scope = "https://www.googleapis.com/auth/userinfo.email";
+        const url = `https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}&access_type=offline&prompt=consent`;
+
+        window.location.href = url;
     };
 
     const handleEmailRegisterImageClick = () => {
@@ -45,6 +54,34 @@ const SignupPage = (props) => {
         setShowCompanyForm(false);
         setShowMemberForm(false);
     };
+
+    const handleKakaoRegisterImageClick = () => {
+        window.Kakao.Auth.login({
+            success: function(authObj) {
+                console.log(authObj); // 인증 객체 확인
+
+                window.Kakao.API.request({
+                    url: '/v2/user/me',
+                    success: function(response) {
+                        console.log(response);
+                        if (response.kakao_account && response.kakao_account.email) {
+                            const email = "(kakao)" + response.kakao_account.email;
+                            navigate("/memberRegister", { state: { email } });
+                        } else {
+                            console.log("이메일 정보를 가져올 수 없습니다.");
+                        }
+                    },
+                    fail: function(error) {
+                        console.log(error);
+                    },
+                });
+            },
+            fail: function(err) {
+                console.log(err);
+            },
+        });
+    };
+
 
     if (!showMemberForm && !showCompanyForm) {
         return (

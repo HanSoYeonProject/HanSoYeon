@@ -1,6 +1,6 @@
 package com.example.demo.entity;
 
-import com.example.demo.dto.SignupDto;
+import com.example.demo.dto.SignUpDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -29,7 +29,7 @@ public class UsersEntity {
     private String userPhone;
     private String userAddress;
 
-    public UsersEntity(SignupDto dto) {
+    public UsersEntity(SignUpDto dto) {
         this.userId = dto.getUserId();
         this.userName = dto.getUserName();
         this.userEmail = dto.getUserEmail();
