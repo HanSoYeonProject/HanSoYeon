@@ -10,104 +10,113 @@ const MemberSignUpPage = () => {
     const navigate = useNavigate();
     const [showSecondPart, setShowSecondPart] = useState(false);
     const [formData, setFormData] = useState({
-        username: '',
-        name: '',
-        email: '',
-        password: '',
-        gender: '',
-        phoneNumber: '',
+        userId: '',
+        userName: '',
+        userEmail: '',
+        userPassword: '',
+        userGender: '',
+        userInfo: '',
+        userPrefer: '',
+        userPhone: '',
+        userAddress: ''
+    });
+    const [addressFields, setAddressFields] = useState({
         postalCode: '',
         address: '',
-        detailAddress: '',
-        prefer: '',
-        introduction: ''
+        detailAddress: ''
     });
 
-    // useEffect(() => {
-    //     const script = document.createElement('script');
-    //     script.src = "//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js";
-    //     script.async = true;
-    //     document.body.appendChild(script);
-    //
-    //     return () => {
-    //         document.body.removeChild(script);
-    //     };
-    // }, []);
-    //
-    // const searchAddress = () => {
-    //     new window.daum.Postcode({
-    //         oncomplete: function(data) {
-    //             let addr = ''; // 주소 변수
-    //             // 사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
-    //             if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
-    //                 addr = data.roadAddress;
-    //             } else { // 사용자가 지번 주소를 선택했을 경우(J)
-    //                 addr = data.jibunAddress;
-    //             }
-    //             // React 상태 업데이트
-    //             setUserAddress(addr); // state 업데이트 함수는 상황에 맞게 수정하세요.
-    //         }
-    //     }).open();
-    // };
-    //
-    // const validateForm = () => {
-    //     let errors = {};
-    //
-    //     // 이메일 유효성 검사
-    //     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    //     if (!emailPattern.test(userEmail)) {
-    //         errors.userEmail = "올바른 이메일 주소를 입력해주세요.";
-    //     }
-    //
-    //     // 비밀번호 유효성 검사
-    //     const passwordPattern = /^(?=.*[a-zA-Z])(?=.*[0-9]).{4,12}$/;
-    //     if (!passwordPattern.test(userPassword)) {
-    //         errors.userPassword = "비밀번호는 4~12자의 영문 대소문자, 숫자로만 입력해야 합니다.";
-    //     }
-    //
-    //     // 비밀번호 확인 검사
-    //     if (userPassword !== userPasswordCheck) {
-    //         errors.userPasswordCheck = "비밀번호가 일치하지 않습니다.";
-    //     }
-    //
-    //     // 이름 유효성 검사
-    //     const namePattern = /^[가-힣]{2,4}$/;
-    //     if (!namePattern.test(userName)) {
-    //         errors.userName = "이름이 올바르지 않습니다.";
-    //     }
-    //
-    //     // 주소 유효성 검사
-    //     if (!userAddress || !userAddressDetail) {
-    //         errors.userAddress = "주소 정보를 모두 입력해주세요.";
-    //     }
-    //
-    //     // 닉네임 유효성 검사
-    //     if (!userNickname) {
-    //         errors.userNickname = "닉네임을 입력해주세요.";
-    //     }
-    //
-    //     // 휴대폰 번호 유효성 검사
-    //     const phonePattern = /^[0-9]{10,11}$/;
-    //     if (!phonePattern.test(userPhoneNumber)) {
-    //         errors.userPhoneNumber = "올바른 휴대폰 번호를 입력해주세요.";
-    //     }
-    //
-    //     // 상세 주소 유효성 검사
-    //     if (!userAddressDetail) {
-    //         errors.userAddressDetail = "상세 주소를 입력해주세요.";
-    //     }
-    //
-    //     setValidationErrors(errors);
-    //     return Object.keys(errors).length === 0;
-    // };
+    const [validationErrors, setValidationErrors] = useState({});
 
-    const handleSignUp = (event) => {
-        event.preventDefault();
+
+    useEffect(() => {
+        const script = document.createElement('script');
+        script.src = "//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js";
+        script.async = true;
+        document.body.appendChild(script);
+
+        return () => {
+            document.body.removeChild(script);
+        };
+    }, []);
+
+    const searchAddress = () => {
+        new window.daum.Postcode({
+            oncomplete: function(data) {
+                const addr = data.userSelectedType === 'R' ? data.roadAddress : data.jibunAddress;
+                const fullAddress = {
+                    postalCode: data.zonecode,
+                    address: addr,
+                    detailAddress: ''
+                };
+                setAddressFields(fullAddress);
+            }
+        }).open();
+    };
+    const validateForm = () => {
+        let errors = {};
+
+        // 아이디 유효성 검사
+        if (formData.userId.length < 4 || formData.userId.length > 12) {
+            errors.userId = "아이디는 4자 이상 12자 이하로 입력해주세요.";
+        }
+
+        // 이름 유효성 검사
+        if (!formData.userName) {
+            errors.userName = "이름을 입력해주세요.";
+        }
+
+        // 이메일 유효성 검사
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailPattern.test(formData.userEmail)) {
+            errors.userEmail = "올바른 이메일 주소를 입력해주세요.";
+        }
+
+        // 비밀번호 유효성 검사
+        const passwordPattern = /^(?=.*[a-zA-Z])(?=.*[0-9]).{4,12}$/;
+        if (!passwordPattern.test(formData.userPassword)) {
+            errors.userPassword = "비밀번호는 4~12자의 영문 대소문자, 숫자로만 입력해야 합니다.";
+        }
+
+        // 비밀번호 확인 검사
+        if (formData.userPassword !== formData.userPasswordCheck) {
+            errors.userPasswordCheck = "비밀번호가 일치하지 않습니다.";
+        }
+
+        // 주소 유효성 검사
+        if (!formData.userAddress) {
+            errors.userAddress = "주소 정보를 입력해주세요.";
+        }
+
+        // 휴대폰 번호 유효성 검사
+        const phonePattern = /^[0-9]{10,11}$/;
+        if (!phonePattern.test(formData.userPhone)) {
+            errors.userPhone = "올바른 휴대폰 번호를 입력해주세요.";
+        }
+
+        // 선호 지역 유효성 검사
+        if (!formData.userPrefer) {
+            errors.userPrefer = "선호 지역을 입력해주세요.";
+        }
+
+        // 자기소개 유효성 검사
+        if (!formData.userInfo) {
+            errors.userInfo = "자기소개를 입력해주세요.";
+        }
+
+
+        setValidationErrors(errors);
+        return Object.keys(errors).length === 0;
     };
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
+
+    const handleAddressChange = (e) => {
+        setAddressFields({ ...addressFields, [e.target.name]: e.target.value });
+    };
+
     const handleNext = () => {
         setShowSecondPart(true);
     };
@@ -119,6 +128,16 @@ const MemberSignUpPage = () => {
             navigate(-1);
         }
     };
+
+    const handleSignUp = (event) => {
+        event.preventDefault();
+        if (validateForm()) {
+            const combinedAddress = `${addressFields.postalCode} ${addressFields.address} ${addressFields.detailAddress}`.trim();
+            setFormData({ ...formData, userAddress: combinedAddress });
+            // Now use formData for your submission logic
+        }
+    };
+
     return (
         <StyledContainer>
             <FormBox>
@@ -129,55 +148,69 @@ const MemberSignUpPage = () => {
                 <Form onSubmit={handleSignUp}>
                     {!showSecondPart ? (
                         <>
-                            <Title>당신의 정보를 입력해주세요!</Title>
                             <StyledFormGroup controlId="formBasicUsername">
                                 <StyledFormControl
                                     type="text"
                                     placeholder="아이디"
-                                    name="username"
-                                    value={formData.username}
+                                    name="userId"
+                                    value={formData.userId}
                                     onChange={handleChange}
                                 />
+                                {validationErrors.userId && <ErrorText>{validationErrors.userId}</ErrorText>}
                             </StyledFormGroup>
 
                             <StyledFormGroup controlId="formBasicName">
                                 <StyledFormControl
                                     type="text"
                                     placeholder="이름"
-                                    name="name"
-                                    value={formData.name}
+                                    name="userName"
+                                    value={formData.userName}
                                     onChange={handleChange}
                                 />
+                                {validationErrors.userName && <ErrorText>{validationErrors.userName}</ErrorText>}
                             </StyledFormGroup>
 
                             <StyledFormGroup controlId="formBasicEmail">
                                 <StyledFormControl
                                     type="email"
                                     placeholder="이메일"
-                                    name="email"
-                                    value={formData.email}
+                                    name="userEmail"
+                                    value={formData.userEmail}
                                     onChange={handleChange}
                                 />
+                                {validationErrors.userEmail && <ErrorText>{validationErrors.userEmail}</ErrorText>}
                             </StyledFormGroup>
 
                             <StyledFormGroup controlId="formBasicPassword">
                                 <StyledFormControl
                                     type="password"
                                     placeholder="비밀번호"
-                                    name="password"
-                                    value={formData.password}
+                                    name="userPassword"
+                                    value={formData.userPassword}
                                     onChange={handleChange}
                                 />
+                                {validationErrors.userPassword && <ErrorText>{validationErrors.userPassword}</ErrorText>}
+                            </StyledFormGroup>
+
+                            <StyledFormGroup controlId="formBasicPasswordCheck">
+                                <StyledFormControl
+                                    type="password"
+                                    placeholder="비밀번호 확인"
+                                    name="userPasswordCheck"
+                                    onChange={handleChange}
+                                />
+                                {validationErrors.userPasswordCheck && <ErrorText>{validationErrors.userPasswordCheck}</ErrorText>}
                             </StyledFormGroup>
 
                             <StyledFormGroup controlId="formBasicPhone">
                                 <StyledFormControl
                                     type="text"
                                     placeholder="전화번호"
-                                    name="phoneNumber"
-                                    value={formData.phoneNumber}
+                                    name="userPhone"
+                                    value={formData.userPhone}
                                     onChange={handleChange}
                                 />
+                                {validationErrors.userPhone && <ErrorText>{validationErrors.userPhone}</ErrorText>}
                             </StyledFormGroup>
 
                             <StyledButton variant="secondary" onClick={handleNext}>
@@ -186,33 +219,42 @@ const MemberSignUpPage = () => {
                         </>
                     ) : (
                         <>
-                            <StyledFormGroup controlId="formBasicPostalCode">
-                                <StyledFormControl
-                                    type="text"
-                                    placeholder="우편번호"
-                                    name="postalCode"
-                                    value={formData.postalCode}
-                                    onChange={handleChange}
-                                />
+                            <StyledFormGroup>
+                                <Row>
+                                    <Col>
+                                        <StyledFormControl
+                                            type="text"
+                                            placeholder="우편번호"
+                                            name="postalCode"
+                                            value={addressFields.postalCode}
+                                            onChange={handleAddressChange}
+                                            disabled
+                                        />
+                                    </Col>
+                                    <Col md="auto">
+                                        <Button variant="outline-secondary" onClick={searchAddress}>
+                                            검색
+                                        </Button>
+                                    </Col>
+                                </Row>
                             </StyledFormGroup>
-
-                            <StyledFormGroup controlId="formBasicAddress">
+                            <StyledFormGroup>
                                 <StyledFormControl
                                     type="text"
                                     placeholder="주소"
                                     name="address"
-                                    value={formData.address}
-                                    onChange={handleChange}
+                                    value={addressFields.address}
+                                    onChange={handleAddressChange}
+                                    disabled
                                 />
                             </StyledFormGroup>
-
-                            <StyledFormGroup controlId="formBasicDetailAddress">
+                            <StyledFormGroup>
                                 <StyledFormControl
                                     type="text"
                                     placeholder="상세주소"
                                     name="detailAddress"
-                                    value={formData.detailAddress}
-                                    onChange={handleChange}
+                                    value={addressFields.detailAddress}
+                                    onChange={handleAddressChange}
                                 />
                             </StyledFormGroup>
 
@@ -220,21 +262,23 @@ const MemberSignUpPage = () => {
                                 <StyledFormControl
                                     type="text"
                                     placeholder="선호 지역"
-                                    name="prefer"
-                                    value={formData.prefer}
+                                    name="userPrefer"
+                                    value={formData.userPrefer}
                                     onChange={handleChange}
                                 />
+                                {validationErrors.userPrefer && <ErrorText>{validationErrors.userPrefer}</ErrorText>}
                             </StyledFormGroup>
 
                             <StyledFormGroup controlId="formBasicIntroduction">
                                 <StyledFormControl
                                     as="textarea"
                                     placeholder="자기소개"
-                                    name="introduction"
-                                    value={formData.introduction}
+                                    name="userInfo"
+                                    value={formData.userInfo}
                                     onChange={handleChange}
                                     rows={3}
                                 />
+                                {validationErrors.userInfo && <ErrorText>{validationErrors.userInfo}</ErrorText>}
                             </StyledFormGroup>
 
                             <StyledButton variant="primary" type="submit">
@@ -259,12 +303,13 @@ const StyledContainer = styled.div`
 
 const FormBox = styled.div`
   padding: 40px;
+  justify-content: center;
   background: #ffffff;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   width: 100%;
   max-width: 450px;
-  margin-top: 40px;
+  margin-top: 150px;
   position: relative;
 `;
 
@@ -287,7 +332,7 @@ const StyledButton = styled(Button)`
 `;
 
 const LogoImg = styled.img`
-  height: 20vh;
+  height: 18vh;
   width: auto;
   margin-bottom: 10px;
 `;
@@ -312,6 +357,12 @@ const Title = styled.div`
   font-weight: 500;
   font-family: "Berlin Sans FB",fantasy;
   color: #996666;
+`;
+
+const ErrorText = styled.div`
+  color: red;
+  font-size: 12px;
+  margin-top: 5px;
 `;
 
 export default MemberSignUpPage;
