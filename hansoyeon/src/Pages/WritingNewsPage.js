@@ -19,34 +19,37 @@ const WritingNewsPage = () => {
     const handleSubmit = e => {
         e.preventDefault();
 
-    const newsPost = {
-        title,
-        writer: writer,
-        content
-    };
+        const newsPost = {
+            title,
+            writer: writer,
+            content
+        };
 
-}
+    }
 
     return (
         <Container>
-        <form onSubmit={handleSubmit}>
-            <MiddleContainer>
-            <Title>
-                <label>글 제목: </label>
-                <input type={"text"} value={title} onChange={handleInputTitle} />
-            </Title>
-            <WriterContainer>
-                <label>작성자: {writer} </label>
-            </WriterContainer>
-            <ContentContainer>
-                <label>글 내용: </label>
-                <textarea value={content} onChange={handleInputContent} />
-            </ContentContainer>
-            <SubmitButton>
-            <button type="submit">글 작성</button>
-            </SubmitButton>
-            </MiddleContainer>
-        </form>
+            <NoticeTitleContainer>
+                공지사항
+            </NoticeTitleContainer>
+            <form onSubmit={handleSubmit}>
+                <MiddleContainer>
+                    <Title>
+                        <label>글 제목 : </label>
+                        <input type={"text"} value={title} onChange={handleInputTitle}/>
+                    </Title>
+                    <WriterContainer>
+                        <label>작성자 : {writer} </label>
+                    </WriterContainer>
+                    <ContentContainer>
+                        <label>글 내용 : </label>
+                        <textarea value={content} onChange={handleInputContent}/>
+                    </ContentContainer>
+                    <ButtonContainer>
+                    <SubmitButton type="submit">글 작성</SubmitButton>
+                    </ButtonContainer>
+                </MiddleContainer>
+            </form>
         </Container>
     )
 };
@@ -55,31 +58,77 @@ const Container = styled.div`
   display: flex;
   flex: 1;
   height: 700px;
-  background-color: wheat;
-  margin-top: 1rem;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 `
+
 const MiddleContainer = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
-  height: 300px;
-  background-color: red;
+  width: 800px;
+  height: 500px;
 `
 
+const NoticeTitleContainer = styled.div`
+  font-size: 40px;
+  font-weight: 700;
+  width: 800px;
+  display: flex;
+  margin-bottom: 1rem;
+`
 const Title = styled.div`
-background-color: #61dafb;
+  display: flex;
+  flex: 1;
+  font-size: 20px;
+  align-items: center;
+
+  input {
+    width: 700px;
+    margin-left: 1rem;
+  }
 `
 
 const WriterContainer = styled.div`
-background-color: green;
+  display: flex;
+  font-size: 20px;
+  flex: 1;
+  align-items: center;
 `
 
 const ContentContainer = styled.div`
-background-color: gray;
+  display: flex;
+  flex: 7;
+  font-size: 20px;
+  align-items: center;
+
+  textarea {
+    width: 700px;
+    height: 350px;
+    margin-left: 1rem;
+  }
 `
-const SubmitButton = styled.div`
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  margin-right: 1rem;
+`
+const SubmitButton = styled.button`
+  display: flex;
+  justify-content: center;
+  background-color: #007bff;
   width: 70px;
   height: 30px;
+  border: none;
+  border-radius: 5px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: #0056b3; /* 마우스 호버 시 배경색 변경 */
+  }
 `
 
 export default WritingNewsPage;

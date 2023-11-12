@@ -37,7 +37,7 @@ const AnnouncementPage = (props) => {
 const Container = styled.div`
   display: flex;
   flex: 1;
-  height: 100vh;
+  height: 700px;
   align-items: center;
   justify-content: center;
 `
