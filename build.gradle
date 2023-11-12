@@ -31,6 +31,10 @@ dependencies {
 
 	// Spring Security
 	implementation 'org.springframework.boot:spring-boot-starter-security'
+
+	// JWT
+	implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
+	implementation 'org.modelmapper:modelmapper:2.4.4'
 }
 
 tasks.named('test') {

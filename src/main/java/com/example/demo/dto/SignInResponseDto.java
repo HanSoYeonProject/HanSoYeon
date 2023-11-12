@@ -12,4 +12,5 @@ public class SignInResponseDto {
     private String token;
     private int exprTime;
     private UsersEntity user;
+    private String userType;
 }

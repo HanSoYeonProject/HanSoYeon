@@ -1,9 +1,7 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.GoogleOAuth2TokenResponse;
-import com.example.demo.dto.GoogleUserInfo;
-import com.example.demo.dto.ResponseDto;
-import com.example.demo.dto.SignUpDto;
+import com.example.demo.dto.*;
+import com.example.demo.service.ProvidersService;
 import org.springframework.http.*;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -22,6 +20,8 @@ public class AuthController {
 
     @Autowired
     private UsersService usersService;
+    @Autowired
+    private ProvidersService providersService;
 
     private final String clientId = "234889770604-vcqi694q1kvfblt30ajhq77gsh5s8j2t.apps.googleusercontent.com";
     private final String clientSecret = "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";
@@ -39,6 +39,18 @@ public class AuthController {
             return ResponseDto.setFailed("회원가입 실패: " + e.getMessage());
         }
     }
+
+    @PostMapping("/signUp/company")
+    public ResponseDto<?> signUp(@RequestBody CompanySignUpDto companySignUpDto){
+        try {
+            providersService.registerCompany(companySignUpDto);
+            return ResponseDto.setSuccess("회원가입 성공", null);
+        } catch (Exception e) {
+            // 예외 처리
+            return ResponseDto.setFailed("회원가입 실패: " + e.getMessage());
+        }
+    }
+
 
     @PostMapping("/google")
     public ResponseEntity<?> handleGoogleAuthCode(@RequestBody Map<String, String> payload) {
@@ -70,5 +82,15 @@ public class AuthController {
         return ResponseEntity.ok().body(userInfoResponse.getBody());
     }
 
+    @PostMapping("/signIn")
+    public ResponseDto<SignInResponseDto> signIn(@RequestBody SignInDto requestBody){
+        ResponseDto<SignInResponseDto> result = usersService.signIn(requestBody);
+        return result;
+    }
 
+    @PostMapping("/signIn/company")
+    public ResponseDto<CompanySignInResponseDto> companySignIn(@RequestBody CompanySignInDto requestBody){
+        ResponseDto<CompanySignInResponseDto> result = providersService.signIn(requestBody);
+        return result;
+    }
 }

@@ -237,7 +237,7 @@ const MemberSignUpPage = () => {
                             <StyledFormGroup controlId="formBasicPhone">
                                 <StyledFormControl
                                     type="text"
-                                    placeholder="전화번호"
+                                    placeholder="전화번호(-빼고 입력)"
                                     name="userPhone"
                                     value={formData.userPhone}
                                     onChange={handleChange}

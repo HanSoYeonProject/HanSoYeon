@@ -22,7 +22,7 @@ function App() {
             <Route path = "/register" element={<RegisterPage />}></Route>
             <Route path = "/memberRegister" element={<MemberSignUpPage />}></Route>
             <Route path = "/googleCallback" element={<GoogleCallbackPage />}></Route>
-            {/*<Route path = "/companyRegister" element={<CompanySignUpPage />}></Route>*/}
+            <Route path = "/companyRegister" element={<CompanySignUpPage />}></Route>
         </Routes>
       </BrowserRouter>
     </div>

@@ -10,6 +10,9 @@ import company from "../imgs/company.png"
 import member from "../imgs/member.png"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {faArrowLeft, faEye, faEyeSlash} from '@fortawesome/free-solid-svg-icons';
+import axios from "axios";
+import {useCookies} from "react-cookie";
+import {useUserStore} from "../stores";
 
 
 const SigninPage = (props) => {
@@ -18,8 +21,72 @@ const SigninPage = (props) => {
     const [showCompanyForm, setShowCompanyForm] = useState(false);
     const navigate = useNavigate();
 
-    const handleLogin = (event) => {
-        event.preventDefault();
+    const [userId, setUserId] = useState('');
+    const [userPassword, setUserPassword] = useState('');
+    const [providerId, setProviderId] = useState('');
+    const [providerPassword, setProviderPassword] = useState('');
+
+    const [cookies, setCookies] = useCookies();
+    const {user, setUser} = useUserStore();
+
+    const handleLogin = () => {
+        if(userId.length === 0 || userPassword.length === 0){
+            alert('아이디와 비밀번호를 입력하세요');
+            return;
+        }
+
+        const data = {
+            userId,
+            userPassword
+        }
+        axios.post("http://localhost:8050/api/auth/signIn", data).then((response) => {
+            const responseData = response.data;
+            console.log(responseData);
+            if(!responseData.result){
+                alert('아이디 또는 비밀번호가 일치하지 않습니다. ');
+                return;
+            }
+            const { token, exprTime, user, userType } = responseData.data;
+            const expires = new Date();
+            expires.setMilliseconds(expires.getMilliseconds() + exprTime);
+
+            setCookies('token', token, {expires});
+            setCookies('userType', userType, {expires});
+            setUser(user);
+            navigate("/")
+        }).catch((error) => {
+            alert('로그인에 실패했습니다. ')
+        })
+    };
+
+    const handleCompanyLogin = () => {
+        if(providerId.length === 0 || providerPassword.length === 0){
+            alert('아이디와 비밀번호를 입력하세요');
+            return;
+        }
+
+        const data = {
+            providerId,
+            providerPassword
+        }
+        axios.post("http://localhost:8050/api/auth/signIn/company", data).then((response) => {
+            const responseData = response.data;
+            console.log(responseData);
+            if(!responseData.result){
+                alert('아이디 또는 비밀번호가 일치하지 않습니다. ');
+                return;
+            }
+            const { token, exprTime, user, userType } = responseData.data;
+            const expires = new Date();
+            expires.setMilliseconds(expires.getMilliseconds() + exprTime);
+
+            setCookies('token', token, {expires});
+            setCookies('userType', userType, {expires});
+            setUser(user);
+            navigate("/")
+        }).catch((error) => {
+            alert('로그인에 실패했습니다. ')
+        })
     };
 
     const handleSignUp = () => {
@@ -66,9 +133,13 @@ const SigninPage = (props) => {
                         <FontAwesomeIcon icon={faArrowLeft} />
                     </BackButton>
                     <LogoImg src={logo} alt="Logo" />
-                    <Form onSubmit={handleLogin}>
+                    <Form>
                         <StyledFormGroup controlId="formBasicId">
-                            <StyledFormControl type="text" placeholder="아이디 입력" />
+                            <StyledFormControl
+                                type="text"
+                                placeholder="아이디 입력"
+                                onChange={(e) => setUserId(e.target.value)}
+                            />
                         </StyledFormGroup>
 
                         <StyledFormGroup controlId="formBasicPassword">
@@ -76,6 +147,7 @@ const SigninPage = (props) => {
                                 <StyledFormControl
                                     type={showPassword ? "text" : "password"}
                                     placeholder="비밀번호 입력"
+                                    onChange={(e) => setUserPassword(e.target.value)}
                                 />
                                 <InputGroup.Text onClick={togglePasswordVisibility} style={{ borderLeft: 'none', cursor: 'pointer' }}>
                                     <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
@@ -83,7 +155,7 @@ const SigninPage = (props) => {
                             </InputGroup>
                         </StyledFormGroup>
 
-                        <StyledButton variant="primary" type="submit">
+                        <StyledButton variant="primary" type="button" onClick={handleLogin}>
                             로그인
                         </StyledButton>
 
@@ -113,9 +185,13 @@ const SigninPage = (props) => {
                         <FontAwesomeIcon icon={faArrowLeft} />
                     </BackButton>
                     <LogoImg src={logo} alt="Logo" />
-                    <Form onSubmit={handleLogin}>
+                    <Form>
                         <StyledFormGroup controlId="formBasicId">
-                            <StyledFormControl type="text" placeholder="기업 아이디 입력" />
+                            <StyledFormControl
+                                type="text"
+                                placeholder="기업 아이디 입력"
+                                onChange={(e) => setProviderId(e.target.value)}
+                            />
                         </StyledFormGroup>
 
                         <StyledFormGroup controlId="formBasicPassword">
@@ -123,6 +199,7 @@ const SigninPage = (props) => {
                                 <StyledFormControl
                                     type={showPassword ? "text" : "password"}
                                     placeholder="비밀번호 입력"
+                                    onChange={(e) => setProviderPassword(e.target.value)}
                                 />
                                 <InputGroup.Text onClick={togglePasswordVisibility} style={{ borderLeft: 'none', cursor: 'pointer' }}>
                                     <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
@@ -130,7 +207,7 @@ const SigninPage = (props) => {
                             </InputGroup>
                         </StyledFormGroup>
 
-                        <StyledButton variant="primary" type="submit">
+                        <StyledButton variant="primary" type="button" onClick={handleCompanyLogin}>
                             로그인
                         </StyledButton>
                     </Form>
