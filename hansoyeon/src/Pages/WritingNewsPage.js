@@ -5,8 +5,9 @@ const WritingNewsPage = () => {
 
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
+    const writer = "관리자";
 
-    const handleInputTitle = e => {
+    const handleInputTitle = e =>{
         setTitle(e.target.value);
     }
 
@@ -14,18 +15,35 @@ const WritingNewsPage = () => {
         setContent(e.target.value);
     }
 
-    const writer = "관리자";
 
-    const handleSubmit = e => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         const newsPost = {
             title,
-            writer: writer,
-            content
+            writer,
+            content,
         };
 
-    }
+        // 데이터를 서버로 전송
+        try {
+            const response = await fetch("/api/createAnnouncement", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(newsPost),
+            });
+            if (response.ok) {
+                console.log("성공");
+            } else {
+                // 서버 요청이 실패하면 오류 처리
+                console.error("서버 요청 실패");
+            }
+        } catch (error) {
+            console.error("오류 발생: " + error);
+        }
+    };
 
     return (
         <Container>
