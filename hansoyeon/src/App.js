@@ -5,6 +5,7 @@ import { BrowserRouter, Routes, Route} from 'react-router-dom';
 import Navigate from "./Components/Navigate";
 import MainPage from "./Pages/MainPage";
 import AnnouncementPage from "./Pages/AnnouncementPage";
+import InputSkill from './Components/InputSkill';
 
 
 
@@ -22,7 +23,7 @@ function App() {
             <Route path = "/" element={<MainPage/>}></Route>
             <Route path ="/Announcement" element={<AnnouncementPage/>}></Route>
 
-
+            <InputSkill />
         </Routes>
       </BrowserRouter>
     </div>
