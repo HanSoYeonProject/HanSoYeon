@@ -10,6 +10,7 @@ const GoogleLoginPage = () => {
     useEffect(() => {
         const urlParams = new URLSearchParams(location.search);
         const code = urlParams.get('code');
+        console.log(code)
 
         if (code) {
             axios.post('http://localhost:8050/api/auth/google', { code })
