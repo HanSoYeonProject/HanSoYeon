@@ -93,4 +93,11 @@ public class AuthController {
         ResponseDto<CompanySignInResponseDto> result = providersService.signIn(requestBody);
         return result;
     }
+
+    @PostMapping("/signIn/kakao")
+    public ResponseDto<SignInResponseDto> kakaoSignIn(@RequestBody Map<String, String> requestBody){
+        String userEmail = requestBody.get("userEmail");
+        return usersService.signInWithKakaoEmail(userEmail);
+    }
+
 }

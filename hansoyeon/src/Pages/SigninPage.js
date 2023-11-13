@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Form, Button, InputGroup} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import styled from 'styled-components';
@@ -28,6 +28,67 @@ const SigninPage = (props) => {
 
     const [cookies, setCookies] = useCookies();
     const {user, setUser} = useUserStore();
+
+    const [isKakaoSdkLoaded, setIsKakaoSdkLoaded] = useState(false);
+    const [userEmail, setUserEmail] = useState('');
+
+    useEffect(() => {
+        if (userEmail) {
+            handleKakaoLogin();
+        }
+    }, [userEmail]);
+
+    useEffect(() => {
+        const script = document.createElement('script');
+        script.src = "https://developers.kakao.com/sdk/js/kakao.min.js";
+        script.async = true;
+        document.body.appendChild(script);
+
+        script.onload = () => {
+            if (window.Kakao && !window.Kakao.isInitialized()) {
+                window.Kakao.init('af3894518c9ad04274d8c7c098885abd');
+            }
+            setIsKakaoSdkLoaded(true); // SDK 로드 완료 후 상태 업데이트
+        };
+
+        return () => {
+            if (document.body.contains(script)) {
+                document.body.removeChild(script);
+            }
+        };
+    }, []);
+
+    const handleKakaoRegisterImageClick = () => {
+
+        if (window.Kakao && window.Kakao.isInitialized()) { // Kakao SDK 초기화 확인
+            window.Kakao.Auth.login({
+                success: function(authObj) {
+                    console.log(authObj); // 인증 객체 확인
+
+                    window.Kakao.API.request({
+                        url: '/v2/user/me',
+                        success: function(response) {
+                            console.log(response);
+                            if (response.kakao_account && response.kakao_account.email) {
+                                const userEmail = "(kakao)" + response.kakao_account.email;
+                                setUserEmail(userEmail);
+                            } else {
+                                console.log("이메일 정보를 가져올 수 없습니다.");
+                            }
+                        },
+                        fail: function(error) {
+                            console.log(error);
+                        },
+                    });
+                },
+                fail: function(err) {
+                    console.log(err);
+                },
+            });
+        } else {
+            console.error("Kakao SDK가 아직 로드되지 않았거나 초기화되지 않았습니다.");
+        }
+    };
 
     const handleLogin = () => {
         if(userId.length === 0 || userPassword.length === 0){
@@ -88,6 +149,30 @@ const SigninPage = (props) => {
             alert('로그인에 실패했습니다. ')
         })
     };
+
+    const handleKakaoLogin = (event) => {
+        event.preventDefault();
+        axios.post("http://localhost:8050/api/auth/signIn/kakao", { userEmail })
+            .then(response => {
+                const responseData = response.data;
+                if (!responseData.result) {
+                    alert('일치하는 사용자를 찾을 수 없습니다.');
+                    return;
+                }
+                const { token, exprTime, user, userType } = responseData.data;
+                const expires = new Date();
+                expires.setMilliseconds(expires.getMilliseconds() + exprTime);
+
+                setCookies('token', token, { expires });
+                setCookies('userType', userType, { expires });
+                setUser(user);
+                navigate("/");
+            })
+            .catch(error => {
+                alert('로그인에 실패했습니다.');
+            });
+    };
+
 
     const handleSignUp = () => {
         navigate("/register")
@@ -160,10 +245,10 @@ const SigninPage = (props) => {
                         </StyledButton>
 
                         <Divider>또는</Divider>
-                        <UserImg>
+                        <UserImg onClick={(event) => handleKakaoRegisterImageClick(event)}>
                             <KakaoImg alt="kakao" src={kakao} />
                         </UserImg>
-                        <UserImg>
+                        <UserImg >
                             <GoogleImg alt="google" src={google} />
                         </UserImg>
                     </Form>

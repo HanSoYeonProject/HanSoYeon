@@ -53,4 +53,19 @@ public class UsersService {
         SignInResponseDto signInResponseDto = new SignInResponseDto(token, exprTime, usersEntity, userType);
         return ResponseDto.setSuccess("로그인 성공", signInResponseDto);
     }
+
+    public ResponseDto<SignInResponseDto> signInWithKakaoEmail(String userEmail){
+        UsersEntity usersEntity = usersRepository.findByUserEmail(userEmail);
+        if(usersEntity == null){
+            return ResponseDto.setFailed("사용자를 찾을 수 없습니다.");
+        }
+
+        String token = tokenProvider.create(usersEntity.getUserId());
+        int exprTime = 3600000;
+        String userType = "member";
+
+        SignInResponseDto signInResponseDto = new SignInResponseDto(token, exprTime, usersEntity, userType);
+        return ResponseDto.setSuccess("로그인 성공", signInResponseDto);
+    }
+
 }
