@@ -1,7 +1,10 @@
 import React, {useState} from "react";
 import styled from "styled-components";
+import navigate from "../Components/Navigate";
+import {useNavigate} from "react-router-dom";
 
 const WritingNewsPage = () => {
+    const navigate = useNavigate();
 
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
@@ -36,13 +39,16 @@ const WritingNewsPage = () => {
             });
             if (response.ok) {
                 console.log("성공");
+                navigate("/announcement");
             } else {
                 // 서버 요청이 실패하면 오류 처리
                 console.error("서버 요청 실패");
+
             }
         } catch (error) {
             console.error("오류 발생: " + error);
         }
+
     };
 
     return (
