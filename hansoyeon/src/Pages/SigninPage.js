@@ -14,7 +14,6 @@ import axios from "axios";
 import {useCookies} from "react-cookie";
 import {useUserStore} from "../stores";
 
-
 const SigninPage = (props) => {
     const [showPassword, setShowPassword] = useState(false);
     const [showMemberForm, setShowMemberForm] = useState(false);
@@ -31,12 +30,6 @@ const SigninPage = (props) => {
 
     const [isKakaoSdkLoaded, setIsKakaoSdkLoaded] = useState(false);
     const [userEmail, setUserEmail] = useState('');
-
-    useEffect(() => {
-        if (userEmail) {
-            handleKakaoLogin();
-        }
-    }, [userEmail]);
 
     useEffect(() => {
         const script = document.createElement('script');
@@ -58,20 +51,18 @@ const SigninPage = (props) => {
         };
     }, []);
 
-    const handleKakaoRegisterImageClick = () => {
+    const handleKakaoLoginImageClick = () => {
 
         if (window.Kakao && window.Kakao.isInitialized()) { // Kakao SDK 초기화 확인
             window.Kakao.Auth.login({
                 success: function(authObj) {
-                    console.log(authObj); // 인증 객체 확인
-
                     window.Kakao.API.request({
                         url: '/v2/user/me',
                         success: function(response) {
-                            console.log(response);
-                            if (response.kakao_account && response.kakao_account.email) {
-                                const userEmail = "(kakao)" + response.kakao_account.email;
-                                setUserEmail(userEmail);
+                            const userEmail = response.kakao_account?.email;
+                            if (userEmail) {
+                                setUserEmail("(kakao)" + userEmail);
+                                handleKakaoLogin("(kakao)" + userEmail);
                             } else {
                                 console.log("이메일 정보를 가져올 수 없습니다.");
                             }
@@ -114,7 +105,7 @@ const SigninPage = (props) => {
             setCookies('token', token, {expires});
             setCookies('userType', userType, {expires});
             setUser(user);
-            navigate("/")
+            navigate("/");
         }).catch((error) => {
             alert('로그인에 실패했습니다. ')
         })
@@ -150,8 +141,7 @@ const SigninPage = (props) => {
         })
     };
 
-    const handleKakaoLogin = (event) => {
-        event.preventDefault();
+    const handleKakaoLogin = (userEmail) => {
         axios.post("http://localhost:8050/api/auth/signIn/kakao", { userEmail })
             .then(response => {
                 const responseData = response.data;
@@ -245,7 +235,7 @@ const SigninPage = (props) => {
                         </StyledButton>
 
                         <Divider>또는</Divider>
-                        <UserImg onClick={(event) => handleKakaoRegisterImageClick(event)}>
+                        <UserImg type="button" onClick={handleKakaoLoginImageClick}>
                             <KakaoImg alt="kakao" src={kakao} />
                         </UserImg>
                         <UserImg >
@@ -253,7 +243,7 @@ const SigninPage = (props) => {
                         </UserImg>
                     </Form>
                     <NavigationLinks>
-                        <NavLink href="#find-id">아이디 찾기</NavLink>
+                        <NavLink>아이디 찾기</NavLink>
                         <NavLinkDivider>•</NavLinkDivider>
                         <NavLink href="#find-password">비밀번호 찾기</NavLink>
                         <NavLinkDivider>•</NavLinkDivider>
@@ -305,7 +295,9 @@ const SigninPage = (props) => {
                     </NavigationLinks>
                 </FormBox>
             </StyledContainer>
+
         )
+
     }
 };
 
