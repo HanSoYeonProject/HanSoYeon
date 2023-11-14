@@ -1,6 +1,8 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.*;
+import com.example.demo.entity.UsersEntity;
+import com.example.demo.security.TokenProvider;
 import com.example.demo.service.ProvidersService;
 import org.springframework.http.*;
 import org.springframework.util.LinkedMultiValueMap;
@@ -22,6 +24,9 @@ public class AuthController {
     private UsersService usersService;
     @Autowired
     private ProvidersService providersService;
+
+    @Autowired
+    TokenProvider tokenProvider;
 
     private final String clientId = "234889770604-vcqi694q1kvfblt30ajhq77gsh5s8j2t.apps.googleusercontent.com";
     private final String clientSecret = "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";
@@ -98,6 +103,18 @@ public class AuthController {
     public ResponseDto<SignInResponseDto> kakaoSignIn(@RequestBody Map<String, String> requestBody){
         String userEmail = requestBody.get("userEmail");
         return usersService.signInWithKakaoEmail(userEmail);
+    }
+
+    @GetMapping("/currentUser")
+    public ResponseEntity<?> getCurrentUser(@RequestHeader("Authorization") String token) {
+        // Bearer 토큰에서 실제 토큰을 추출합니다.
+        String jwtToken = token.split(" ")[1];
+
+        // TokenProvider를 사용하여 토큰에서 이메일을 추출합니다.
+        String userEmail = tokenProvider.getIdFromToken(jwtToken);
+
+        UsersEntity user = usersService.getUserByEmail(userEmail);
+        return ResponseEntity.ok(user);
     }
 
 }

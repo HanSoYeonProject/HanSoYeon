@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import {Navbar, Nav, Container, Button} from 'react-bootstrap';
+import {Navbar, Nav, Container, Button, Badge, Dropdown } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import styled from "styled-components";
 import {useNavigate} from 'react-router-dom';
 import logo from '../imgs/logo.png';
 import { useCookies } from 'react-cookie';
 import { useUserStore } from '../stores';
+import defaultProfilePic from '../imgs/default_profile.png';
 
 const Navigate = () => {
     const navigate = useNavigate();
@@ -33,6 +34,13 @@ const Navigate = () => {
         navigate("/register")
     };
 
+    const getProfilePicSrc = () => {
+        if (user.userProfile === "hansoyeon/src/imgs/default_profile.png" || !user.userProfile) {
+            return defaultProfilePic;
+        }
+        return user.userProfile;
+    };
+
     return (
 
         <Navbar fixed="top" style={{ position: "fixed", backgroundColor: "white", boxShadow: "1.5px 1.5px 1.5px 1.5px #F3F4F6", width: "100%", zIndex: "1000" }}>
@@ -45,8 +53,22 @@ const Navigate = () => {
                 <div>
                     {isLoggedIn ? (
                         <>
-                            <Button variant="light" onClick={handleLogout}>로그아웃</Button>
-                            {userType === 'company' ? <span>기업 회원</span> : <span>일반 회원</span>}
+                            {userType === 'company' ?
+                                <Badge bg="primary" style={{ marginRight: '10px' }}>기업 회원</Badge>
+                                :
+                                <Badge bg="primary" style={{ marginRight: '10px' }}>일반 회원</Badge>}
+                                <span>{user.userName || 'No Name'}</span>
+                                <StyledDropdown>
+                                    <Dropdown.Toggle as={CustomToggle}>
+                                        <ProfileImage src={getProfilePicSrc()} alt="Profile" />
+                                    </Dropdown.Toggle>
+
+                                    <Dropdown.Menu>
+                                        <Dropdown.Item href="#action/3.1">Action</Dropdown.Item>
+                                        <Dropdown.Item href="#action/3.2">Another action</Dropdown.Item>
+                                        <Dropdown.Item onClick={handleLogout}>로그아웃</Dropdown.Item>
+                                    </Dropdown.Menu>
+                                </StyledDropdown>
                         </>
                     ) : (
                         <>
@@ -90,5 +112,31 @@ const Nav_Str = styled.div`
   align-items: center;
   
 `
+
+const ProfileImage = styled.img`
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+`;
+
+const StyledDropdown = styled(Dropdown)`
+    .dropdown-toggle::after {
+        display: none;
+    }
+`;
+
+const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
+    <a
+        href=""
+        ref={ref}
+        onClick={(e) => {
+            e.preventDefault();
+            onClick(e);
+        }}
+    >
+        {children}
+    </a>
+));
 
 export default Navigate;

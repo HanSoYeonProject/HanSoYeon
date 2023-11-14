@@ -34,7 +34,8 @@ const MemberSignUpPage = () => {
         userInfo: '',
         userPrefer: '',
         userPhone: '',
-        userAddress: ''
+        userAddress: '',
+        userProfile: ''
     });
     const [addressFields, setAddressFields] = useState({
         postalCode: '',

@@ -68,4 +68,8 @@ public class UsersService {
         return ResponseDto.setSuccess("로그인 성공", signInResponseDto);
     }
 
+    public UsersEntity getUserByEmail(String userEmail) {
+        return usersRepository.findByUserEmail(userEmail);
+    }
+
 }
