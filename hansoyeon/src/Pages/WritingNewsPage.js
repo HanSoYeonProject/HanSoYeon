@@ -45,7 +45,7 @@ const WritingNewsPage = () => {
             console.log(responseData);
 
             // 글 작성 성공 시, 페이지를 이동
-            navigate("/announcement"); // 실제 목적지 경로로 변경
+            navigate("/announcementlist"); // 실제 목적지 경로로 변경
         } catch (error) {
             console.error('API 요청 중 오류 발생:', error);
         }

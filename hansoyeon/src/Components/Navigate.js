@@ -6,7 +6,7 @@ import {useNavigate} from 'react-router-dom';
 import logo from '../imgs/logo.png';
 import NewPage from "../Pages/NewPage";
 import RegionPage from "../Pages/RegionPage";
-import AnnouncementPage from "../Pages/AnnouncementPage";
+import AnnouncementListPage from "../Pages/AnnouncementListPage";
 
 const Navigate = () => {
     const navigate = useNavigate();
@@ -39,8 +39,8 @@ const Navigate = () => {
     const ReviewPageButton = () => {
         navigate("/review");
     }
-    const AnnouncementPageButton = () => {
-        navigate("/announcement");
+    const AnnouncementListPageButton = () => {
+        navigate("/announcementlist");
     }
     return (
         <TopNav>
@@ -60,7 +60,7 @@ const Navigate = () => {
                             <ThemaPageInfo onClick={ThemaPageButton}>테마별 코스</ThemaPageInfo>
                             <RegionPageInfo onClick={RegionPageButton}>지역별 코스</RegionPageInfo>
                             <ReviewPageInfo onClick={ReviewPageButton}>체험 후기</ReviewPageInfo>
-                            <AnnouncementPageInfo onClick={AnnouncementPageButton}>공지 사항</AnnouncementPageInfo>
+                            <AnnouncementPageInfo onClick={AnnouncementListPageButton}>공지 사항</AnnouncementPageInfo>
                         </PageNav>
                         <Button color="inherit" variant="light" onClick={handleLogin}
                                 style={{marginRight: '0.5rem'}}>로그인</Button>

@@ -4,7 +4,8 @@ import React from 'react';
 import {BrowserRouter, Routes, Route} from 'react-router-dom';
 import Navigate from "./Components/Navigate";
 import MainPage from "./Pages/MainPage";
-import AnnouncementPage from "./Pages/AnnouncementPage";
+import AnnouncementContentPage from "./Pages/AnnouncementContentPage";
+import AnnouncementListPage from "./Pages/AnnouncementListPage";
 import LoginPage from "./Pages/SigninPage"
 import RegisterPage from "./Pages/SignupPage"
 import WritingNewsPage from "./Pages/WritingNewsPage";
@@ -26,7 +27,8 @@ function App() {
                     <Route path="/" element={<MainPage/>}></Route>
                 </Routes>
                 <Routes>
-                    <Route path="/announcement" element={<AnnouncementPage/>}></Route>
+                    <Route path="/announcementcontent" element={<AnnouncementContentPage/>}></Route>
+                    <Route path="/announcementlist" element={<AnnouncementListPage/>}></Route>
                     <Route path="/login" element={<LoginPage/>}></Route>
                     <Route path="/register" element={<RegisterPage/>}></Route>
                     <Route path="/newcourse" element={<NewPage/>}></Route>
