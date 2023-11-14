@@ -111,7 +111,7 @@ public class AuthController {
         String jwtToken = token.split(" ")[1];
 
         // TokenProvider를 사용하여 토큰에서 이메일을 추출합니다.
-        String userEmail = tokenProvider.getIdFromToken(jwtToken);
+        String userEmail = tokenProvider.getEmailFromToken(jwtToken);
 
         UsersEntity user = usersService.getUserByEmail(userEmail);
         return ResponseEntity.ok(user);

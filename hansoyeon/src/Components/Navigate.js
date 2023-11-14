@@ -7,6 +7,7 @@ import logo from '../imgs/logo.png';
 import { useCookies } from 'react-cookie';
 import { useUserStore } from '../stores';
 import defaultProfilePic from '../imgs/default_profile.png';
+import axios from "axios";
 
 const Navigate = () => {
     const navigate = useNavigate();
@@ -15,6 +16,27 @@ const Navigate = () => {
 
     const isLoggedIn = cookies.token && user;
     const userType = cookies.userType;
+
+    useEffect(() => {
+        console.log(cookies.token)
+        if (cookies.token) {
+            axios.get('http://localhost:8050/api/auth/currentUser', {
+                headers: {
+                    Authorization: `Bearer ${cookies.token}`
+                }
+            }).then(response => {
+                setUser(response.data);
+                console.log(user)
+            }).catch(error => {
+                console.error("Error fetching user data:", error);
+                handleLogout();
+            });
+        }
+    }, []);
+    useEffect(() => {
+        console.log("Updated user:", user);
+    }, [user]);
+
 
     const handleLogout = () => {
         removeCookie('token');
@@ -53,22 +75,25 @@ const Navigate = () => {
                 <div>
                     {isLoggedIn ? (
                         <>
-                            {userType === 'company' ?
-                                <Badge bg="primary" style={{ marginRight: '10px' }}>기업 회원</Badge>
-                                :
-                                <Badge bg="primary" style={{ marginRight: '10px' }}>일반 회원</Badge>}
-                                <span>{user.userName || 'No Name'}</span>
-                                <StyledDropdown>
-                                    <Dropdown.Toggle as={CustomToggle}>
-                                        <ProfileImage src={getProfilePicSrc()} alt="Profile" />
-                                    </Dropdown.Toggle>
+                                <ProfileSection>
+                                    {userType === 'company' ?
+                                        <Badge bg="primary" style={{ marginRight: '20px', fontSize: "16px" }}>기업 회원</Badge>
+                                        :
+                                        <Badge bg="primary" style={{ marginRight: '20px', fontSize: "16px" }}>일반 회원</Badge>
+                                    }
+                                    <span style={{ marginRight: '20px', fontSize: '19px' }}>{user.userName + "님" || 'No Name'}</span>
+                                    <StyledDropdown>
+                                        <Dropdown.Toggle as={CustomToggle}>
+                                            <ProfileImage src={getProfilePicSrc()} alt="Profile" />
+                                        </Dropdown.Toggle>
 
-                                    <Dropdown.Menu>
-                                        <Dropdown.Item href="#action/3.1">Action</Dropdown.Item>
-                                        <Dropdown.Item href="#action/3.2">Another action</Dropdown.Item>
-                                        <Dropdown.Item onClick={handleLogout}>로그아웃</Dropdown.Item>
-                                    </Dropdown.Menu>
-                                </StyledDropdown>
+                                        <Dropdown.Menu>
+                                            <Dropdown.Item href="#action/3.1">Action</Dropdown.Item>
+                                            <Dropdown.Item href="#action/3.2">Another action</Dropdown.Item>
+                                            <Dropdown.Item onClick={handleLogout}>로그아웃</Dropdown.Item>
+                                        </Dropdown.Menu>
+                                    </StyledDropdown>
+                                </ProfileSection>
                         </>
                     ) : (
                         <>
@@ -114,8 +139,8 @@ const Nav_Str = styled.div`
 `
 
 const ProfileImage = styled.img`
-    width: 40px;
-    height: 40px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
     cursor: pointer;
 `;
@@ -134,9 +159,15 @@ const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
             e.preventDefault();
             onClick(e);
         }}
+        style={{ marginRight: '30px' }}
     >
         {children}
     </a>
 ));
+
+const ProfileSection = styled.div`
+    display: flex;
+    align-items: center;
+`;
 
 export default Navigate;

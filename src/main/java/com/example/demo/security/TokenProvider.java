@@ -44,7 +44,7 @@ public class TokenProvider {
         return claims.getSubject();
     }
 
-    public String getIdFromToken(String token) {
+    public String getEmailFromToken(String token) {
         Claims claims = Jwts.parser()
                 .setSigningKey(SECURITY_KEY)
                 .parseClaimsJws(token)
