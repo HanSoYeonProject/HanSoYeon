@@ -1,6 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
+import navigate from "../Components/Navigate";
+import {useNavigate} from "react-router-dom";
 const AnnouncementPage = (props) => {
+    const navigate = useNavigate();
+
+    const WritingNews = () => {
+        navigate("/WritingNewsPage");
+    }
     return (
         <Container>
             <MiddleContainer>
@@ -9,6 +16,7 @@ const AnnouncementPage = (props) => {
                     <SmallNewsTitle>
                         <LeftNewsTitle>한소연 소식</LeftNewsTitle>
                         <RightNewsTitle>
+                            <WritingButton onClick={WritingNews}>글 작성</WritingButton>
                             <ExitButton>더 보기 ></ExitButton>
                         </RightNewsTitle>
                     </SmallNewsTitle>
@@ -29,7 +37,7 @@ const AnnouncementPage = (props) => {
 const Container = styled.div`
   display: flex;
   flex: 1;
-  height: 100vh;
+  height: 700px;
   align-items: center;
   justify-content: center;
 `
@@ -51,7 +59,8 @@ const AnnouncementTitle = styled.div`
 const NewsTitle = styled.div`
   display: flex;
   flex: 2;
-  align-items: center
+  flex-direction: row;
+  align-items: center;
 `
 const SmallNewsTitle = styled.div`
   display: flex;
@@ -76,6 +85,20 @@ const RightNewsTitle = styled.div`
   font-weight: 700;
   align-items: center;
   justify-content: right;
+`
+const WritingButton = styled.button`
+  background-color: skyblue;
+  display: flex;
+  width: 100px;
+  height: 40px;
+  text-align: center;
+  color: white;
+  margin-right: 1rem;
+  border-radius: 10px;
+  font-size: 20px;
+  align-items: center;
+  justify-content: center;
+  border: none;
 `
 
 const ExitButton = styled.div`
@@ -104,7 +127,6 @@ const TopMainTitle = styled.div`
   height: 50px;
   align-items: center;
 `
-
 
 
 export default AnnouncementPage;

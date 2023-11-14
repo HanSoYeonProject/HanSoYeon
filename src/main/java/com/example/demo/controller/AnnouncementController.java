@@ -11,6 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
+@CrossOrigin(origins = "http://localhost:3000")
 public class AnnouncementController {
     private final AnnouncementService announcementService;
     private static final Logger logger = LoggerFactory.getLogger(AnnouncementController.class);

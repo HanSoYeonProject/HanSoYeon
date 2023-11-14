@@ -1,6 +1,5 @@
 import React, {useState, useCallback, useEffect} from 'react';
 import styled from 'styled-components';
-import {useJsApiLoader, GoogleMap, Marker, LoadScript} from '@react-google-maps/api';  //구글 뱁 사용하기 위한 컴포넌트들
 
 //swiper App.css에 추가한후 import
 import {Swiper, SwiperSlide} from 'swiper/react';     //swiper 사용할 import
@@ -9,8 +8,9 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import '../App.css';
 
-const MAP_API_KEY = process.env.GOOGLE_MAP_API_KEY;
+const KAKAO_MAP_API_KEY = process.env.KAKAO_MAP_API_KEY;
 
+const { kakao } = window;
 //리뷰 Test 데이터
 const dummyReviews = [
     {
@@ -37,76 +37,28 @@ const dummyReviews = [
 ];
 
 
-function GoogleMapComponent() {
-    const {isLoaded} = useJsApiLoader({
-        id: 'google-map-script',
-        googleMapsApiKey: "${MAP_API_KEY}" // Replace with your API key
-    });
-
-    const [map, setMap] = useState(null);
-    const [currentLocation, setCurrentLocation] = useState(null);
-
-    const onLoad = useCallback(function callback(map) {
-        setMap(map);
-    }, []);
-
-    const onUnmount = useCallback(function callback(map) {
-        setMap(null);
-    }, []);
-    const mapOptions = {
-        styles: [
-            {
-                featureType: "poi", // 관심 지점 (Points of Interest)
-                elementType: "labels", // 레이블 요소
-                stylers: [{visibility: "off"}] // 레이블 숨기기
-            }
-        ]
-    };
-
-    useEffect(() => {
-        navigator.geolocation.getCurrentPosition(
-            function (position) {
-                setCurrentLocation({
-                    lat: position.coords.latitude,
-                    lng: position.coords.longitude
-                });
-            },
-            function (error) {
-                console.error("Error getting location", error);
-            },
-            {
-                enableHighAccuracy: true
-            }
-        );
-    }, []);
-    return isLoaded ? (
-        <GoogleMap
-            mapContainerStyle={containerStyle}
-            center={currentLocation || {lat: 37.5760222, lng: 126.9769000}}
-            zoom={16}
-            options={mapOptions} // 추가된 옵션 사용
-            onLoad={onLoad}
-            onUnmount={onUnmount}
-        >
-            {currentLocation && <Marker position={currentLocation}/>}
-        </GoogleMap>
-    ) : <></>;
-}
-
 //===============================페이지 UI========================================
 
 const MainPage = () => {
+    useEffect(() => {
+        const container = document.getElementById('map');
+        const options = {
+            center: new kakao.maps.LatLng(33.450701, 126.570667),
+            level: 3
+        };
+        const map = new kakao.maps.Map(container, options);
+    }, [])
+
     return (
         <div>
             <MainContainer>
                 <GoogleMapContainer>
-                    <GoogleMapComponent/>
+                    <div id="map" style={{width: '90%', height: '700px'}}></div>
                 </GoogleMapContainer>
                 <NewCourseContainer>
                     <NewCourseTitle><h1>신규코스</h1></NewCourseTitle>
                     <NewCourseSubTitle>이달의 추천코스</NewCourseSubTitle>
                     <NewCourseImage>
-
                         <>
                             <Swiper
                                 slidesPerView={3}
@@ -119,10 +71,11 @@ const MainPage = () => {
                             >
                                 <SwiperSlide>Slide 1</SwiperSlide>
                                 <SwiperSlide>Slide 2</SwiperSlide>
-
+                                <SwiperSlide>Slide 3</SwiperSlide>
+                                <SwiperSlide>Slide 4</SwiperSlide>
+                                <SwiperSlide>Slide 5</SwiperSlide>
                             </Swiper>
                         </>
-
                     </NewCourseImage>
                 </NewCourseContainer>
                 <RecommendCourseContainer>
@@ -142,6 +95,9 @@ const MainPage = () => {
                             >
                                 <SwiperSlide>Slide 1</SwiperSlide>
                                 <SwiperSlide>Slide 2</SwiperSlide>
+                                <SwiperSlide>Slide 3</SwiperSlide>
+                                <SwiperSlide>Slide 4</SwiperSlide>
+                                <SwiperSlide>Slide 5</SwiperSlide>
 
                             </Swiper>
                         </>
@@ -167,10 +123,6 @@ const MainPage = () => {
                                 <SwiperSlide>Slide 3</SwiperSlide>
                                 <SwiperSlide>Slide 4</SwiperSlide>
                                 <SwiperSlide>Slide 5</SwiperSlide>
-                                <SwiperSlide>Slide 6</SwiperSlide>
-                                <SwiperSlide>Slide 7</SwiperSlide>
-                                <SwiperSlide>Slide 8</SwiperSlide>
-                                <SwiperSlide>Slide 9</SwiperSlide>
                             </Swiper>
                         </>
 
@@ -194,6 +146,9 @@ const MainPage = () => {
                             >
                                 <SwiperSlide>Slide 1</SwiperSlide>
                                 <SwiperSlide>Slide 2</SwiperSlide>
+                                <SwiperSlide>Slide 3</SwiperSlide>
+                                <SwiperSlide>Slide 4</SwiperSlide>
+                                <SwiperSlide>Slide 5</SwiperSlide>
 
                             </Swiper>
                         </>
@@ -216,11 +171,8 @@ const MainPage = () => {
                         ))}
 
                     </ReviewContext>
-
                 </ReviewContainer>
-
-
-            </MainContainer>
+           </MainContainer>
         </div>
     );
 };
@@ -228,6 +180,7 @@ const MainPage = () => {
 //==============================================페이지 CSS===================================================
 //=================페이지전체 컨테이너==============
 const MainContainer = styled.div`
+  font-family: 'Arial', sans-serif;
 `
 
 //==================구글맵 css===================
@@ -239,9 +192,22 @@ const containerStyle = {    //지도크기 css
 
 const GoogleMapContainer = styled.div`
   display: flex;
-  background-color: #282c34;
+  justify-content: center;
+  align-items: center;
   height: 800px;
 `
+// 제목 스타일 공통으로 적용
+const TitleStyle = styled.div`
+  font-size: 24px;       // 통일된 글씨 크기
+  margin-left: 20px;     // 왼쪽 마진 추가
+  background-color: white;
+`;
+
+const SubTitleStyle = styled.div`
+  font-size: 18px;       // 부제목 글씨 크기
+  background-color: white;
+  margin-top: -10px;     // 제목과의 간격 조정
+`;
 // =============================================
 //==================신규코스 css==================
 const NewCourseContainer = styled.div`
@@ -255,12 +221,12 @@ const NewCourseContainer = styled.div`
 const NewCourseTitle = styled.div`
   display: flex;
   flex: 2;
-  background-color: purple;
+  background-color: white;
 `
 const NewCourseSubTitle = styled.div`
   display: flex;
   flex: 1;
-  background-color: yellow;
+  background-color: white;
 `
 
 const NewCourseImage = styled.div`
@@ -279,12 +245,12 @@ const RecommendCourseContainer = styled.div`
 const RecommendCourseTitle = styled.div`
   display: flex;
   flex: 2;
-  background-color: skyblue;
+  background-color: white;
 `
 const RecommendCourseSubTitle = styled.div`
   display: flex;
   flex: 1;
-  background-color: yellow;
+  background-color: white;
 `
 const RecommendCourseImage = styled.div`
   display: flex;
@@ -303,12 +269,12 @@ const ThemaCourseContainer = styled.div`
 const ThemaCourseTitle = styled.div`
   display: flex;
   flex: 2;
-  background-color: mediumorchid;
+  background-color: white;
 `
 const ThemaCourseSubTitle = styled.div`
   display: flex;
   flex: 1;
-  background-color: wheat;
+  background-color: white;
 `
 const ThemaCouseImage = styled.div`
   display: flex;
@@ -327,12 +293,12 @@ const RegionalCourseContainer = styled.div`
 const RegionalCourseTitle = styled.div`
   display: flex;
   flex: 2;
-  background-color: mediumorchid;
+  background-color: white;
 `
 const RegionalCourseSubTitle = styled.div`
   display: flex;
   flex: 1;
-  background-color: wheat;
+  background-color: white;
 `
 const RegionalCouseImage = styled.div`
   display: flex;
@@ -352,12 +318,12 @@ const ReviewContainer = styled.div`
 const ReviewTitle = styled.div`
   display: flex;
   flex: 2;
-  background-color: crimson;
+  background-color: white;
 `
 const ReviewSubTitle = styled.div`
   display: flex;
   flex: 1;
-  background-color: lightgreen;
+  background-color: white;
 `
 const ReviewContext = styled.div`
   display: flex;
