@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -26,7 +27,7 @@ public class AnnouncementService {
 
     @Transactional
     public AnnouncementDto createAnnouncement(AnnouncementDto announcementDto) {
-        logger.info("Creating a new announcement.");
+
         AnnouncementEntity announcement = new AnnouncementEntity();
         announcement.setAnnoTitle(announcementDto.getAnno_title());
         announcement.setAnnoContent(announcementDto.getAnno_content());
@@ -49,7 +50,12 @@ public class AnnouncementService {
         return announcementDtos;
     }
 
-    private AnnouncementDto convertToDto(AnnouncementEntity announcement) {
+    public AnnouncementDto convertToDto(AnnouncementEntity announcement) {
+        if (announcement == null) {
+            // 예외를 throw하거나, 기본값을 설정하는 등의 처리를 수행할 수 있습니다.
+            throw new IllegalArgumentException("Input AnnouncementEntity cannot be null");
+        }
+
         AnnouncementDto announcementDto = new AnnouncementDto();
         announcementDto.setAnno_id(announcement.getAnnoId());
         announcementDto.setAnno_title(announcement.getAnnoTitle());
@@ -60,11 +66,11 @@ public class AnnouncementService {
         return announcementDto;
     }
 
+
     public AnnouncementDto getAnnouncementById(int annoId) {
         Optional<AnnouncementEntity> announcementOptional = announcementRepository.findById(annoId);
         return announcementOptional.map(this::convertToDto).orElse(null);
     }
-
 
     @Transactional
     public void increaseAnnouncementViews(int annoId) {
@@ -72,4 +78,18 @@ public class AnnouncementService {
                 .orElseThrow(() -> new IllegalArgumentException("Announcement not found with ID: " + annoId));
         announcement.setAnnoViews(announcement.getAnnoViews() + 1);
     }
+    //삭제
+    @Transactional
+    public void deleteAnnouncementById(int annoId) {
+        announcementRepository.deleteById(annoId);
+    }
+
+    @Transactional
+    public AnnouncementEntity modifyAnnouncementById(int annoId, AnnouncementDto modifiedData) {
+        AnnouncementEntity announcement = announcementRepository.findById(annoId)
+                .orElseThrow(() -> new EntityNotFoundException("해당하는 공지사항이 없습니다."));
+        announcement.setAnnoContent(modifiedData.getAnno_content());
+        return announcementRepository.save(announcement);
+    }
+
 }
