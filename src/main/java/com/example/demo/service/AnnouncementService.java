@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AnnouncementService {
@@ -31,7 +32,6 @@ public class AnnouncementService {
         announcement.setAnnoContent(announcementDto.getAnno_content());
         announcement.setAnnoRegist(LocalDateTime.now());
         announcement.setAnnoViews(0);
-
         AnnouncementEntity savedAnnouncement = announcementRepository.save(announcement);
 
         return convertToDto(savedAnnouncement);
@@ -58,5 +58,18 @@ public class AnnouncementService {
         announcementDto.setAnno_regist(announcement.getAnnoRegist());
 
         return announcementDto;
+    }
+
+    public AnnouncementDto getAnnouncementById(int annoId) {
+        Optional<AnnouncementEntity> announcementOptional = announcementRepository.findById(annoId);
+        return announcementOptional.map(this::convertToDto).orElse(null);
+    }
+
+
+    @Transactional
+    public void increaseAnnouncementViews(int annoId) {
+        AnnouncementEntity announcement = announcementRepository.findById(annoId)
+                .orElseThrow(() -> new IllegalArgumentException("Announcement not found with ID: " + annoId));
+        announcement.setAnnoViews(announcement.getAnnoViews() + 1);
     }
 }
