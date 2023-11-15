@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 
 const WritingNewsPage = () => {
     const navigate = useNavigate();
-
     const [anno_title, setTitle] = useState('');
     const [anno_content, setContent] = useState('');
     const writer = "관리자";

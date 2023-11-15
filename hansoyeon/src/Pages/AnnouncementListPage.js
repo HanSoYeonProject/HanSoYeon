@@ -19,7 +19,13 @@ const AnnouncementListPage = (props) => {
     const currentItems = announcements.slice(indexOfFirstItem, indexOfLastItem);
     // 글 번호 고유Id값
      // 글 제목 클릭시 상세내용 페이지 이동
-    const viewAnnouncement = (annoId) => {
+    const viewAnnouncement = async (annoId) => {
+        const response = await fetch(`http://localhost:8050/api/announcements/${annoId}`);
+        const data = await response.json();
+
+        await fetch(`http://localhost:8050/api/announcements/${annoId}/increaseViews`, {
+            method: 'PUT',
+        });
         //고유 Id값 갖고 이동
         navigate(`/AnnouncementContent/${annoId}`);
     };
@@ -207,4 +213,5 @@ const PageNumber = styled.div`
     color: white;
   }
 `;
+
 export default AnnouncementListPage;
