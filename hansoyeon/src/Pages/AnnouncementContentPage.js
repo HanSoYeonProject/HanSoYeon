@@ -52,7 +52,7 @@ const AnnouncementContentPage = () => {
                 // 에러 처리 로직 추가
             });
     };
-//수정 메서드
+    //수정 메서드
     const saveEdit = () => {
 
         const modifiedData = {
@@ -123,6 +123,7 @@ const AnnouncementContentPage = () => {
         <Container>
             <NoticeTitleContainer>공지사항</NoticeTitleContainer>
             <MiddleContainer>
+
                 <Title>
                     <h2>글 제목 : {announcement.anno_title}</h2>
                     <h6>조회수 : {announcement.anno_views}</h6>
@@ -153,6 +154,7 @@ const AnnouncementContentPage = () => {
                         <CancelButton onClick={cancelEdit}>취소</CancelButton>
                     </>
                 ) : (
+
                     // 수정 모드가 아닐 때 수정 버튼 표시
                     <EditButton onClick={activateEditMode}>수정</EditButton>
                 )}
