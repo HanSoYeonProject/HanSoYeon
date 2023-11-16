@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 @Table(name = "Announcement")
 public class AnnouncementEntity {
 
-    @Id
+    @Id     //해당 엔티티의 주요 키가 될것을 지정해주는 것
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "anno_id")
     private int annoId;

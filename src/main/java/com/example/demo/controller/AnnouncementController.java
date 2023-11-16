@@ -27,9 +27,11 @@ public class AnnouncementController {
 
     //공지사항 글쓰기
     @PostMapping("/createAnnouncement")
-    public AnnouncementDto createAnnouncement(@RequestBody AnnouncementDto announcementDto) {
+    public ResponseEntity<AnnouncementDto> createAnnouncement(@RequestBody AnnouncementDto announcementDto) {
         logger.info("Received a request to create announcement.");
-        return announcementService.createAnnouncement(announcementDto);
+        AnnouncementDto createdAnnouncement = announcementService.createAnnouncement(announcementDto);
+        return new ResponseEntity<>(createdAnnouncement, HttpStatus.CREATED);
+
     }
 
     //글 목록 불러오기

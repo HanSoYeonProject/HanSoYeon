@@ -81,6 +81,7 @@ public class AnnouncementService {
     //삭제
     @Transactional
     public void deleteAnnouncementById(int annoId) {
+
         announcementRepository.deleteById(annoId);
     }
 

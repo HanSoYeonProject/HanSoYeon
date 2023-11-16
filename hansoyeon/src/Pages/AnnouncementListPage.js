@@ -2,6 +2,8 @@ import React, {useEffect, useState} from 'react';
 import styled from 'styled-components';
 import navigate from "../Components/Navigate";
 import {useNavigate} from "react-router-dom";
+import axios from "axios";
+import data from "bootstrap/js/src/dom/data";
 const AnnouncementListPage = (props) => {
     const navigate = useNavigate();
     const [announcements, setAnnouncements] = useState([]);
@@ -20,25 +22,27 @@ const AnnouncementListPage = (props) => {
     // 글 번호 고유Id값
      // 글 제목 클릭시 상세내용 페이지 이동
     const viewAnnouncement = async (annoId) => {
-        const response = await fetch(`http://localhost:8050/api/announcements/${annoId}`);
-        const data = await response.json();
+        try {
+            const response = await axios.get(`http://localhost:8050/api/announcements/${annoId}`);
+            const data = response.data;
 
-        await fetch(`http://localhost:8050/api/announcements/${annoId}/increaseViews`, {
-            method: 'PUT',
-        });
-        //고유 Id값 갖고 이동
-        navigate(`/AnnouncementContent/${annoId}`);
+            await axios.put(`http://localhost:8050/api/announcements/${annoId}/increaseViews`);
+
+            navigate(`/AnnouncementContent/${annoId}`);
+        } catch (error) {
+            console.error('Error fetching or updating announcement:', error);
+        }
     };
 
 
     //글 목록 띄우기
     useEffect(() => {
         // API 호출을 통해 공지사항 목록 가져오기
-        fetch('http://localhost:8050/api/announcements')
-            .then(response => response.json())
-            .then(data => {
+        axios.get('http://localhost:8050/api/announcements')
+            .then(response => {
+
                 // 받아온 목록을 오름차순으로 정렬
-                const reversedAnnouncements = [...data].reverse();
+                const reversedAnnouncements = [...response.data].reverse();
                 setAnnouncements(reversedAnnouncements);
             })
             .catch(error => console.error('Error fetching announcements:', error));

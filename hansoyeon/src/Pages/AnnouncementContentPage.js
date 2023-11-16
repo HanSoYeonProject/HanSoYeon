@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import {useNavigate, useParams} from 'react-router-dom';
 import styled from 'styled-components';
 import {responsivePropType} from "react-bootstrap/createUtilityClasses";
+import axios from "axios";
 
 const AnnouncementContentPage = () => {
     const { anno_id } = useParams();
@@ -27,6 +28,7 @@ const AnnouncementContentPage = () => {
     const handleContentChange = (e) => {
         setModifiedContent(e.target.value);
     };
+
     //삭제 물어보는메서드
     const confirmDelete = () => {
         const isConfirmed = window.confirm('삭제하시겠습니까?');
@@ -36,47 +38,37 @@ const AnnouncementContentPage = () => {
     };
 
     //삭제 메서드
-    const deleteAnnouncement = () => {
-        fetch(`http://localhost:8050/api/announcements/${anno_id}` , {
-            method: 'DELETE',
-        })
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error('Failed to delete announcement');
-                }
+    const deleteAnnouncement = async () => {
+        try {
+            const response = await axios.delete(`http://localhost:8050/api/announcements/${anno_id}`);
+            if (response.status === 200) {
                 alert("삭제 되었습니다.");
                 navigate("/announcementlist");
-            })
-            .catch((error) => {
-                console.error('Error deleting announcement:', error);
-                // 에러 처리 로직 추가
-            });
+            } else {
+                throw new Error('Failed to delete announcement');
+            }
+        } catch(error) {
+            console.error('error', error);
+        }
     };
+
     //수정 메서드
-    const saveEdit = () => {
-
+    const saveEdit = async () => {
         const modifiedData = {
-            anno_content: modifiedContent,  // 실제 수정할 내용으로 대체
+            anno_content: modifiedContent,
         };
-        fetch(`http://localhost:8050/api/announcements/${anno_id}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(modifiedData),
-        })
+        try {
+            const response = await axios.put(`http://localhost:8050/api/announcements/${anno_id}`,modifiedData)
 
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error('Failed to modify announcement');
-                }
+            if (response.status ===200) {
                 alert("수정 되었습니다.");
                 setUpdateFlag((prevFlag) => !prevFlag);
-            })
-            .catch((error) => {
-                console.error('Error modifying announcement:', error);
-                // 에러 처리 로직 추가
-            });
+            } else {
+                throw new Error('Failed to modify announcement');
+            }
+        } catch (error) {
+            console.error('Error modifying announcement: ', error);
+        }
     };
 
     useEffect(() => {
@@ -91,23 +83,19 @@ const AnnouncementContentPage = () => {
         setUpdateFlag((prevFlag) => !prevFlag);
     };
 
-    const fetchAnnouncement = () => {
-        fetch(`http://localhost:8050/api/announcements/${anno_id}`)
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error(`Failed to fetch announcement content: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then((data) => {
-                setAnnouncement(data);
-                setModifiedContent(data.anno_content); // 수정된 내용도 초기화
-                console.log('Announcement Content: ', data);
-            })
-            .catch((error) => {
-                console.error('Error fetching announcement content:', error);
-                // 에러 처리 로직 추가
-            });
+    const fetchAnnouncement = async () => {
+        try {
+        const response = await axios.get(`http://localhost:8050/api/announcements/${anno_id}`)
+            if (response.status !== 200 ) {
+                throw new Error('Failed to fetch announcement content');
+            }
+            const data = response.data;
+            setAnnouncement(data);
+            setModifiedContent(data.anno_content);
+            console.log('Announcement Content: ', data);
+        } catch (error) {
+            console.error('Error fetching announcement content: ', error);
+        }
     };
 
     useEffect(() => {

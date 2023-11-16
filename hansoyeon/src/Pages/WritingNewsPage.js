@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import navigate from "../Components/Navigate";
 import { useNavigate } from "react-router-dom";
+import axios from 'axios';
 
 const WritingNewsPage = () => {
     const navigate = useNavigate();
@@ -28,27 +29,25 @@ const WritingNewsPage = () => {
         };
 
         try {
-            const response = await fetch('http://localhost:8050/api/createAnnouncement', {
-                method: 'POST',
+            const response = await axios.post('http://localhost:8050/api/createAnnouncement', newsPost, {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(newsPost),
             });
 
-            if (!response.ok) {
-                throw new Error(`HTTP 오류! 상태 코드: ${response.status}`);
+            //글 작성이라 201
+            if (response.status === 201) {
+                console.log(response.data);
+                // 글 작성 성공 시, 페이지를 이동
+                navigate("/announcementlist");
+            } else {
+                console.error(`HTTP 오류! 상태 코드: ${response.status}`);
             }
-
-            const responseData = await response.json();
-            console.log(responseData);
-
-            // 글 작성 성공 시, 페이지를 이동
-            navigate("/announcementlist"); // 실제 목적지 경로로 변경
         } catch (error) {
             console.error('API 요청 중 오류 발생:', error);
         }
-    }
+    };
+
 
     return (
         <Container>
