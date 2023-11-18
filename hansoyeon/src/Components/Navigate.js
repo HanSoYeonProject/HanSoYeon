@@ -18,24 +18,24 @@ const Navigate = () => {
     const userType = cookies.userType;
 
     useEffect(() => {
-        console.log(cookies.token)
         if (cookies.token) {
             axios.get('http://localhost:8050/api/auth/currentUser', {
                 headers: {
                     Authorization: `Bearer ${cookies.token}`
                 }
             }).then(response => {
-                setUser(response.data);
-                console.log(user)
+                console.log(cookies.token)
+                // 토큰이 유효한 경우
+                const fetchedUser = response.data;
+                console.log(fetchedUser)
+                setUser(fetchedUser);
             }).catch(error => {
-                console.error("Error fetching user data:", error);
+                // 토큰이 유효하지 않은 경우
+                console.error("Token verification failed:", error);
                 handleLogout();
             });
         }
     }, []);
-    useEffect(() => {
-        console.log("Updated user:", user);
-    }, [user]);
 
 
     const handleLogout = () => {

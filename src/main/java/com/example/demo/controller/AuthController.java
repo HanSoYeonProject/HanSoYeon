@@ -117,4 +117,25 @@ public class AuthController {
         return ResponseEntity.ok(user);
     }
 
+    @GetMapping("/verifyToken")
+    public ResponseEntity<?> verifyToken(@RequestHeader("Authorization") String tokenHeader) {
+        // Bearer 토큰에서 실제 토큰을 추출
+        String token = tokenHeader.split(" ")[1];
+
+        try {
+            // 토큰 검증 로직
+            if (tokenProvider.validate(token) != null) {
+                String email = tokenProvider.getEmailFromToken(token);
+                UsersEntity user = usersService.getUserByEmail(email);
+                // 추가적인 사용자 정보 조회 등의 로직
+                return ResponseEntity.ok().body(user);
+            } else {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid Token");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error verifying token");
+        }
+    }
+
+
 }
