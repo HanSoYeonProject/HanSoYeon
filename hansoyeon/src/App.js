@@ -9,6 +9,7 @@ import RegisterPage from "./Pages/SignupPage"
 import MemberSignUpPage from "./AuthPage/MemberSignupPage";
 import GoogleCallbackPage from "./AuthPage/GoogleLoginPage"
 import CompanySignUpPage from "./AuthPage/CompanySignupPage";
+import MyInfoPage from "./Pages/MyInfoPage";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
             <Route path = "/memberRegister" element={<MemberSignUpPage />}></Route>
             <Route path = "/googleCallback" element={<GoogleCallbackPage />}></Route>
             <Route path = "/companyRegister" element={<CompanySignUpPage />}></Route>
+            <Route path = "/MyInfo" element={<MyInfoPage />}></Route>
         </Routes>
       </BrowserRouter>
     </div>

@@ -111,9 +111,9 @@ public class AuthController {
         String jwtToken = token.split(" ")[1];
 
         // TokenProvider를 사용하여 토큰에서 이메일을 추출합니다.
-        String userEmail = tokenProvider.getEmailFromToken(jwtToken);
+        String userId = tokenProvider.getIdFromToken(jwtToken);
 
-        UsersEntity user = usersService.getUserByEmail(userEmail);
+        UsersEntity user = usersService.getUserById(userId);
         return ResponseEntity.ok(user);
     }
 
@@ -125,9 +125,9 @@ public class AuthController {
         try {
             // 토큰 검증 로직
             if (tokenProvider.validate(token) != null) {
-                String email = tokenProvider.getEmailFromToken(token);
-                UsersEntity user = usersService.getUserByEmail(email);
-                // 추가적인 사용자 정보 조회 등의 로직
+                String id = tokenProvider.getIdFromToken(token);
+                UsersEntity user = usersService.getUserById(id);
+
                 return ResponseEntity.ok().body(user);
             } else {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid Token");

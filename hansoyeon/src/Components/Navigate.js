@@ -44,7 +44,7 @@ const Navigate = () => {
         navigate("/");
     };
 
-    const MainButton = () => {      //로고 클릭시 메인페이지 이동
+    const MainButton = () => {
         navigate("/");
     }
 
@@ -54,6 +54,10 @@ const Navigate = () => {
 
     const handleSignUp = () => {
         navigate("/register")
+    };
+
+    const handleMyInfo = () => {
+        navigate("/MyInfo")
     };
 
     const getProfilePicSrc = () => {
@@ -79,7 +83,7 @@ const Navigate = () => {
                                     {userType === 'company' ?
                                         <Badge bg="primary" style={{ marginRight: '20px', fontSize: "16px" }}>기업 회원</Badge>
                                         :
-                                        <Badge bg="primary" style={{ marginRight: '20px', fontSize: "16px" }}>일반 회원</Badge>
+                                        <Badge bg="success" style={{ marginRight: '20px', fontSize: "16px" }}>일반 회원</Badge>
                                     }
                                     <span style={{ marginRight: '20px', fontSize: '19px' }}>{user.userName + "님" || 'No Name'}</span>
                                     <StyledDropdown>
@@ -88,8 +92,8 @@ const Navigate = () => {
                                         </Dropdown.Toggle>
 
                                         <Dropdown.Menu>
-                                            <Dropdown.Item href="#action/3.1">Action</Dropdown.Item>
-                                            <Dropdown.Item href="#action/3.2">Another action</Dropdown.Item>
+                                            <Dropdown.Item onClick={handleMyInfo}>내 정보</Dropdown.Item>
+                                            <Dropdown.Item href="#action/3.2">스케줄러</Dropdown.Item>
                                             <Dropdown.Item onClick={handleLogout}>로그아웃</Dropdown.Item>
                                         </Dropdown.Menu>
                                     </StyledDropdown>
