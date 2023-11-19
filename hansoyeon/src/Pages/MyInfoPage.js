@@ -39,7 +39,7 @@ const MyInfoPage = (props) => {
     };
 
     const handleEditProfile = () => {
-        // 프로필 수정 로직
+        navigate("/infoChange");
     };
 
     return (

@@ -10,6 +10,7 @@ import MemberSignUpPage from "./AuthPage/MemberSignupPage";
 import GoogleCallbackPage from "./AuthPage/GoogleLoginPage"
 import CompanySignUpPage from "./AuthPage/CompanySignupPage";
 import MyInfoPage from "./Pages/MyInfoPage";
+import InfoChange from "./Pages/InfoChangePage";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
             <Route path = "/googleCallback" element={<GoogleCallbackPage />}></Route>
             <Route path = "/companyRegister" element={<CompanySignUpPage />}></Route>
             <Route path = "/MyInfo" element={<MyInfoPage />}></Route>
+            <Route path = "/infoChange" element={<InfoChange />}></Route>
         </Routes>
       </BrowserRouter>
     </div>
