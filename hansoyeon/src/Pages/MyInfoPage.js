@@ -6,7 +6,7 @@ import {useCookies} from "react-cookie";
 import {useUserStore} from "../stores";
 import axios from "axios";
 import {Badge} from "react-bootstrap";
-import logo from "../imgs/logo2.png";
+import logo from "../imgs/seungjun.jpg";
 import iu from "../imgs/iu2.jpeg"
 
 const MyInfoPage = (props) => {
@@ -68,7 +68,7 @@ const MyInfoPage = (props) => {
                 </InfoSection>
             </InfoBox>
                 <ImageBox>
-                    <LargeImage src={iu} alt="logo" />
+                    <LargeImage src={logo} alt="logo" />
                 </ImageBox>
             </BoxContainer>
         </StyledContainer>
@@ -104,7 +104,7 @@ const InfoBox = styled.div`
 const ImageBox = styled.div`
   width: 90%;
   max-width: 500px;
-  height: 100%;
+  height: 90%;
   background: white;
   padding: 20px;
   border-radius: 10px;
@@ -115,7 +115,7 @@ const ImageBox = styled.div`
 
 const LargeImage = styled.img`
   max-width: 100%;
-  max-height: 100%;
+  max-height: 90%;
   border-radius: 10px;
   object-fit: cover; 
 `;
@@ -177,6 +177,7 @@ const NameSection = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-top: 10px;
   margin-bottom: 5px;
 `;
 
@@ -204,7 +205,7 @@ const Divider = styled.div`
 
 const SelfIntroductionTextarea = styled.textarea`
   width: 100%;
-  height: 100px; 
+  height: 140px; 
   padding: 10px;
   border-radius: 10px;
   border: 1px solid #ccc;
@@ -213,6 +214,7 @@ const SelfIntroductionTextarea = styled.textarea`
   color: #333;
   background-color: #f7f7f7; 
   margin-bottom: 10px;
+  margin-top: 10px;
 
   &:focus {
     outline: none; 

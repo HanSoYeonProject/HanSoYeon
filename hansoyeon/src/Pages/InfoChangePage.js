@@ -6,7 +6,7 @@ import {useCookies} from "react-cookie";
 import {useUserStore} from "../stores";
 import axios from "axios";
 import {Badge} from "react-bootstrap";
-import logo from "../imgs/logo2.png";
+import logo from "../imgs/gwanghui.jpg";
 import iu from "../imgs/iu3.png"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {faArrowLeft, faCamera} from '@fortawesome/free-solid-svg-icons';
@@ -73,7 +73,7 @@ const InfoChangePage = (props) => {
         <StyledContainer>
             <BoxContainer>
                 <ImageBox>
-                    <LargeImage src={iu} alt="logo" />
+                    <LargeImage src={logo} alt="logo" />
                 </ImageBox>
                 <InfoBox>
                     <BackButton onClick={handleBack}>
@@ -148,7 +148,7 @@ const BackButton = styled.button`
 const ImageBox = styled.div`
   width: 100%;
   max-width: 600px;
-  height: 100%;
+  height: 90%;
   background: white;
   padding: 20px;
   border-radius: 10px;
@@ -159,13 +159,14 @@ const ImageBox = styled.div`
 
 const LargeImage = styled.img`
   max-width: 100%;
-  max-height: 100%;
+  max-height: 90%;
   border-radius: 10px;
   object-fit: cover; 
 `;
 
 const Name = styled.h2`
   margin: 0;
+  margin-top: 20px;
   color: #381E1F;
 `;
 
@@ -182,7 +183,7 @@ const Divider = styled.div`
   align-items: center;
   text-align: center;
   font-size: 13px;
-  margin-top: 30px;
+  margin-top: 60px;
   margin-bottom: 20px;
 
   &::before,
@@ -201,7 +202,7 @@ const Divider = styled.div`
 
 const SelfIntroductionTextarea = styled.textarea`
   width: 100%;
-  height: 100px; 
+  height: 140px; 
   padding: 10px;
   border-radius: 10px;
   border: 1px solid #ccc;
@@ -209,6 +210,7 @@ const SelfIntroductionTextarea = styled.textarea`
   font-size: 15px;
   color: #333;
   background-color: #f7f7f7; 
+  margin-top: 10px;
   margin-bottom: 10px;
 
   &:focus {
@@ -222,8 +224,8 @@ const ProfileEditSection = styled.div`
 `;
 
 const ProfileImagePreview = styled.img`
-  width: 100px;
-  height: 100px;
+  width: 120px;
+  height: 120px;
   border-radius: 50%;
   margin-bottom: 10px;
 `;
@@ -236,7 +238,7 @@ const SaveChangesButton = styled.button`
   border: none;
   cursor: pointer;
   font-size: 15px;
-  margin-top: 5px;
+  margin-top: 10px;
   &:hover {
     background-color: #e6d700;
   }
