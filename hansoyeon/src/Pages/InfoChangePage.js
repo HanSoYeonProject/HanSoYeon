@@ -16,11 +16,23 @@ const InfoChangePage = (props) => {
     const [cookies, setCookie, removeCookie] = useCookies(['token']);
     const { user, setUser } = useUserStore();
     const userType = cookies.userType;
+    const [step, setStep] = useState(1);
 
     const [profileImage, setProfileImage] = useState(null);
     const [previewImage, setPreviewImage] = useState(null);
 
     const fileInputRef = useRef(null);
+
+    const [addressFields, setAddressFields] = useState({
+        postalCode: '',
+        address: '',
+        detailAddress: ''
+    });
+
+    const [address, setAddress] = useState(user.userAddress || '');
+    const [preferredArea, setPreferredArea] = useState(user.userPrefer || '');
+    const [gender, setGender] = useState(user.userGender || '');
+    const [phoneNumber, setPhoneNumber] = useState(user.userPhone || '');
 
     useEffect(() => {
         if (cookies.token) {
@@ -37,7 +49,30 @@ const InfoChangePage = (props) => {
                 handleLogout();
             });
         }
+
+        const script = document.createElement('script');
+        script.src = "//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js";
+        script.async = true;
+        document.body.appendChild(script);
+
+        return () => {
+            document.body.removeChild(script);
+        };
     }, []);
+
+    const searchAddress = () => {
+        new window.daum.Postcode({
+            oncomplete: function(data) {
+                const addr = data.userSelectedType === 'R' ? data.roadAddress : data.jibunAddress;
+                const fullAddress = {
+                    postalCode: data.zonecode,
+                    address: addr,
+                    detailAddress: ''
+                };
+                setAddressFields(fullAddress);
+            }
+        }).open();
+    };
 
     const handleLogout = () => {
         removeCookie('token');
@@ -65,9 +100,34 @@ const InfoChangePage = (props) => {
         // 프로필 사진 업로드 로직
     };
 
+    const goToNextStep = () => {
+        setStep(2);
+    };
+
+    const goToPreviousStep = () => {
+        setStep(1);
+    };
+
     const handleBack = () => {
         navigate("/MyInfo");
     };
+
+    const handleAddressChange = (e) => {
+        setAddress(e.target.value);
+    };
+
+    const handlePreferredAreaChange = (e) => {
+        setPreferredArea(e.target.value);
+    };
+
+    const handleGenderChange = (e) => {
+        setGender(e.target.value);
+    };
+
+    const handlePhoneNumberChange = (e) => {
+        setPhoneNumber(e.target.value);
+    };
+
 
     return (
         <StyledContainer>
@@ -75,34 +135,81 @@ const InfoChangePage = (props) => {
                 <ImageBox>
                     <LargeImage src={logo} alt="logo" />
                 </ImageBox>
-                <InfoBox>
-                    <BackButton onClick={handleBack}>
-                        <FontAwesomeIcon icon={faArrowLeft} />
-                    </BackButton>
-                    <ProfileEditSection>
-                        <ImageEditContainer>
-                            <ProfileImagePreview src={previewImage || defaultProfilePic} alt="미리보기" />
-                            <CameraIconLabel onClick={triggerFileInput}>
-                                <FontAwesomeIcon icon={faCamera} />
-                            </CameraIconLabel>
-                            <HiddenFileInput
-                                type="file"
-                                ref={fileInputRef}
-                                onChange={handleImageChange}
+                {step === 1 && (
+                    <InfoBox>
+                        <BackButton onClick={handleBack}>
+                            <FontAwesomeIcon icon={faArrowLeft} />
+                        </BackButton>
+                        <EditInfoTitle>정보 수정</EditInfoTitle>
+                        <ProfileEditSection>
+                            <ImageEditContainer>
+                                <ProfileImagePreview src={previewImage || defaultProfilePic} alt="Profile Preview" />
+                                <CameraIconLabel onClick={triggerFileInput}>
+                                    <FontAwesomeIcon icon={faCamera} />
+                                </CameraIconLabel>
+                                <HiddenFileInput
+                                    type="file"
+                                    ref={fileInputRef}
+                                    onChange={handleImageChange}
+                                />
+                            </ImageEditContainer>
+                            <Name>{user.userName + "님" || 'No Name'}</Name>
+                            <Email>{user.userEmail || 'No Email'}</Email>
+                            <Divider>자기소개</Divider>
+                            <SelfIntroductionTextarea
+                                value={user.userInfo || ''}
+                                onChange={(e) => {/* handle self-introduction change */}}
+                                placeholder="자기소개"
                             />
-                        </ImageEditContainer>
-                        <Name>{user.userName + "님" || 'No Name'}</Name>
-                        <Email>{user.userEmail || 'No Email'}</Email>
-                    </ProfileEditSection>
-                    <InfoSection>
-                        <Divider>자기소개</Divider>
-                        <SelfIntroductionTextarea
-                            readOnly
-                            value={user.userInfo || '자기소개가 없습니다.'}
-                        />
-                    </InfoSection>
-                    <SaveChangesButton onClick={handleSaveChanges}>변경 사항 저장</SaveChangesButton>
-                </InfoBox>
+                        </ProfileEditSection>
+                        <SaveChangesButton onClick={goToNextStep}>다음</SaveChangesButton>
+                    </InfoBox>
+                )}
+                {step === 2 && (
+                    <InfoBox>
+                        <BackButton onClick={goToPreviousStep}>
+                            <FontAwesomeIcon icon={faArrowLeft} />
+                        </BackButton>
+                        <InfoSection>
+                            <Divider2>주소</Divider2>
+                            <AddressContainer>
+                                <AddressInput
+                                    type="text"
+                                    value={user.userAddress || ''}
+                                    onChange={handleAddressChange}
+                                    placeholder="주소"
+                                />
+                                <SearchButton onClick={searchAddress}>
+                                    검색
+                                </SearchButton>
+                            </AddressContainer>
+                            <Divider2>선호 지역</Divider2>
+                            <PreferredAreaInput
+                                type="text"
+                                value={user.userPrefer || ''}
+                                onChange={handlePreferredAreaChange}
+                                placeholder="선호 지역"
+                            />
+                            <Divider2>성별</Divider2>
+                            <GenderSelect
+                                value={user.userGender || ''}
+                                onChange={handleGenderChange}
+                            >
+                                <option value="">성별 선택</option>
+                                <option value="male">남성</option>
+                                <option value="female">여성</option>
+                            </GenderSelect>
+                            <Divider2>전화번호</Divider2>
+                            <PhoneNumberInput
+                                type="text"
+                                value={user.userPhone || ''}
+                                onChange={handlePhoneNumberChange}
+                                placeholder="전화번호"
+                            />
+                        </InfoSection>
+                        <SaveChangesButton onClick={handleSaveChanges}>저장</SaveChangesButton>
+                    </InfoBox>
+                )}
             </BoxContainer>
         </StyledContainer>
     );
@@ -133,6 +240,16 @@ const InfoBox = styled.div`
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
   position: relative;
 `;
+
+const EditInfoTitle = styled.h2`
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: 20px; 
+  color: #381E1F; 
+  font-size: 25px;
+  font-weight: bold;
+`;
+
 
 const BackButton = styled.button`
   position: absolute;
@@ -175,7 +292,10 @@ const Email = styled.p`
 `;
 
 const InfoSection = styled.div`
-  // 스타일링 추가
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 `;
 
 const Divider = styled.div`
@@ -183,8 +303,8 @@ const Divider = styled.div`
   align-items: center;
   text-align: center;
   font-size: 13px;
-  margin-top: 60px;
-  margin-bottom: 20px;
+  margin-top: 10px;
+  margin-bottom: 10px;
 
   &::before,
   &::after {
@@ -200,9 +320,27 @@ const Divider = styled.div`
 
 `;
 
+const Divider2 = styled.div`
+  display: flex;
+  align-items: center;
+  text-align: center;
+  font-size: 13px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    margin-left: 10px;
+    border-bottom: 1px solid #ccc;
+  }
+
+`;
+
 const SelfIntroductionTextarea = styled.textarea`
   width: 100%;
-  height: 140px; 
+  height: 120px; 
   padding: 10px;
   border-radius: 10px;
   border: 1px solid #ccc;
@@ -266,5 +404,66 @@ const HiddenFileInput = styled.input`
   display: none;
 `;
 
+const AddressContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 15px;
+  width: 80%; 
+`;
+
+const SearchButton = styled.button`
+  margin-left: 10px; 
+  padding: 8px 12px; 
+  border: 1px solid #ccc; 
+  background-color: white;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #f7f7f7; 
+  }
+`;
+
+const AddressInput = styled.input`
+  display: block;
+  width: 60%;
+  &:focus {
+    outline: none;
+    border-color: #F7E600;
+  }
+`;
+
+const PreferredAreaInput = styled.input`
+  display: block;
+  width: 60%;
+  margin-bottom: 15px;
+  text-align: center;
+  &:focus {
+    outline: none;
+    border-color: #F7E600;
+  }
+`;
+
+const GenderSelect = styled.select`
+  display: block;
+  width: 60%;
+  margin-bottom: 15px;
+  text-align: center;
+  &:focus {
+    outline: none;
+    border-color: #F7E600;
+  }
+`;
+
+const PhoneNumberInput = styled.input`
+  display: block;
+  width: 60%;
+  margin-bottom: 15px;
+  text-align: center;
+  &:focus {
+    outline: none;
+    border-color: #F7E600;
+  }
+`;
 
 export default InfoChangePage;
