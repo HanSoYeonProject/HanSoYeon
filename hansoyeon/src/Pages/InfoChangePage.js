@@ -9,7 +9,7 @@ import {Badge} from "react-bootstrap";
 import logo from "../imgs/logo2.png";
 import iu from "../imgs/iu3.png"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCamera } from '@fortawesome/free-solid-svg-icons';
+import {faArrowLeft, faCamera} from '@fortawesome/free-solid-svg-icons';
 
 const InfoChangePage = (props) => {
     const navigate = useNavigate();
@@ -65,6 +65,10 @@ const InfoChangePage = (props) => {
         // 프로필 사진 업로드 로직
     };
 
+    const handleBack = () => {
+        navigate("/MyInfo");
+    };
+
     return (
         <StyledContainer>
             <BoxContainer>
@@ -72,6 +76,9 @@ const InfoChangePage = (props) => {
                     <LargeImage src={iu} alt="logo" />
                 </ImageBox>
                 <InfoBox>
+                    <BackButton onClick={handleBack}>
+                        <FontAwesomeIcon icon={faArrowLeft} />
+                    </BackButton>
                     <ProfileEditSection>
                         <ImageEditContainer>
                             <ProfileImagePreview src={previewImage || defaultProfilePic} alt="미리보기" />
@@ -124,6 +131,18 @@ const InfoBox = styled.div`
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+  position: relative;
+`;
+
+const BackButton = styled.button`
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1.5em;
+  color: #000;
 `;
 
 const ImageBox = styled.div`
