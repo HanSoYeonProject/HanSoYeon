@@ -8,6 +8,7 @@ import axios from "axios";
 import {Badge} from "react-bootstrap";
 import logo from "../imgs/gwanghui.jpg";
 import iu from "../imgs/iu3.png"
+import logoSmall from "../imgs/logo2.png"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {faArrowLeft, faCamera} from '@fortawesome/free-solid-svg-icons';
 
@@ -29,10 +30,11 @@ const InfoChangePage = (props) => {
         detailAddress: ''
     });
 
-    const [address, setAddress] = useState(user.userAddress || '');
-    const [preferredArea, setPreferredArea] = useState(user.userPrefer || '');
-    const [gender, setGender] = useState(user.userGender || '');
-    const [phoneNumber, setPhoneNumber] = useState(user.userPhone || '');
+    const [userInfo, setUserInfo] = useState(user.userInfo || '');
+    const [userAddress, setUserAddress] = useState(user.userAddress || '');
+    const [userPrefer, setUserPrefer] = useState(user.userPrefer || '');
+    const [userGender, setUserGender] = useState(user.userGender || '');
+    const [userPhone, setUserPhone] = useState(user.userPhone || '');
 
     useEffect(() => {
         if (cookies.token) {
@@ -64,15 +66,16 @@ const InfoChangePage = (props) => {
         new window.daum.Postcode({
             oncomplete: function(data) {
                 const addr = data.userSelectedType === 'R' ? data.roadAddress : data.jibunAddress;
-                const fullAddress = {
+                setAddressFields({
                     postalCode: data.zonecode,
                     address: addr,
                     detailAddress: ''
-                };
-                setAddressFields(fullAddress);
+                });
+                setUserAddress(addr);
             }
         }).open();
     };
+
 
     const handleLogout = () => {
         removeCookie('token');
@@ -112,20 +115,24 @@ const InfoChangePage = (props) => {
         navigate("/MyInfo");
     };
 
+    const handleUserInfoChange = (e) => {
+        setUserInfo(e.target.value);
+    };
+
     const handleAddressChange = (e) => {
-        setAddress(e.target.value);
+        setUserAddress(e.target.value);
     };
 
     const handlePreferredAreaChange = (e) => {
-        setPreferredArea(e.target.value);
+        setUserPrefer(e.target.value);
     };
 
     const handleGenderChange = (e) => {
-        setGender(e.target.value);
+        setUserGender(e.target.value);
     };
 
     const handlePhoneNumberChange = (e) => {
-        setPhoneNumber(e.target.value);
+        setUserPhone(e.target.value);
     };
 
 
@@ -157,8 +164,8 @@ const InfoChangePage = (props) => {
                             <Email>{user.userEmail || 'No Email'}</Email>
                             <Divider>자기소개</Divider>
                             <SelfIntroductionTextarea
-                                value={user.userInfo || ''}
-                                onChange={(e) => {/* handle self-introduction change */}}
+                                value={userInfo}
+                                onChange={handleUserInfoChange}
                                 placeholder="자기소개"
                             />
                         </ProfileEditSection>
@@ -170,12 +177,13 @@ const InfoChangePage = (props) => {
                         <BackButton onClick={goToPreviousStep}>
                             <FontAwesomeIcon icon={faArrowLeft} />
                         </BackButton>
+                        <LogoImg src={logoSmall} alt="Logo" />
                         <InfoSection>
                             <Divider2>주소</Divider2>
                             <AddressContainer>
                                 <AddressInput
                                     type="text"
-                                    value={user.userAddress || ''}
+                                    value={userAddress}
                                     onChange={handleAddressChange}
                                     placeholder="주소"
                                 />
@@ -186,13 +194,13 @@ const InfoChangePage = (props) => {
                             <Divider2>선호 지역</Divider2>
                             <PreferredAreaInput
                                 type="text"
-                                value={user.userPrefer || ''}
+                                value={userPrefer}
                                 onChange={handlePreferredAreaChange}
                                 placeholder="선호 지역"
                             />
                             <Divider2>성별</Divider2>
                             <GenderSelect
-                                value={user.userGender || ''}
+                                value={userGender}
                                 onChange={handleGenderChange}
                             >
                                 <option value="">성별 선택</option>
@@ -202,7 +210,7 @@ const InfoChangePage = (props) => {
                             <Divider2>전화번호</Divider2>
                             <PhoneNumberInput
                                 type="text"
-                                value={user.userPhone || ''}
+                                value={userPhone}
                                 onChange={handlePhoneNumberChange}
                                 placeholder="전화번호"
                             />
@@ -260,6 +268,12 @@ const BackButton = styled.button`
   cursor: pointer;
   font-size: 1.5em;
   color: #000;
+`;
+
+const LogoImg = styled.img`
+  height: 20vh;
+  width: auto;
+  margin-bottom: 5px;
 `;
 
 const ImageBox = styled.div`
@@ -325,7 +339,6 @@ const Divider2 = styled.div`
   align-items: center;
   text-align: center;
   font-size: 13px;
-  margin-top: 10px;
   margin-bottom: 10px;
 
   &::before,
@@ -408,7 +421,7 @@ const AddressContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
   width: 80%; 
 `;
 
@@ -436,7 +449,7 @@ const AddressInput = styled.input`
 const PreferredAreaInput = styled.input`
   display: block;
   width: 60%;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
   text-align: center;
   &:focus {
     outline: none;
@@ -447,7 +460,7 @@ const PreferredAreaInput = styled.input`
 const GenderSelect = styled.select`
   display: block;
   width: 60%;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
   text-align: center;
   &:focus {
     outline: none;
@@ -458,7 +471,7 @@ const GenderSelect = styled.select`
 const PhoneNumberInput = styled.input`
   display: block;
   width: 60%;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
   text-align: center;
   &:focus {
     outline: none;
