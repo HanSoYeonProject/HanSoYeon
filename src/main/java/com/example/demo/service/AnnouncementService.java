@@ -77,6 +77,7 @@ public class AnnouncementService {
         AnnouncementEntity announcement = announcementRepository.findById(annoId)
                 .orElseThrow(() -> new IllegalArgumentException("Announcement not found with ID: " + annoId));
         announcement.setAnnoViews(announcement.getAnnoViews() + 1);
+        announcementRepository.save(announcement); // 변경된 엔터티 저장
     }
     //삭제
     @Transactional

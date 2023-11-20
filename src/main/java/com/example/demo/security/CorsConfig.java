@@ -13,10 +13,11 @@ public class CorsConfig {
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
-        config.addAllowedOrigin("*"); // 모든 요청 허용, 필요에 따라 특정 도메인만 허용 가능
+        config.addAllowedOrigin("*");
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
         source.registerCorsConfiguration("/**", config);
+        source.registerCorsConfiguration("/api/**", config); // 예시: /api 경로에 대해서도 설정 추가
         return new CorsFilter(source);
     }
 }

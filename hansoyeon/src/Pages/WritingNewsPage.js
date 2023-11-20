@@ -29,15 +29,21 @@ const WritingNewsPage = () => {
         };
 
         try {
+
+            console.log("요청전: ", newsPost);
             const response = await axios.post('http://localhost:8050/api/createAnnouncement', newsPost, {
                 headers: {
                     'Content-Type': 'application/json',
                 },
+                withCredentials: true
             });
+
+            console.log("응답:", response.data); // 서버에서 받은 응답 로그
+
 
             //글 작성이라 201
             if (response.status === 201) {
-                console.log(response.data);
+                console.log("글작성성공");
                 // 글 작성 성공 시, 페이지를 이동
                 navigate("/announcementlist");
             } else {
