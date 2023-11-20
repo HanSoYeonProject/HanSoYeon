@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.dto.AnnouncementDto;
 import com.example.demo.entity.AnnouncementEntity;
 import com.example.demo.service.AnnouncementService;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin("*")
+@Slf4j
 public class AnnouncementController {
     private final AnnouncementService announcementService;
     private static final Logger logger = LoggerFactory.getLogger(AnnouncementController.class);
@@ -29,10 +31,18 @@ public class AnnouncementController {
     @PostMapping("/createAnnouncement")
     public ResponseEntity<AnnouncementDto> createAnnouncement(@RequestBody AnnouncementDto announcementDto) {
         logger.info("Received a request to create announcement.");
-        AnnouncementDto createdAnnouncement = announcementService.createAnnouncement(announcementDto);
-        return new ResponseEntity<>(createdAnnouncement, HttpStatus.CREATED);
 
+        try {
+            AnnouncementDto createdAnnouncement = announcementService.createAnnouncement(announcementDto);
+            logger.info("Announcement created successfully.");
+            return new ResponseEntity<>(createdAnnouncement, HttpStatus.CREATED);
+        } catch (Exception e) {
+            logger.error("Error creating announcement", e);
+            e.printStackTrace(); // 이 부분을 추가하여 예외 스택 트레이스를 콘솔에 출력합니다.
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
+
 
     //글 목록 불러오기
     @GetMapping("/announcements")

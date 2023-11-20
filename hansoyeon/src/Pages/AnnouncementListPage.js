@@ -25,7 +25,6 @@ const AnnouncementListPage = (props) => {
         try {
             const response = await axios.get(`http://localhost:8050/api/announcements/${annoId}`);
             const data = response.data;
-
             await axios.put(`http://localhost:8050/api/announcements/${annoId}/increaseViews`);
 
             navigate(`/AnnouncementContent/${annoId}`);

@@ -35,6 +35,10 @@ dependencies {
 	// JWT
 	implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
 	implementation 'org.modelmapper:modelmapper:2.4.4'
+
+	// build.gradle
+	implementation 'ch.qos.logback:logback-classic:1.2.9'
+
 }
 
 tasks.named('test') {
