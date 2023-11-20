@@ -14,6 +14,7 @@ import RecommendPage from "./Pages/RecommendPage";
 import ThemePage from "./Pages/ThemaPage";
 import RegionPage from "./Pages/RegionPage";
 import ReviewPage from "./Pages/ReviewPage";
+import WritingReviewPage from "./Pages/WritingReviewPage";
 import InputSkill from './Components/InputSkill';
 
 

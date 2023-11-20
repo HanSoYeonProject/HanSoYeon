@@ -21,11 +21,12 @@ const Navigate = () => {
     };
 
     const handleSignUp = () => {
-        navigate("/register")
+        navigate("/newcourse");
     };
 
     const NewPageButton = () => {
         navigate("/newcourse");
+        console.log("click11");
     }
     const ReCommendPageButton = () => {
         navigate("/recommendcourse");
@@ -38,6 +39,7 @@ const Navigate = () => {
     }
     const ReviewPageButton = () => {
         navigate("/review");
+
     }
     const AnnouncementListPageButton = () => {
         navigate("/announcementlist");
@@ -55,7 +57,7 @@ const Navigate = () => {
                             <img className="logoImage" alt="Logo" src={logo}/>
                         </UserImg>
                         <PageNav style={{marginRight: `${size}rem`}}>
-                            <NewPageInfo onClick={NewPageButton}>신규 코스</NewPageInfo>
+                            <NewPageInfo onClick={NewPageButton} >신규 코스</NewPageInfo>
                             <RecommendPageInfo onClick={ReCommendPageButton}>추천 코스</RecommendPageInfo>
                             <ThemaPageInfo onClick={ThemaPageButton}>테마별 코스</ThemaPageInfo>
                             <RegionPageInfo onClick={RegionPageButton}>지역별 코스</RegionPageInfo>
