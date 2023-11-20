@@ -213,6 +213,16 @@ public class AuthController {
         return usersService.updateUserInfo(userId, userUpdateDto);
     }
 
+    @PostMapping("/updateCompanyInfo")
+    public ResponseEntity<?> updateCompanyInfo(@RequestBody CompanyUpdateDto companyUpdateDto,
+                                               @RequestHeader("Authorization") String tokenHeader) {
+        String token = tokenHeader.split(" ")[1];
+        String providerId = tokenProvider.getIdFromToken(token);
+
+        return providersService.updateCompanyInfo(providerId, companyUpdateDto);
+    }
+
+
 
 
 }

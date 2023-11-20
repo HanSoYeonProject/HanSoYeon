@@ -169,7 +169,7 @@ const CompanyInfoChangePage = (props) => {
     };
 
     const handleSaveChanges = async () => {
-        const imageUrl = await uploadProfileImage();
+        const imageUrl = await uploadProfileImage(); // 프로필 이미지 업로드 및 URL 가져오기
 
         const updatedInfo = {
             companyName: companyName,
@@ -179,22 +179,24 @@ const CompanyInfoChangePage = (props) => {
         };
 
         try {
-            const response = await axios.post('http://localhost:8050/api/auth/updateUserInfo', updatedInfo, {
+            const response = await axios.post('http://localhost:8050/api/auth/updateCompanyInfo', updatedInfo, {
                 headers: {
-                    Authorization: `Bearer ${cookies.token}`,
-                },
+                    Authorization: `Bearer ${cookies.token}` // 인증 토큰 사용
+                }
             });
 
             if (response.status === 200) {
-                alert('정보가 성공적으로 업데이트되었습니다.');
+                alert('회사 정보가 성공적으로 업데이트되었습니다.');
+                navigate("/"); // 성공시 메인 페이지로 이동
             } else {
-                alert('정보 업데이트에 실패했습니다.');
+                alert('회사 정보 업데이트에 실패했습니다.');
             }
         } catch (error) {
-            console.error('Error updating user information:', error);
+            console.error('Error updating company information:', error);
             alert('업데이트 중 오류가 발생했습니다.');
         }
     };
+
 
     const goToNextStep = () => {
         setStep(2);

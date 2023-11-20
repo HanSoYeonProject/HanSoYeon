@@ -19,6 +19,8 @@ configurations {
 
 repositories {
 	mavenCentral()
+	maven { url 'https://jitpack.io' }
+	maven { url "https://repo.spring.io/release" }
 }
 
 dependencies {
@@ -35,6 +37,13 @@ dependencies {
 	// JWT
 	implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
 	implementation 'org.modelmapper:modelmapper:2.4.4'
+
+	// GCS
+	implementation group: 'org.springframework.cloud', name: 'spring-cloud-gcp-starter', version: '1.2.8.RELEASE'
+	implementation group: 'org.springframework.cloud', name: 'spring-cloud-gcp-storage', version: '1.2.8.RELEASE'
+	implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+	implementation 'org.json:json:20230227'
+
 }
 
 tasks.named('test') {

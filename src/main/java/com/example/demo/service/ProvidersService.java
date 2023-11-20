@@ -6,6 +6,7 @@ import com.example.demo.entity.UsersEntity;
 import com.example.demo.repository.ProvidersRepository;
 import com.example.demo.security.TokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -64,5 +65,23 @@ public class ProvidersService {
         }
         return false;
     }
+
+    public ResponseEntity<?> updateCompanyInfo(String providerId, CompanyUpdateDto companyUpdateDto) {
+        ProvidersEntity providerEntity = providersRepository.findByProviderId(providerId);
+
+        if (providerEntity != null) {
+            // DTO의 값들을 entity에 할당
+            providerEntity.setCompanyName(companyUpdateDto.getCompanyName());
+            providerEntity.setCompanyAddress(companyUpdateDto.getCompanyAddress());
+            providerEntity.setCompanyTel(companyUpdateDto.getCompanyTel());
+            providerEntity.setProviderProfile(companyUpdateDto.getProviderProfile());
+
+            providersRepository.save(providerEntity); // 업데이트된 정보 저장
+            return ResponseEntity.ok().body("회사 정보가 성공적으로 업데이트되었습니다.");
+        }
+
+        return ResponseEntity.badRequest().body("회사 정보를 찾을 수 없습니다.");
+    }
+
 
 }

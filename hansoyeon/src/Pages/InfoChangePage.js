@@ -154,14 +154,13 @@ const InfoChangePage = (props) => {
         if (!profileImage) return null;
 
         const formData = new FormData();
-        formData.append('file', profileImage);
+        formData.append('profileImage', profileImage);
 
         try {
-            const response = await axios.post('http://localhost:8050/api/upload', formData, {
+            const response = await axios.post('http://localhost:8050/api/uploadProfileImage', formData, {
                 headers: {
-                    'Content-Type': 'multipart/form-data',
-                    Authorization: `Bearer ${cookies.token}`,
-                },
+                    'Content-Type': 'multipart/form-data'
+                }
             });
             return response.data.imageUrl;
         } catch (error) {
@@ -169,6 +168,7 @@ const InfoChangePage = (props) => {
             return null;
         }
     };
+
 
     const handleSaveChanges = async () => {
         const imageUrl = await uploadProfileImage();
@@ -185,12 +185,13 @@ const InfoChangePage = (props) => {
         try {
             const response = await axios.post('http://localhost:8050/api/auth/updateUserInfo', updatedInfo, {
                 headers: {
-                    Authorization: `Bearer ${cookies.token}`,
-                },
+                    Authorization: `Bearer ${cookies.token}`
+                }
             });
 
             if (response.status === 200) {
                 alert('정보가 성공적으로 업데이트되었습니다.');
+                navigate("/");
             } else {
                 alert('정보 업데이트에 실패했습니다.');
             }
@@ -199,6 +200,7 @@ const InfoChangePage = (props) => {
             alert('업데이트 중 오류가 발생했습니다.');
         }
     };
+
 
     const goToNextStep = () => {
         setStep(2);
