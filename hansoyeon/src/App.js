@@ -12,6 +12,7 @@ import GoogleCallbackPage from "./AuthPage/GoogleLoginPage"
 import CompanySignUpPage from "./AuthPage/CompanySignupPage";
 import MyInfoPage from "./Pages/MyInfoPage";
 import InfoChange from "./Pages/InfoChangePage";
+import CompanyInfoChange from "./Pages/CompanyInfoChangePage";
 import WritingNewsPage from "./Pages/WritingNewsPage";
 import NewPage from "./Pages/NewPage";
 import RecommendPage from "./Pages/RecommendPage";
@@ -36,6 +37,7 @@ function App() {
           <Route path = "/companyRegister" element={<CompanySignUpPage />}></Route>
           <Route path = "/MyInfo" element={<MyInfoPage />}></Route>
           <Route path = "/infoChange" element={<InfoChange />}></Route>
+          <Route path = "/companyInfoChange" element={<CompanyInfoChange />}></Route>
           <Route path="/newcourse" element={<NewPage/>}></Route>
           <Route path="/writingNewsPage" element={<WritingNewsPage/>}></Route>
           <Route path="/recommendcourse" element={<RecommendPage/>}></Route>

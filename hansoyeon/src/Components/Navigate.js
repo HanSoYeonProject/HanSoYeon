@@ -21,21 +21,40 @@ const Navigate = () => {
 
     useEffect(() => {
         if (cookies.token) {
-            axios.get('http://localhost:8050/api/auth/currentUser', {
-                headers: {
-                    Authorization: `Bearer ${cookies.token}`
-                }
-            }).then(response => {
-                console.log(cookies.token)
-                // 토큰이 유효한 경우
-                const fetchedUser = response.data;
-                console.log(fetchedUser)
-                setUser(fetchedUser);
-            }).catch(error => {
-                // 토큰이 유효하지 않은 경우
-                console.error("Token verification failed:", error);
-                handleLogout();
-            });
+            console.log(userType)
+            if(userType === "company"){
+                axios.get('http://localhost:8050/api/auth/currentCompany', {
+                    headers: {
+                        Authorization: `Bearer ${cookies.token}`
+                    }
+                }).then(response => {
+                    console.log(cookies.token)
+                    // 토큰이 유효한 경우
+                    const fetchedUser = response.data;
+                    console.log(fetchedUser)
+                    setUser(fetchedUser);
+                }).catch(error => {
+                    // 토큰이 유효하지 않은 경우
+                    console.error("Token verification failed:", error);
+                    handleLogout();
+                });
+            }else{
+                axios.get('http://localhost:8050/api/auth/currentUser', {
+                    headers: {
+                        Authorization: `Bearer ${cookies.token}`
+                    }
+                }).then(response => {
+                    console.log(cookies.token)
+                    // 토큰이 유효한 경우
+                    const fetchedUser = response.data;
+                    console.log(fetchedUser)
+                    setUser(fetchedUser);
+                }).catch(error => {
+                    // 토큰이 유효하지 않은 경우
+                    console.error("Token verification failed:", error);
+                    handleLogout();
+                });
+            }
         }
     }, []);
 
@@ -81,10 +100,17 @@ const Navigate = () => {
         navigate("/announcementlist");
     }
         const getProfilePicSrc = () => {
-            if (user.userProfile === "hansoyeon/src/imgs/default_profile.png" || !user.userProfile) {
-                return defaultProfilePic;
+            if(userType === "company"){
+                if (user.providerProfile === "hansoyeon/src/imgs/default_profile.png" || !user.providerProfile) {
+                    return defaultProfilePic;
+                }
+                return user.providerProfile;
+            }else{
+                if (user.userProfile === "hansoyeon/src/imgs/default_profile.png" || !user.userProfile) {
+                    return defaultProfilePic;
+                }
+                return user.userProfile;
             }
-            return user.userProfile;
         };
 
         return (
@@ -121,10 +147,17 @@ const Navigate = () => {
                                         <Badge bg="success" style={{marginRight: '20px', fontSize: "16px"}}>일반
                                             회원</Badge>
                                     }
-                                    <span style={{
-                                        marginRight: '20px',
-                                        fontSize: '19px'
-                                    }}>{user.userName + "님" || 'No Name'}</span>
+                                    {userType === 'company' ?
+                                        <span style={{
+                                            marginRight: '20px',
+                                            fontSize: '19px'
+                                        }}>{user.providerName + "님" || 'No Name'}</span>
+                                        :
+                                        <span style={{
+                                            marginRight: '20px',
+                                            fontSize: '19px'
+                                        }}>{user.userName + "님" || 'No Name'}</span>
+                                    }
                                     <StyledDropdown>
                                         <Dropdown.Toggle as={CustomToggle}>
                                             <ProfileImage src={getProfilePicSrc()} alt="Profile"/>

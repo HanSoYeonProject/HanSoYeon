@@ -52,4 +52,17 @@ public class ProvidersService {
         CompanySignInResponseDto companySignInResponseDto = new CompanySignInResponseDto(token, exprTime, providersEntity, userType);
         return ResponseDto.setSuccess("로그인 성공", companySignInResponseDto);
     }
+
+    public ProvidersEntity getUserById(String providerId) {
+        return providersRepository.findByProviderId(providerId);
+    }
+
+    public boolean verifyProviderPassword(String providerId, String providerPassword) {
+        ProvidersEntity providerEntity = providersRepository.findByProviderId(providerId);
+        if (providerEntity != null) {
+            return passwordEncoder.matches(providerPassword, providerEntity.getProviderPassword());
+        }
+        return false;
+    }
+
 }

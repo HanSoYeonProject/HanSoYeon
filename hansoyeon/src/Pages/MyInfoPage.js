@@ -17,20 +17,55 @@ const MyInfoPage = (props) => {
 
     useEffect(() => {
         if (cookies.token) {
-            axios.get('http://localhost:8050/api/auth/currentUser', {
-                headers: {
-                    Authorization: `Bearer ${cookies.token}`
-                }
-            }).then(response => {
-                const fetchedUser = response.data;
-                setUser(fetchedUser);
-            }).catch(error => {
-                // 토큰이 유효하지 않은 경우
-                console.error("Token verification failed:", error);
-                handleLogout();
-            });
+            if(userType === "company"){
+                axios.get('http://localhost:8050/api/auth/currentCompany', {
+                    headers: {
+                        Authorization: `Bearer ${cookies.token}`
+                    }
+                }).then(response => {
+                    console.log(cookies.token)
+                    // 토큰이 유효한 경우
+                    const fetchedUser = response.data;
+                    console.log(fetchedUser)
+                    setUser(fetchedUser);
+                }).catch(error => {
+                    // 토큰이 유효하지 않은 경우
+                    console.error("Token verification failed:", error);
+                    handleLogout();
+                });
+            }else{
+                axios.get('http://localhost:8050/api/auth/currentUser', {
+                    headers: {
+                        Authorization: `Bearer ${cookies.token}`
+                    }
+                }).then(response => {
+                    console.log(cookies.token)
+                    // 토큰이 유효한 경우
+                    const fetchedUser = response.data;
+                    console.log(fetchedUser)
+                    setUser(fetchedUser);
+                }).catch(error => {
+                    // 토큰이 유효하지 않은 경우
+                    console.error("Token verification failed:", error);
+                    handleLogout();
+                });
+            }
         }
     }, []);
+
+    const getProfilePicSrc = () => {
+        if(userType === "company"){
+            if (user.providerProfile === "hansoyeon/src/imgs/default_profile.png" || !user.providerProfile) {
+                return defaultProfilePic;
+            }
+            return user.providerProfile;
+        }else{
+            if (user.userProfile === "hansoyeon/src/imgs/default_profile.png" || !user.userProfile) {
+                return defaultProfilePic;
+            }
+            return user.userProfile;
+        }
+    };
 
     const handleLogout = () => {
         removeCookie('token');
@@ -39,32 +74,59 @@ const MyInfoPage = (props) => {
     };
 
     const handleEditProfile = () => {
-        navigate("/infoChange");
+        if(userType === "company"){
+            navigate("/companyInfoChange");
+        }else{
+            navigate("/infoChange");
+        }
     };
+
+    const companyInfo = () => {
+        return "회사명 : " + user.companyName + "\n주소 : " + user.companyAddress + "\n전화 : " + user.companyTel;
+    }
 
     return (
         <StyledContainer>
             <BoxContainer>
             <InfoBox>
                 <ProfileSection>
-                    <ProfileImage src={defaultProfilePic} alt="프로필 사진" />
+                    <ProfileImage src={getProfilePicSrc()} alt="프로필 사진" />
                     <NameSection>
-                        <Name>{user.userName + "님" || 'No Name'}</Name>
+                        {userType === 'company' ?
+                            <Name>{user.providerName + "님" || 'No Name'}</Name>
+                            :
+                            <Name>{user.userName + "님" || 'No Name'}</Name>
+                        }
                         {userType === 'company' ?
                             <Badge bg="primary" style={{ fontSize: "16px", marginLeft: "10px" }}>기업 회원</Badge>
                             :
                             <Badge bg="success" style={{ fontSize: "16px", marginLeft: "10px" }}>일반 회원</Badge>
                         }
                     </NameSection>
-                    <Email>{user.userEmail || 'No Email'}</Email>
+                    {userType === 'company' ?
+                        <Email>{user.providerEmail || 'No Email'}</Email>
+                        :
+                        <Email>{user.userEmail || 'No Email'}</Email>
+                    }
                     <EditProfileButton onClick={handleEditProfile}>프로필 수정</EditProfileButton>
                 </ProfileSection>
                 <InfoSection>
-                    <Divider>자기소개</Divider>
-                    <SelfIntroductionTextarea
-                        readOnly
-                        value={user.userInfo || '자기소개가 없습니다.'}
-                    />
+                    {userType === 'company' ?
+                        <Divider>회사소개</Divider>
+                        :
+                        <Divider>자기소개</Divider>
+                    }
+                    {userType === 'company' ?
+                        <SelfIntroductionTextarea
+                            readOnly
+                            value={companyInfo() || '회사소개가 없습니다.'}
+                        />
+                        :
+                        <SelfIntroductionTextarea
+                            readOnly
+                            value={user.userInfo || '자기소개가 없습니다.'}
+                        />
+                    }
                 </InfoSection>
             </InfoBox>
                 <ImageBox>

@@ -46,7 +46,10 @@ const InfoChangePage = (props) => {
                     Authorization: `Bearer ${cookies.token}`
                 }
             }).then(response => {
+                console.log(cookies.token)
+                // 토큰이 유효한 경우
                 const fetchedUser = response.data;
+                console.log(fetchedUser)
                 setUser(fetchedUser);
             }).catch(error => {
                 // 토큰이 유효하지 않은 경우
@@ -160,7 +163,7 @@ const InfoChangePage = (props) => {
                     Authorization: `Bearer ${cookies.token}`,
                 },
             });
-            return response.data.imageUrl; // Assuming response contains the URL of the uploaded image
+            return response.data.imageUrl;
         } catch (error) {
             console.error('Error uploading profile image:', error);
             return null;
@@ -176,7 +179,7 @@ const InfoChangePage = (props) => {
             userPrefer: userPrefer,
             userGender: userGender,
             userPhone: userPhone,
-            userProfileImage: imageUrl
+            userProfile: imageUrl
         };
 
         try {
@@ -236,32 +239,7 @@ const InfoChangePage = (props) => {
                 <ImageBox>
                     <LargeImage src={logo} alt="logo" />
                 </ImageBox>
-                {passwordConfirmed === false && userType === true && (
-                    <InfoBox>
-                        <BackButton onClick={handleBack}>
-                            <FontAwesomeIcon icon={faArrowLeft} />
-                        </BackButton>
-                        <EditInfoTitle>정보 수정</EditInfoTitle>
-                        <ProfileEditSection>
-                            <ImageEditContainer>
-                                <ProfileImagePreview src={getProfilePicSrc || defaultProfilePic} alt="Profile Preview" />
-                            </ImageEditContainer>
-                            <Name>{user.userName + "님" || 'No Name'}</Name>
-                            <Email>{user.userEmail || 'No Email'}</Email>
-                            <Divider3>비밀번호 확인</Divider3>
-                            <InfoSection>
-                                <PasswordInput
-                                    type="password"
-                                    value={userPassword}
-                                    onChange={(e) => setUserPassword(e.target.value)}
-                                    placeholder="비밀번호를 입력하세요"
-                                />
-                            </InfoSection>
-                            <SaveChangesButton onClick={handlePasswordConfirm}>확인</SaveChangesButton>
-                        </ProfileEditSection>
-                    </InfoBox>
-                )}
-                {passwordConfirmed === false && userType === false && (
+                {passwordConfirmed === false && (
                     <InfoBox>
                         <BackButton onClick={handleBack}>
                             <FontAwesomeIcon icon={faArrowLeft} />
@@ -286,7 +264,7 @@ const InfoChangePage = (props) => {
                         </ProfileEditSection>
                     </InfoBox>
                 )}
-                {passwordConfirmed && userType === false && step === 1 && (
+                {passwordConfirmed && step === 1 && (
                     <InfoBox>
                         <BackButton onClick={handleBack}>
                             <FontAwesomeIcon icon={faArrowLeft} />
@@ -316,7 +294,7 @@ const InfoChangePage = (props) => {
                         <SaveChangesButton onClick={goToNextStep}>다음</SaveChangesButton>
                     </InfoBox>
                 )}
-                {passwordConfirmed && userType === false && step === 2 && (
+                {passwordConfirmed && step === 2 && (
                     <InfoBox>
                         <BackButton onClick={goToPreviousStep}>
                             <FontAwesomeIcon icon={faArrowLeft} />
