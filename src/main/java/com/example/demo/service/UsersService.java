@@ -1,12 +1,11 @@
 package com.example.demo.service;
 
-import com.example.demo.dto.ResponseDto;
-import com.example.demo.dto.SignInDto;
-import com.example.demo.dto.SignInResponseDto;
-import com.example.demo.dto.SignUpDto;
+import com.example.demo.dto.*;
 import com.example.demo.repository.UsersRepository;
 import com.example.demo.security.TokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -71,5 +70,30 @@ public class UsersService {
     public UsersEntity getUserById(String userId) {
         return usersRepository.findByUserId(userId);
     }
+
+    public boolean verifyUserPassword(String userId, String userPassword) {
+        UsersEntity userEntity = usersRepository.findByUserId(userId);
+        if (userEntity != null) {
+            return passwordEncoder.matches(userPassword, userEntity.getUserPassword());
+        }
+        return false;
+    }
+
+    public ResponseEntity<?> updateUserInfo(String userId, UserUpdateDto userUpdateDto) {
+        UsersEntity userEntity = usersRepository.findByUserId(userId);
+        if (userEntity != null) {
+            // Update user information
+            userEntity.setUserInfo(userUpdateDto.getUserInfo());
+            userEntity.setUserAddress(userUpdateDto.getUserAddress());
+            userEntity.setUserPrefer(userUpdateDto.getUserPrefer());
+            userEntity.setUserGender(userUpdateDto.getUserGender());
+            userEntity.setUserPhone(userUpdateDto.getUserPhone());
+
+            usersRepository.save(userEntity);
+            return ResponseEntity.ok("User information updated successfully");
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+    }
+
 
 }

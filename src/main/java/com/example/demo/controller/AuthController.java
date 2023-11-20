@@ -12,6 +12,7 @@ import com.example.demo.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -117,6 +118,33 @@ public class AuthController {
         return ResponseEntity.ok(user);
     }
 
+    @PostMapping("/verifyPassword")
+    public ResponseEntity<?> verifyPassword(@RequestBody Map<String, String> request) {
+        String token = request.get("token"); // 토큰 가져오기
+
+        // 토큰 값이 null이거나 비어 있으면 오류 응답을 반환합니다.
+        if (token == null || token.isEmpty()) {
+            return ResponseEntity.badRequest().body("Token is missing or empty: " + token);
+        }
+
+        String jwtToken = null;
+        if (token.contains(" ")) {
+            jwtToken = token.split(" ")[1];
+        } else {
+            jwtToken = token;
+        }
+
+
+        String userId = tokenProvider.getIdFromToken(jwtToken); // 토큰에서 이메일 주소 추출
+        String userPassword = request.get("userPassword");
+
+        boolean isValid = usersService.verifyUserPassword(userId, userPassword);
+
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("isValid", isValid);
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping("/verifyToken")
     public ResponseEntity<?> verifyToken(@RequestHeader("Authorization") String tokenHeader) {
         // Bearer 토큰에서 실제 토큰을 추출
@@ -136,6 +164,16 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error verifying token");
         }
     }
+
+    @PostMapping("/updateUserInfo")
+    public ResponseEntity<?> updateUserInfo(@RequestBody UserUpdateDto userUpdateDto,
+                                            @RequestHeader("Authorization") String tokenHeader) {
+        String token = tokenHeader.split(" ")[1];
+        String userId = tokenProvider.getIdFromToken(token);
+
+        return usersService.updateUserInfo(userId, userUpdateDto);
+    }
+
 
 
 }

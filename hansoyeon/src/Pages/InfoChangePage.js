@@ -16,8 +16,11 @@ const InfoChangePage = (props) => {
     const navigate = useNavigate();
     const [cookies, setCookie, removeCookie] = useCookies(['token']);
     const { user, setUser } = useUserStore();
-    const userType = cookies.userType;
+    const userType = cookies.userType === "company";
     const [step, setStep] = useState(1);
+
+    const [userPassword, setUserPassword] = useState('');
+    const [passwordConfirmed, setPasswordConfirmed] = useState(false);
 
     const [profileImage, setProfileImage] = useState(null);
     const [previewImage, setPreviewImage] = useState(null);
@@ -62,6 +65,33 @@ const InfoChangePage = (props) => {
         };
     }, []);
 
+    const getProfilePicSrc = () => {
+        if (user.userProfile === "hansoyeon/src/imgs/default_profile.png" || !user.userProfile) {
+            return defaultProfilePic;
+        }
+        return user.userProfile;
+    };
+
+    const handlePasswordConfirm = async () => {
+        try {
+            const token = cookies.token;
+            if (!token) {
+                alert('로그인을 다시 해주세요.');
+                handleLogout();
+                return;
+            }
+            const response = await axios.post('http://localhost:8050/api/auth/verifyPassword', { userPassword, token });
+            if (response.data.isValid) {
+                setPasswordConfirmed(true);
+                setStep(1);
+            } else {
+                alert('비밀번호가 일치하지 않습니다.');
+            }
+        } catch (error) {
+            alert('잠시후 다시 시도해주세요');
+        }
+    };
+
     const searchAddress = () => {
         new window.daum.Postcode({
             oncomplete: function(data) {
@@ -99,8 +129,72 @@ const InfoChangePage = (props) => {
         }
     };
 
-    const handleSaveChanges = () => {
-        // 프로필 사진 업로드 로직
+    const validateForm = () => {
+        let errors = {};
+
+        if (!userInfo) {
+            errors.userInfo = "1";
+        }
+
+        if (!userPrefer) {
+            errors.userPrefer = "2";
+        }
+
+        if (!userPhone) {
+            errors.userPhone = "3";
+        }
+
+        return Object.keys(errors).length === 0;
+    };
+
+    const uploadProfileImage = async () => {
+        if (!profileImage) return null;
+
+        const formData = new FormData();
+        formData.append('file', profileImage);
+
+        try {
+            const response = await axios.post('http://localhost:8050/api/upload', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    Authorization: `Bearer ${cookies.token}`,
+                },
+            });
+            return response.data.imageUrl; // Assuming response contains the URL of the uploaded image
+        } catch (error) {
+            console.error('Error uploading profile image:', error);
+            return null;
+        }
+    };
+
+    const handleSaveChanges = async () => {
+        const imageUrl = await uploadProfileImage();
+
+        const updatedInfo = {
+            userInfo: userInfo,
+            userAddress: userAddress,
+            userPrefer: userPrefer,
+            userGender: userGender,
+            userPhone: userPhone,
+            userProfileImage: imageUrl
+        };
+
+        try {
+            const response = await axios.post('http://localhost:8050/api/auth/updateUserInfo', updatedInfo, {
+                headers: {
+                    Authorization: `Bearer ${cookies.token}`,
+                },
+            });
+
+            if (response.status === 200) {
+                alert('정보가 성공적으로 업데이트되었습니다.');
+            } else {
+                alert('정보 업데이트에 실패했습니다.');
+            }
+        } catch (error) {
+            console.error('Error updating user information:', error);
+            alert('업데이트 중 오류가 발생했습니다.');
+        }
     };
 
     const goToNextStep = () => {
@@ -142,7 +236,57 @@ const InfoChangePage = (props) => {
                 <ImageBox>
                     <LargeImage src={logo} alt="logo" />
                 </ImageBox>
-                {step === 1 && (
+                {passwordConfirmed === false && userType === true && (
+                    <InfoBox>
+                        <BackButton onClick={handleBack}>
+                            <FontAwesomeIcon icon={faArrowLeft} />
+                        </BackButton>
+                        <EditInfoTitle>정보 수정</EditInfoTitle>
+                        <ProfileEditSection>
+                            <ImageEditContainer>
+                                <ProfileImagePreview src={getProfilePicSrc || defaultProfilePic} alt="Profile Preview" />
+                            </ImageEditContainer>
+                            <Name>{user.userName + "님" || 'No Name'}</Name>
+                            <Email>{user.userEmail || 'No Email'}</Email>
+                            <Divider3>비밀번호 확인</Divider3>
+                            <InfoSection>
+                                <PasswordInput
+                                    type="password"
+                                    value={userPassword}
+                                    onChange={(e) => setUserPassword(e.target.value)}
+                                    placeholder="비밀번호를 입력하세요"
+                                />
+                            </InfoSection>
+                            <SaveChangesButton onClick={handlePasswordConfirm}>확인</SaveChangesButton>
+                        </ProfileEditSection>
+                    </InfoBox>
+                )}
+                {passwordConfirmed === false && userType === false && (
+                    <InfoBox>
+                        <BackButton onClick={handleBack}>
+                            <FontAwesomeIcon icon={faArrowLeft} />
+                        </BackButton>
+                        <EditInfoTitle>정보 수정</EditInfoTitle>
+                        <ProfileEditSection>
+                            <ImageEditContainer>
+                                <ProfileImagePreview src={previewImage || defaultProfilePic} alt="Profile Preview" />
+                            </ImageEditContainer>
+                            <Name>{user.userName + "님" || 'No Name'}</Name>
+                            <Email>{user.userEmail || 'No Email'}</Email>
+                            <Divider3>비밀번호 확인</Divider3>
+                            <InfoSection>
+                                <PasswordInput
+                                    type="password"
+                                    value={userPassword}
+                                    onChange={(e) => setUserPassword(e.target.value)}
+                                    placeholder="비밀번호를 입력하세요"
+                                />
+                            </InfoSection>
+                            <SaveChangesButton onClick={handlePasswordConfirm}>확인</SaveChangesButton>
+                        </ProfileEditSection>
+                    </InfoBox>
+                )}
+                {passwordConfirmed && userType === false && step === 1 && (
                     <InfoBox>
                         <BackButton onClick={handleBack}>
                             <FontAwesomeIcon icon={faArrowLeft} />
@@ -172,7 +316,7 @@ const InfoChangePage = (props) => {
                         <SaveChangesButton onClick={goToNextStep}>다음</SaveChangesButton>
                     </InfoBox>
                 )}
-                {step === 2 && (
+                {passwordConfirmed && userType === false && step === 2 && (
                     <InfoBox>
                         <BackButton onClick={goToPreviousStep}>
                             <FontAwesomeIcon icon={faArrowLeft} />
@@ -349,6 +493,39 @@ const Divider2 = styled.div`
     border-bottom: 1px solid #ccc;
   }
 
+`;
+
+const Divider3 = styled.div`
+  display: flex;
+  align-items: center;
+  text-align: center;
+  font-size: 13px;
+  margin-top: 40px;
+  margin-bottom: 10px;
+
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    margin-left: 10px;
+    border-bottom: 1px solid #ccc;
+  }
+
+`;
+
+const PasswordInput = styled.input`
+  display: block;
+  width: 80%;
+  text-align: center;
+  margin-top: 35px;
+  margin-bottom: 35px;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  &:focus {
+    outline: none;
+    border-color: #F7E600;
+  }
 `;
 
 const SelfIntroductionTextarea = styled.textarea`
