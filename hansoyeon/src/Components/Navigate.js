@@ -8,13 +8,14 @@ import { useCookies } from 'react-cookie';
 import { useUserStore } from '../stores';
 import defaultProfilePic from '../imgs/default_profile.png';
 import axios from "axios";
+import AboutPage from "../Pages/AboutPage";
+import RecruitPage from "../Pages/RecruitPage";
 
 const Navigate = () => {
     const navigate = useNavigate();
     const [size, setSize] = useState("12");
     const [cookies, setCookie, removeCookie] = useCookies(['token']);
     const {user, setUser} = useUserStore();
-
     const isLoggedIn = cookies.token && user;
     const userType = cookies.userType;
 
@@ -59,20 +60,17 @@ const Navigate = () => {
     const handleMyInfo = () => {
         navigate("/MyInfo")
     };
-    const NewPageButton = () => {
+    const CoursePageButton = () => {
         navigate("/newcourse");
     }
-    const ReCommendPageButton = () => {
-        navigate("/recommendcourse");
-    }
-    const ThemaPageButton = () => {
-        navigate("/themecourse");
-    }
-    const RegionPageButton = () => {
-        navigate("/regioncourse");
+    const AboutPageButton = () => {
+        navigate("/about");
     }
     const ReviewPageButton = () => {
         navigate("/review");
+    }
+    const RecruitPageButton = () => {
+        navigate("/recruit");
     }
     const AnnouncementListPageButton = () => {
         navigate("/announcementlist");
@@ -88,21 +86,22 @@ const Navigate = () => {
     return (
         <TopNav>
             <Navbar style={{
-                position: "absolute",
-                width: "100%",
-                zIndex: "5"
+                display: "flex",
+                flex: "1",
+
             }}>
                 <Navbar.Brand>
                     <Nav_Str>
+                        <UserContainer>
                         <UserImg onClick={MainButton}>
                             <img className="logoImage" alt="Logo" src={logo}/>
                         </UserImg>
+                        </UserContainer>
                         <PageNav style={{marginRight: `${size}rem`}}>
-                            <NewPageInfo onClick={NewPageButton}>신규 코스</NewPageInfo>
-                            <RecommendPageInfo onClick={ReCommendPageButton}>추천 코스</RecommendPageInfo>
-                            <ThemaPageInfo onClick={ThemaPageButton}>테마별 코스</ThemaPageInfo>
-                            <RegionPageInfo onClick={RegionPageButton}>지역별 코스</RegionPageInfo>
-                            <ReviewPageInfo onClick={ReviewPageButton}>체험 후기</ReviewPageInfo>
+                            <AboutPageInfo onClick={AboutPageButton}>한소연이란?</AboutPageInfo>
+                            <CoursePageInfo onClick={CoursePageButton}>코스</CoursePageInfo>
+                            <RecruitPageInfo onClick={RecruitPageButton}>모집 일정</RecruitPageInfo>
+                            <ReviewButton onClick={ReviewPageButton}>체험 후기</ReviewButton>
                             <AnnouncementPageInfo onClick={AnnouncementListPageButton}>공지 사항</AnnouncementPageInfo>
                         </PageNav>
                         <div>
@@ -124,7 +123,6 @@ const Navigate = () => {
                                             <Dropdown.Toggle as={CustomToggle}>
                                                 <ProfileImage src={getProfilePicSrc()} alt="Profile"/>
                                             </Dropdown.Toggle>
-
                                             <Dropdown.Menu>
                                                 <Dropdown.Item onClick={handleMyInfo}>내 정보</Dropdown.Item>
                                                 <Dropdown.Item href="#action/3.2">스케줄러</Dropdown.Item>
@@ -134,11 +132,12 @@ const Navigate = () => {
                                     </ProfileSection>
                                 </>
                             ) : (
-                                <>
+                                <MypageConatiner>
                                     <Button color="inherit" variant="light" onClick={handleLogin}
-                                            style={{marginRight: '0.5rem'}}>로그인</Button>
-                                    <Button color="inherit" variant="light" onClick={handleSignUp}>회원가입</Button>
-                                </>
+                                            style={{marginRight: '0.5rem', width: "90px", height: "35px", fontWeight: "600"}}>로그인</Button>
+                                    <Button color="inherit" variant="light" onClick={handleSignUp}
+                                    style={{ width: "90px", height: "35px", fontWeight: "600"}}>회원가입</Button>
+                                </MypageConatiner>
                             )}
                         </div>
                     </Nav_Str>
@@ -150,13 +149,17 @@ const Navigate = () => {
 
 const TopNav = styled.div`
   height: 100px;
-  
+  display: flex;
+  justify-content: center;
+  border-bottom: 2px solid #dee2e6;
 `
 const StyledDropdown = styled(Dropdown)`
       .dropdown-toggle::after {
         display: none;
       }
     `;
+
+
 const CustomToggle = React.forwardRef(({children, onClick}, ref) => (
     <a
         href=""
@@ -180,13 +183,14 @@ const ProfileImage = styled.img`
       border-radius: 50%;
       cursor: pointer;
     `;
-const NewPageInfo = styled.button`
-  margin-right: 3rem;
-  border: none;
-  background: none;
-  font-weight: 600;
-  `
 
+const UserContainer = styled.div`
+  display: flex;
+  flex: 2;
+  height: 80px;
+  align-items: center;
+  justify-content: center;
+`
 const UserImg = styled.button`
   background: none;
   border: none;
@@ -194,54 +198,68 @@ const UserImg = styled.button`
   left: 2rem;
   
   img {
-    width: 10rem;
-    height: 5rem;
+    width: 200px;
+    height: 80px;
   }
 `;
 
 const Nav_Str = styled.div`
   display: flex;
-  flex-direction: row;
   width: 100vw;
+  flex-direction: row;
   align-items: center;
 `
 
 const PageNav = styled.div`
   display: flex;
-  flex: 8;
+  flex: 6;
   align-items: center;
+  justify-content: space-between;
+  height: 80px;
+  margin-left: 4rem;
+`
+const MypageConatiner = styled.div`
+  display: flex;
+  flex: 2;
+  margin-right: 2rem;
+  height: 80px;
   justify-content: center;
-  margin-right: 15rem;
-  margin-left: 3rem;
+  align-items: center;
 `
-const RecommendPageInfo = styled.button`
-  margin-right: 3rem;
+const AboutPageInfo = styled.button`
   border: none;
   background-color: white;
   font-weight: 600;
+  font-size: 28px;
+  color: #D1774C;
 `
-const ThemaPageInfo = styled.button`
-  margin-right: 3rem;
+const CoursePageInfo = styled.button`
   border: none;
   background-color: white;
   font-weight: 600;
+  font-size: 28px;
+  color: #D1774C;
 `
-const RegionPageInfo = styled.button`
-  margin-right: 3rem;
+const RecruitPageInfo =styled.button`
   border: none;
   background-color: white;
   font-weight: 600;
+  font-size: 28px;
+  color: #D1774C;
 `
-const ReviewPageInfo = styled.button`
-  margin-right: 3rem;
+const ReviewButton = styled.button`
   border: none;
-  background-color: white;
+  background: none;
   font-weight: 600;
-`
+  font-size: 28px;
+  background-color: white;
+  color: #D1774C;
+  `
 const AnnouncementPageInfo = styled.button`
-  margin-right: 3rem;
   border: none;
   background-color: white;
   font-weight: 600;
+  font-size: 28px;
+  color: #D1774C;
 `
 export default Navigate;

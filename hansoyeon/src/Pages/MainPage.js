@@ -186,31 +186,6 @@ const MainContainer = styled.div`
   font-family: 'Arial', sans-serif;
 `
 
-//==================구글맵 css===================
-const containerStyle = {    //지도크기 css
-    width: '100%',
-    // height: '400px',
-    flex:1
-};
-
-const GoogleMapContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 800px;
-`
-// 제목 스타일 공통으로 적용
-const TitleStyle = styled.div`
-  font-size: 24px;       // 통일된 글씨 크기
-  margin-left: 20px;     // 왼쪽 마진 추가
-  background-color: white;
-`;
-
-const SubTitleStyle = styled.div`
-  font-size: 18px;       // 부제목 글씨 크기
-  background-color: white;
-  margin-top: -10px;     // 제목과의 간격 조정
-`;
 // =============================================
 //==================신규코스 css==================
 const NewCourseContainer = styled.div`
@@ -218,7 +193,7 @@ const NewCourseContainer = styled.div`
   flex: 1;
   flex-direction: column;
   height: 500px;
-  border: 1px solid gray;
+  border-bottom: 2px solid #dee2e6;
   padding-left: 50px;
 `
 
@@ -236,6 +211,7 @@ const NewCourseSubTitle = styled.div`
   background-color: white;
   padding-top: 0;
   font-weight: bolder;
+  
 `
 
 const NewCourseImage = styled.div`
@@ -251,6 +227,7 @@ const RecommendCourseContainer = styled.div`
   flex-direction: column;
   height: 300px;
   padding-left: 50px;
+  border-bottom: 2px solid #dee2e6;
 `
 const RecommendCourseTitle = styled.div`
   display: flex;
@@ -258,6 +235,7 @@ const RecommendCourseTitle = styled.div`
   background-color: white;
   margin-top: 30px;
   margin-bottom: -40px;
+  border-bottom: 2px solid #dee2e6;
   color: #D1774C;
 `
 const RecommendCourseSubTitle = styled.div`
@@ -277,7 +255,7 @@ const ThemaCourseContainer = styled.div`
   flex: 1;
   flex-direction: column;
   height: 500px;
-  border: 1px solid gray;
+  border-bottom: 2px solid #dee2e6;
   padding-left: 50px;
 `
 const ThemaCourseTitle = styled.div`
@@ -305,7 +283,7 @@ const RegionalCourseContainer = styled.div`
   flex: 1;
   flex-direction: column;
   height: 500px;
-  border: 1px solid gray;
+  border-bottom: 2px solid #dee2e6;
   padding-left: 50px;
 `
 const RegionalCourseTitle = styled.div`

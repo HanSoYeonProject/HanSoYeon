@@ -19,6 +19,8 @@ import ThemePage from "./Pages/ThemaPage";
 import RegionPage from "./Pages/RegionPage";
 import ReviewPage from "./Pages/ReviewPage";
 import InputSkill from './Components/InputSkill';
+import AboutPage from "./Pages/AboutPage";
+import RecruitPage from "./Pages/RecruitPage";
 
 function App() {
   return (
@@ -27,6 +29,7 @@ function App() {
       <Navigate/>
         <Routes>
           <Route path = "/" element={<MainPage/>}></Route>
+          <Route path = "/about" element={<AboutPage/>}></Route>
           <Route path="/announcementcontent/:anno_id" element={<AnnouncementContentPage/>}></Route>
           <Route path="/announcementlist" element={<AnnouncementListPage/>}></Route>
           <Route path = "/login" element={<LoginPage />}></Route>
@@ -42,6 +45,7 @@ function App() {
           <Route path="/themecourse" element={<ThemePage/>}></Route>
           <Route path="/regioncourse" element={<RegionPage/>}></Route>
           <Route path="/review" element={<ReviewPage/>}></Route>
+          <Route path="/recruit" element={<RecruitPage/>}></Route>
         </Routes>
       </BrowserRouter>
     </div>
