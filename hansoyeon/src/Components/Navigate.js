@@ -12,10 +12,12 @@ import axios from "axios";
 const Navigate = () => {
     const navigate = useNavigate();
     const [cookies, setCookie, removeCookie] = useCookies(['token']);
-    const { user, setUser } = useUserStore();
+    const {user, setUser} = useUserStore();
 
     const isLoggedIn = cookies.token && user;
     const userType = cookies.userType;
+
+    const [size, setSize] = useState("10");
 
     useEffect(() => {
         if (cookies.token) {
@@ -60,35 +62,72 @@ const Navigate = () => {
         navigate("/MyInfo")
     };
 
-    const getProfilePicSrc = () => {
-        if (user.userProfile === "hansoyeon/src/imgs/default_profile.png" || !user.userProfile) {
-            return defaultProfilePic;
-        }
-        return user.userProfile;
-    };
+    const NewPageButton = () => {
+        navigate("/newcourse");
+    }
+    const ReCommendPageButton = () => {
+        navigate("/recommendcourse");
+    }
+    const ThemaPageButton = () => {
+        navigate("/themecourse");
+    }
+    const RegionPageButton = () => {
+        navigate("/regioncourse");
+    }
+    const ReviewPageButton = () => {
+        navigate("/review");
+    }
+    const AnnouncementListPageButton = () => {
+        navigate("/announcementlist");
+    }
+        const getProfilePicSrc = () => {
+            if (user.userProfile === "hansoyeon/src/imgs/default_profile.png" || !user.userProfile) {
+                return defaultProfilePic;
+            }
+            return user.userProfile;
+        };
 
-    return (
+        return (
 
-        <Navbar fixed="top" style={{ position: "fixed", backgroundColor: "white", boxShadow: "1.5px 1.5px 1.5px 1.5px #F3F4F6", width: "100%", zIndex: "1000" }}>
-            <NavContainer>
-                <Navbar.Brand >
-                    <UserImg onClick={MainButton}>
-                        <LogoImg alt="Logo" src={logo} />
-                    </UserImg>
-                </Navbar.Brand>
-                <div>
-                    {isLoggedIn ? (
-                        <>
+            <Navbar fixed="top" style={{
+                position: "fixed",
+                backgroundColor: "white",
+                boxShadow: "1.5px 1.5px 1.5px 1.5px #F3F4F6",
+                width: "100%",
+                zIndex: "1000"
+            }}>
+                <NavContainer>
+                    <Navbar.Brand>
+                        <UserImg onClick={MainButton}>
+                            <LogoImg alt="Logo" src={logo}/>
+                        </UserImg>
+                    </Navbar.Brand>
+                    <PageNav style={{marginRight: `${size}rem`}}>
+                        <NewPageInfo onClick={NewPageButton}>신규 코스</NewPageInfo>
+                        <RecommendPageInfo onClick={ReCommendPageButton}>추천 코스</RecommendPageInfo>
+                        <ThemaPageInfo onClick={ThemaPageButton}>테마별 코스</ThemaPageInfo>
+                        <RegionPageInfo onClick={RegionPageButton}>지역별 코스</RegionPageInfo>
+                        <ReviewPageInfo onClick={ReviewPageButton}>체험 후기</ReviewPageInfo>
+                        <AnnouncementPageInfo onClick={AnnouncementListPageButton}>공지 사항</AnnouncementPageInfo>
+                    </PageNav>
+                    <div>
+                        {isLoggedIn ? (
+                            <>
                                 <ProfileSection>
                                     {userType === 'company' ?
-                                        <Badge bg="primary" style={{ marginRight: '20px', fontSize: "16px" }}>기업 회원</Badge>
+                                        <Badge bg="primary" style={{marginRight: '20px', fontSize: "16px"}}>기업
+                                            회원</Badge>
                                         :
-                                        <Badge bg="success" style={{ marginRight: '20px', fontSize: "16px" }}>일반 회원</Badge>
+                                        <Badge bg="success" style={{marginRight: '20px', fontSize: "16px"}}>일반
+                                            회원</Badge>
                                     }
-                                    <span style={{ marginRight: '20px', fontSize: '19px' }}>{user.userName + "님" || 'No Name'}</span>
+                                    <span style={{
+                                        marginRight: '20px',
+                                        fontSize: '19px'
+                                    }}>{user.userName + "님" || 'No Name'}</span>
                                     <StyledDropdown>
                                         <Dropdown.Toggle as={CustomToggle}>
-                                            <ProfileImage src={getProfilePicSrc()} alt="Profile" />
+                                            <ProfileImage src={getProfilePicSrc()} alt="Profile"/>
                                         </Dropdown.Toggle>
 
                                         <Dropdown.Menu>
@@ -98,80 +137,129 @@ const Navigate = () => {
                                         </Dropdown.Menu>
                                     </StyledDropdown>
                                 </ProfileSection>
-                        </>
-                    ) : (
-                        <>
-                            <Button color="inherit" variant="light" onClick={handleLogin} style={{ marginRight: '0.5rem' }}>로그인</Button>
-                            <Button color="inherit" variant="light" onClick={handleSignUp}>회원가입</Button>
-                        </>
-                    )}
-                </div>
-            </NavContainer>
-        </Navbar>
-    )
-}
-
-const NavContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  padding: 0 1rem; 
-  height: 10vh;
-`;
-
-const LogoImg = styled.img`
-  height: 10vh;
-  width: auto; 
-  cursor: pointer;
-`;
-
-const UserImg = styled.button`
-  background: none;
-  border: none;
-  cursor: pointer;
-`;
-
-const Nav_Str = styled.div`
-
-  display: flex;
-  flex-direction: row;
-  width: 100vw;
-  justify-content: space-between;
-  align-items: center;
-  
-`
-
-const ProfileImage = styled.img`
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    cursor: pointer;
-`;
-
-const StyledDropdown = styled(Dropdown)`
-    .dropdown-toggle::after {
-        display: none;
+                            </>
+                        ) : (
+                            <>
+                                <Button color="inherit" variant="light" onClick={handleLogin}
+                                        style={{marginRight: '0.5rem'}}>로그인</Button>
+                                <Button color="inherit" variant="light" onClick={handleSignUp}>회원가입</Button>
+                            </>
+                        )}
+                    </div>
+                </NavContainer>
+            </Navbar>
+        )
     }
-`;
 
-const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
-    <a
-        href=""
-        ref={ref}
-        onClick={(e) => {
-            e.preventDefault();
-            onClick(e);
-        }}
-        style={{ marginRight: '30px' }}
-    >
-        {children}
-    </a>
-));
 
-const ProfileSection = styled.div`
-    display: flex;
-    align-items: center;
-`;
+    const NavContainer = styled.div`
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      padding: 0 1rem;
+      height: 10vh;
+    `;
+
+    const LogoImg = styled.img`
+      height: 10vh;
+      width: auto;
+      margin-right: 60px;
+      cursor: pointer;
+    `;
+
+    const UserImg = styled.button`
+      background: none;
+      border: none;
+      cursor: pointer;
+    `;
+
+    const Nav_Str = styled.div`
+
+      display: flex;
+      flex-direction: row;
+      width: 100vw;
+      justify-content: space-between;
+      align-items: center;
+
+    `
+
+    const ProfileImage = styled.img`
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      cursor: pointer;
+    `;
+
+    const StyledDropdown = styled(Dropdown)`
+      .dropdown-toggle::after {
+        display: none;
+      }
+    `;
+
+    const CustomToggle = React.forwardRef(({children, onClick}, ref) => (
+        <a
+            href=""
+            ref={ref}
+            onClick={(e) => {
+                e.preventDefault();
+                onClick(e);
+            }}
+            style={{marginRight: '30px'}}
+        >
+            {children}
+        </a>
+    ));
+
+    const ProfileSection = styled.div`
+      display: flex;
+      align-items: center;
+    `;
+
+    const PageNav = styled.div`
+      display: flex;
+      flex: 8;
+      align-items: center;
+      justify-content: center;
+      margin-right: 15rem;
+      margin-left: 3rem;
+    `
+    const NewPageInfo = styled.button`
+      margin-right: 3rem;
+      border: none;
+      background: none;
+      font-weight: 600;
+    `
+
+    const RecommendPageInfo = styled.button`
+      margin-right: 3rem;
+      border: none;
+      background-color: white;
+      font-weight: 600;
+    `
+    const ThemaPageInfo = styled.button`
+      margin-right: 3rem;
+      border: none;
+      background-color: white;
+      font-weight: 600;
+    `
+    const RegionPageInfo = styled.button`
+      margin-right: 3rem;
+      border: none;
+      background-color: white;
+      font-weight: 600;
+    `
+    const ReviewPageInfo = styled.button`
+      margin-right: 3rem;
+      border: none;
+      background-color: white;
+      font-weight: 600;
+    `
+    const AnnouncementPageInfo = styled.button`
+  margin-right: 3rem;
+  border: none;
+  background-color: white;
+  font-weight: 600;
+`
 
 export default Navigate;
