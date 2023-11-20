@@ -1,16 +1,21 @@
 import React, {useState, useCallback, useEffect} from 'react';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 //swiper App.css에 추가한후 import
 import {Swiper, SwiperSlide} from 'swiper/react';     //swiper 사용할 import
-import {Pagination} from 'swiper/modules';
+import {Autoplay, Pagination} from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import '../App.css';
-
-const KAKAO_MAP_API_KEY = process.env.KAKAO_MAP_API_KEY;
-
-const { kakao } = window;
+import new1 from '../imgs/newcourse-1.png';
+import new2 from '../imgs/newcourse-2.png';
+import new3 from '../imgs/newcourse-3.png';
+import new4 from '../imgs/newcourse-4.png';
+import recommend1 from '../imgs/recommendcourse-1.png';
+import recommend2 from '../imgs/recommendcourse-2.png';
+import Footer from '../Components/Footer';
+import logo from "../imgs/logo-removebg.png";
 //리뷰 Test 데이터
 const dummyReviews = [
     {
@@ -40,21 +45,10 @@ const dummyReviews = [
 //===============================페이지 UI========================================
 
 const MainPage = () => {
-    useEffect(() => {
-        const container = document.getElementById('map');
-        const options = {
-            center: new kakao.maps.LatLng(33.450701, 126.570667),
-            level: 3
-        };
-        const map = new kakao.maps.Map(container, options);
-    }, [])
 
     return (
         <div>
             <MainContainer>
-                <GoogleMapContainer>
-                    <div id="map" style={{width: '90%', height: '700px'}}></div>
-                </GoogleMapContainer>
                 <NewCourseContainer>
                     <NewCourseTitle><h1>신규코스</h1></NewCourseTitle>
                     <NewCourseSubTitle>이달의 추천코스</NewCourseSubTitle>
@@ -63,17 +57,19 @@ const MainPage = () => {
                             <Swiper
                                 slidesPerView={3}
                                 spaceBetween={30}
-                                pagination={{
-                                    clickable: true,
-                                }}
-                                modules={[Pagination]}
+                                modules={[Pagination, Autoplay]} // Autoplay 모듈 추가
                                 className="mySwiper"
+                                autoplay={{
+                                    delay: 2000, // 2초마다 슬라이드
+                                    disableOnInteraction: false // 사용자가 슬라이더를 조작한 후에도 자동 재생 계속
+                                }}
+                                speed={1300} // 슬라이드 전환 속도를 1.3초로 설정
+                                // pagination 속성 제거
                             >
-                                <SwiperSlide>Slide 1</SwiperSlide>
-                                <SwiperSlide>Slide 2</SwiperSlide>
-                                <SwiperSlide>Slide 3</SwiperSlide>
-                                <SwiperSlide>Slide 4</SwiperSlide>
-                                <SwiperSlide>Slide 5</SwiperSlide>
+                                <SwiperSlide><img src={new1} style={{width: '340px'}}/></SwiperSlide>
+                                <SwiperSlide><img src={new2} style={{width: '340px'}}/></SwiperSlide>
+                                <SwiperSlide><img src={new3} style={{width: '340px'}}/></SwiperSlide>
+                                <SwiperSlide><img src={new4} style={{width: '340px'}}/></SwiperSlide>
                             </Swiper>
                         </>
                     </NewCourseImage>
@@ -82,22 +78,24 @@ const MainPage = () => {
                     <RecommendCourseTitle><h1>추천 코스</h1></RecommendCourseTitle>
                     <RecommendCourseSubTitle>일자리 및 여행 추천</RecommendCourseSubTitle>
                     <RecommendCourseImage>
-
                         <>
                             <Swiper
                                 slidesPerView={3}
                                 spaceBetween={30}
-                                pagination={{
-                                    clickable: true,
-                                }}
-                                modules={[Pagination]}
+                                modules={[Pagination, Autoplay]} // Autoplay 모듈 추가
                                 className="mySwiper"
+                                autoplay={{
+                                    delay: 2000, // 2초마다 슬라이드
+                                    disableOnInteraction: false // 사용자가 슬라이더를 조작한 후에도 자동 재생 계속
+                                }}
+                                speed={1300} // 슬라이드 전환 속도를 1.3초로 설정
+                                // pagination 속성 제거
                             >
-                                <SwiperSlide>Slide 1</SwiperSlide>
-                                <SwiperSlide>Slide 2</SwiperSlide>
-                                <SwiperSlide>Slide 3</SwiperSlide>
-                                <SwiperSlide>Slide 4</SwiperSlide>
-                                <SwiperSlide>Slide 5</SwiperSlide>
+                                <SwiperSlide><img src={recommend1} style={{width: '310px'}}/></SwiperSlide>
+                                <SwiperSlide><img src={recommend2} style={{width: '310px'}}/></SwiperSlide>
+                                <SwiperSlide>3</SwiperSlide>
+                                <SwiperSlide>4</SwiperSlide>
+                                <SwiperSlide>5</SwiperSlide>
 
                             </Swiper>
                         </>
@@ -112,17 +110,19 @@ const MainPage = () => {
                             <Swiper
                                 slidesPerView={3}
                                 spaceBetween={30}
-                                pagination={{
-                                    clickable: true,
-                                }}
-                                modules={[Pagination]}
+                                modules={[Pagination, Autoplay]} // Autoplay 모듈 추가
                                 className="mySwiper"
+                                autoplay={{
+                                    delay: 2000, // 2초마다 슬라이드
+                                    disableOnInteraction: false // 사용자가 슬라이더를 조작한 후에도 자동 재생 계속
+                                }}
+                                speed={1300} // 슬라이드 전환 속도를 1.3초로 설정
+                                // pagination 속성 제거
                             >
-                                <SwiperSlide>Slide 1</SwiperSlide>
-                                <SwiperSlide>Slide 2</SwiperSlide>
-                                <SwiperSlide>Slide 3</SwiperSlide>
-                                <SwiperSlide>Slide 4</SwiperSlide>
-                                <SwiperSlide>Slide 5</SwiperSlide>
+                                <SwiperSlide><img src={new1} style={{width: '340px'}}/></SwiperSlide>
+                                <SwiperSlide><img src={new2} style={{width: '340px'}}/></SwiperSlide>
+                                <SwiperSlide><img src={new3} style={{width: '340px'}}/></SwiperSlide>
+                                <SwiperSlide><img src={new4} style={{width: '340px'}}/></SwiperSlide>
                             </Swiper>
                         </>
 
@@ -138,17 +138,19 @@ const MainPage = () => {
                             <Swiper
                                 slidesPerView={3}
                                 spaceBetween={30}
-                                pagination={{
-                                    clickable: true,
-                                }}
-                                modules={[Pagination]}
+                                modules={[Pagination, Autoplay]} // Autoplay 모듈 추가
                                 className="mySwiper"
+                                autoplay={{
+                                    delay: 2000, // 2초마다 슬라이드
+                                    disableOnInteraction: false // 사용자가 슬라이더를 조작한 후에도 자동 재생 계속
+                                }}
+                                speed={1300} // 슬라이드 전환 속도를 1.3초로 설정
+                                // pagination 속성 제거
                             >
-                                <SwiperSlide>Slide 1</SwiperSlide>
-                                <SwiperSlide>Slide 2</SwiperSlide>
-                                <SwiperSlide>Slide 3</SwiperSlide>
-                                <SwiperSlide>Slide 4</SwiperSlide>
-                                <SwiperSlide>Slide 5</SwiperSlide>
+                                <SwiperSlide><img src={new1} style={{width: '340px'}}/></SwiperSlide>
+                                <SwiperSlide><img src={new2} style={{width: '340px'}}/></SwiperSlide>
+                                <SwiperSlide><img src={new3} style={{width: '340px'}}/></SwiperSlide>
+                                <SwiperSlide><img src={new4} style={{width: '340px'}}/></SwiperSlide>
 
                             </Swiper>
                         </>
@@ -172,7 +174,8 @@ const MainPage = () => {
 
                     </ReviewContext>
                 </ReviewContainer>
-           </MainContainer>
+                <Footer/>
+            </MainContainer>
         </div>
     );
 };
@@ -216,23 +219,29 @@ const NewCourseContainer = styled.div`
   flex-direction: column;
   height: 500px;
   border: 1px solid gray;
+  padding-left: 50px;
 `
 
 const NewCourseTitle = styled.div`
   display: flex;
   flex: 2;
   background-color: white;
+  margin-top: 30px;
+  margin-bottom: -40px;
+  color: #D1774C;
 `
 const NewCourseSubTitle = styled.div`
   display: flex;
   flex: 1;
   background-color: white;
+  padding-top: 0;
+  font-weight: bolder;
 `
 
 const NewCourseImage = styled.div`
   display: flex;
   flex: 7;
-  background-color: orange;
+  background-color: white;
 `
 //==============================================
 //==================추천코스 css===================
@@ -241,21 +250,25 @@ const RecommendCourseContainer = styled.div`
   flex: 1;
   flex-direction: column;
   height: 300px;
+  padding-left: 50px;
 `
 const RecommendCourseTitle = styled.div`
   display: flex;
   flex: 2;
   background-color: white;
+  margin-top: 30px;
+  margin-bottom: -40px;
+  color: #D1774C;
 `
 const RecommendCourseSubTitle = styled.div`
   display: flex;
   flex: 1;
   background-color: white;
+  font-weight: bolder;
 `
 const RecommendCourseImage = styled.div`
   display: flex;
   flex: 4;
-  background-color: orange;
 `
 //==============================================
 //==============테마별코스=========================
@@ -265,21 +278,25 @@ const ThemaCourseContainer = styled.div`
   flex-direction: column;
   height: 500px;
   border: 1px solid gray;
+  padding-left: 50px;
 `
 const ThemaCourseTitle = styled.div`
   display: flex;
   flex: 2;
   background-color: white;
+  margin-top: 30px;
+  margin-bottom: -40px;
+  color: #D1774C;
 `
 const ThemaCourseSubTitle = styled.div`
   display: flex;
   flex: 1;
   background-color: white;
+  font-weight: bolder;
 `
 const ThemaCouseImage = styled.div`
   display: flex;
   flex: 7;
-  background-color: orange;
 `
 //==============================================
 //==================지역별 코스 css=================
@@ -289,21 +306,25 @@ const RegionalCourseContainer = styled.div`
   flex-direction: column;
   height: 500px;
   border: 1px solid gray;
+  padding-left: 50px;
 `
 const RegionalCourseTitle = styled.div`
   display: flex;
   flex: 2;
   background-color: white;
+  margin-top: 30px;
+  margin-bottom: -40px;
+  color: #D1774C;
 `
 const RegionalCourseSubTitle = styled.div`
   display: flex;
   flex: 1;
   background-color: white;
+  font-weight: bolder;
 `
 const RegionalCouseImage = styled.div`
   display: flex;
   flex: 7;
-  background-color: orange;
 `
 //==============================================
 //====================체험후기====================
@@ -312,18 +333,24 @@ const ReviewContainer = styled.div`
   flex: 1;
   flex-direction: column;
   height: 800px;
-  background-color: skyblue;
+  background-color: white;
   border: 1px solid grey;
+  padding-left: 50px;
 `
 const ReviewTitle = styled.div`
   display: flex;
   flex: 2;
   background-color: white;
+  margin-top: 30px;
+  margin-bottom: -40px;
+  font-size: 40px;
+  color: #D1774C;
 `
 const ReviewSubTitle = styled.div`
   display: flex;
   flex: 1;
   background-color: white;
+  font-weight: bolder;
 `
 const ReviewContext = styled.div`
   display: flex;

@@ -85,7 +85,7 @@ const AnnouncementContentPage = () => {
 
     const fetchAnnouncement = async () => {
         try {
-        const response = await axios.get(`http://localhost:8050/api/announcements/${anno_id}`)
+            const response = await axios.get(`http://localhost:8050/api/announcements/${anno_id}`)
             if (response.status !== 200 ) {
                 throw new Error('Failed to fetch announcement content');
             }
