@@ -1,24 +1,54 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import sharing from '../imgs/sharing.png';
-import bookmark from '../imgs/bookmark.png';
-import hart from '../imgs/hart.png';
 import winter from '../imgs/winter.jpg';
+import axios from 'axios';
+import { XMLParser } from 'fast-xml-parser';
+import noImage from "../imgs/noImage.png"
 
 const NewPage = (props) => {
-    // 공유
-    const handleSharingClick = () => {
-        console.log('Click');
-    };
-    // 북마크
-    const handleBookmarkClick = () => {
-        console.log('Click2');
-    };
-    // 좋아요
-    const handleHartClick = () => {
-        console.log('Click3');
-    };
+
     const [activeTab, setActiveTab] = useState(1);
+    const [touristSpots, setTouristSpots] = useState([]);
+    const [keyword, setKeyword] = useState("");
+    const [searchKeyword, setSearchKeyword] = useState("");
+    const [pageNo, setPageNo] = useState(1);
+
+    const serviceKey = 'YRUALCBQQWvU6w/tG7ZkUtWtjAeaO9bJjyummGjvfF9SjR0QYO+CRveierZlwe97v5toXybLb6aoFCl1sZ8q4Q==';
+
+    useEffect(() => {
+        fetchData(keyword, pageNo);
+    }, [pageNo]);
+
+    const fetchData = async (searchKeyword, pageNo, retryCount = 0) => {
+        try {
+            const encodedServiceKey = encodeURIComponent(serviceKey);
+            const encodedKeyword = encodeURIComponent(searchKeyword || "서울");
+            const url = `http://apis.data.go.kr/B551011/KorService1/searchKeyword1?serviceKey=${encodedServiceKey}&MobileApp=AppTest&MobileOS=ETC&pageNo=${pageNo}&numOfRows=12&listYN=Y&keyword=${encodedKeyword}`;
+            const response = await axios.get(url);
+
+            const parser = new XMLParser();
+            const jsonObj = parser.parse(response.data);
+
+            if (jsonObj && jsonObj.response && jsonObj.response.body && jsonObj.response.body.items) {
+                const spots = jsonObj.response.body.items.item;
+                setTouristSpots(spots);
+                setSearchKeyword(searchKeyword)
+            } else {
+                // 유효하지 않은 응답일 경우 재시도
+                if (retryCount < 3) { // 최대 3번 재시도
+                    fetchData(searchKeyword, pageNo, retryCount + 1);
+                } else {
+                    console.error("Invalid API response");
+                }
+            }
+        } catch (error) {
+            console.error('Error fetching data: ', error);
+            if (retryCount < 3) {
+                fetchData(searchKeyword, pageNo, retryCount + 1);
+            }
+        }
+    };
+
 
     const handleTabClick = (tabNumber) => {
         setActiveTab(tabNumber);
@@ -33,19 +63,6 @@ const NewPage = (props) => {
                             <TopImage className="NewCourse" alt="Title" src={winter} />
                         </TopContainer>
                         <MiddleContainer>
-                            <MiddleTopContainer>
-                                <ThreeImgs>
-                                    <StyledButton onClick={handleSharingClick}>
-                                        <StyledImage className="sharing" alt="sharing" src={sharing} />
-                                    </StyledButton>
-                                    <StyledButton onClick={handleBookmarkClick}>
-                                        <StyledImage className="bookmark" alt="bookmark" src={bookmark} />
-                                    </StyledButton>
-                                    <StyledButton onClick={handleHartClick}>
-                                        <StyledImage className="hart" alt="hart" src={hart} />
-                                    </StyledButton>
-                                </ThreeImgs>
-                            </MiddleTopContainer>
                             <MiddleBottomContainer>
                                 <NewCourseContainer>
                                     <NewCourseTitle>신규 코스</NewCourseTitle>
@@ -55,10 +72,10 @@ const NewPage = (props) => {
                         <BottomContainer>
                             <MenuContainer>
                                 <MenuTitle>
-                                    <TabButton onClick={() => {handleTabClick(1);console.log('Tab 1 clicked');}} className={activeTab === 1 ? 'active' : ''}>정보</TabButton>
-                                    <TabButton onClick={() => {handleTabClick(2);console.log('Tab 2 clicked');}} className={activeTab === 2 ? 'active' : ''}>여행지</TabButton>
-                                    <TabButton onClick={() => {handleTabClick(3);console.log('Tab 3 clicked');}} className={activeTab === 3 ? 'active' : ''}>갤러리</TabButton>
-                                    <TabButton onClick={() => {handleTabClick(4);console.log('Tab 4 clicked');}} className={activeTab === 4 ? 'active' : ''}>후기</TabButton>
+                                    <TabButton onClick={() => {handleTabClick(1);}} className={activeTab === 1 ? 'active' : ''}>신규 코스</TabButton>
+                                    <TabButton onClick={() => {handleTabClick(2);}} className={activeTab === 2 ? 'active' : ''}>테마별 코스</TabButton>
+                                    <TabButton onClick={() => {handleTabClick(3);}} className={activeTab === 3 ? 'active' : ''}>지역별 코스</TabButton>
+                                    <TabButton onClick={() => {handleTabClick(4);}} className={activeTab === 4 ? 'active' : ''}>추천 코스</TabButton>
                                 </MenuTitle>
                             </MenuContainer>
                             <SmallTitleContainer>
@@ -98,30 +115,19 @@ const NewPage = (props) => {
                             <TopImage className="NewCourse" alt="Title" src={winter} />
                         </TopContainer>
                         <MiddleContainer>
-                            <MiddleTopContainer>
-                                <ThreeImgs>
-                                    <StyledButton onClick={handleSharingClick}>
-                                        <StyledImage className="sharing" alt="sharing" src={sharing} />
-                                    </StyledButton>
-                                    <StyledButton onClick={handleBookmarkClick}>
-                                        <StyledImage className="bookmark" alt="bookmark" src={bookmark} />
-                                    </StyledButton>
-                                    <StyledButton onClick={handleHartClick}>
-                                        <StyledImage className="hart" alt="hart" src={hart} />
-                                    </StyledButton>
-                                </ThreeImgs>
-                            </MiddleTopContainer>
                             <MiddleBottomContainer>
-                                {/*여기에 사진들추가*/}
+                                <NewCourseContainer>
+                                    <NewCourseTitle>테마별 코스</NewCourseTitle>
+                                </NewCourseContainer>
                             </MiddleBottomContainer>
                         </MiddleContainer>
                         <BottomContainer>
                             <MenuContainer>
                                 <MenuTitle>
-                                    <TabButton onClick={() => {handleTabClick(1);console.log('Tab 1 clicked');}} className={activeTab === 1 ? 'active' : ''}>정보</TabButton>
-                                    <TabButton onClick={() => {handleTabClick(2);console.log('Tab 2 clicked');}} className={activeTab === 2 ? 'active' : ''}>여행지</TabButton>
-                                    <TabButton onClick={() => {handleTabClick(3);console.log('Tab 3 clicked');}} className={activeTab === 3 ? 'active' : ''}>갤러리</TabButton>
-                                    <TabButton onClick={() => {handleTabClick(4);console.log('Tab 4 clicked');}} className={activeTab === 4 ? 'active' : ''}>후기</TabButton>
+                                    <TabButton onClick={() => {handleTabClick(1);}} className={activeTab === 1 ? 'active' : ''}>신규 코스</TabButton>
+                                    <TabButton onClick={() => {handleTabClick(2);}} className={activeTab === 2 ? 'active' : ''}>테마별 코스</TabButton>
+                                    <TabButton onClick={() => {handleTabClick(3);}} className={activeTab === 3 ? 'active' : ''}>지역별 코스</TabButton>
+                                    <TabButton onClick={() => {handleTabClick(4);}} className={activeTab === 4 ? 'active' : ''}>추천 코스</TabButton>
                                 </MenuTitle>
                             </MenuContainer>
                         </BottomContainer>
@@ -134,33 +140,55 @@ const NewPage = (props) => {
                             <TopImage className="NewCourse" alt="Title" src={winter} />
                         </TopContainer>
                         <MiddleContainer>
-                            <MiddleTopContainer>
-                                <ThreeImgs>
-                                    <StyledButton onClick={handleSharingClick}>
-                                        <StyledImage className="sharing" alt="sharing" src={sharing} />
-                                    </StyledButton>
-                                    <StyledButton onClick={handleBookmarkClick}>
-                                        <StyledImage className="bookmark" alt="bookmark" src={bookmark} />
-                                    </StyledButton>
-                                    <StyledButton onClick={handleHartClick}>
-                                        <StyledImage className="hart" alt="hart" src={hart} />
-                                    </StyledButton>
-                                </ThreeImgs>
-                            </MiddleTopContainer>
                             <MiddleBottomContainer>
-                                {/*여기에 사진들추가*/}
+                                <NewCourseContainer>
+                                    <NewCourseTitle>지역별 코스</NewCourseTitle>
+                                </NewCourseContainer>
                             </MiddleBottomContainer>
                         </MiddleContainer>
                         <BottomContainer>
                             <MenuContainer>
                                 <MenuTitle>
-                                    <TabButton onClick={() => {handleTabClick(1);console.log('Tab 1 clicked');}} className={activeTab === 1 ? 'active' : ''}>정보</TabButton>
-                                    <TabButton onClick={() => {handleTabClick(2);console.log('Tab 2 clicked');}} className={activeTab === 2 ? 'active' : ''}>여행지</TabButton>
-                                    <TabButton onClick={() => {handleTabClick(3);console.log('Tab 3 clicked');}} className={activeTab === 3 ? 'active' : ''}>갤러리</TabButton>
-                                    <TabButton onClick={() => {handleTabClick(4);console.log('Tab 4 clicked');}} className={activeTab === 4 ? 'active' : ''}>후기</TabButton>
+                                    <TabButton onClick={() => {handleTabClick(1);}} className={activeTab === 1 ? 'active' : ''}>신규 코스</TabButton>
+                                    <TabButton onClick={() => {handleTabClick(2);}} className={activeTab === 2 ? 'active' : ''}>테마별 코스</TabButton>
+                                    <TabButton onClick={() => {handleTabClick(3);}} className={activeTab === 3 ? 'active' : ''}>지역별 코스</TabButton>
+                                    <TabButton onClick={() => {handleTabClick(4);}} className={activeTab === 4 ? 'active' : ''}>추천 코스</TabButton>
                                 </MenuTitle>
                             </MenuContainer>
                         </BottomContainer>
+                        <AreaContentContainer>
+                            <SearchBoxContainer>
+                                <SearchContainer>
+                                    <SearchInput
+                                        type="text"
+                                        value={keyword}
+                                        onChange={(e) => setKeyword(e.target.value)}
+                                        placeholder="지역 검색"
+                                    />
+                                    <SearchButton onClick={() => fetchData(keyword, 1)}>검색</SearchButton>
+                                </SearchContainer>
+                                <SearchResultText>
+                                    {searchKeyword ? `'${searchKeyword}' 검색 결과입니다.` : '전체 목록'}
+                                </SearchResultText>
+                            </SearchBoxContainer>
+                            <GridContainer>
+                                {Array.isArray(touristSpots) && touristSpots.length > 0 ? (
+                                    touristSpots.map((spot, index) => (
+                                        <GridItem key={index}>
+                                            <h3>{spot.title}</h3>
+                                            {spot.firstimage && <StyledImage src={spot.firstimage} alt={spot.title} />}
+                                            {!spot.firstimage && <StyledImage src={noImage} alt={spot.title} />}
+                                        </GridItem>
+                                    ))
+                                ) : (
+                                    <p>Loading...</p>
+                                )}
+                            </GridContainer>
+                            <PaginationContainer>
+                                <PageButton onClick={() => setPageNo(prev => Math.max(prev - 1, 1))}>이전</PageButton>
+                                <PageButton onClick={() => setPageNo(prev => prev + 1)}>다음</PageButton>
+                            </PaginationContainer>
+                        </AreaContentContainer>
                     </>
                 );
             case 4:
@@ -170,30 +198,19 @@ const NewPage = (props) => {
                             <TopImage className="NewCourse" alt="Title" src={winter} />
                         </TopContainer>
                         <MiddleContainer>
-                            <MiddleTopContainer>
-                                <ThreeImgs>
-                                    <StyledButton onClick={handleSharingClick}>
-                                        <StyledImage className="sharing" alt="sharing" src={sharing} />
-                                    </StyledButton>
-                                    <StyledButton onClick={handleBookmarkClick}>
-                                        <StyledImage className="bookmark" alt="bookmark" src={bookmark} />
-                                    </StyledButton>
-                                    <StyledButton onClick={handleHartClick}>
-                                        <StyledImage className="hart" alt="hart" src={hart} />
-                                    </StyledButton>
-                                </ThreeImgs>
-                            </MiddleTopContainer>
                             <MiddleBottomContainer>
-                                {/*여기에 사진들추가*/}
+                                <NewCourseContainer>
+                                    <NewCourseTitle>추천 코스</NewCourseTitle>
+                                </NewCourseContainer>
                             </MiddleBottomContainer>
                         </MiddleContainer>
                         <BottomContainer>
                             <MenuContainer>
                                 <MenuTitle>
-                                    <TabButton onClick={() => {handleTabClick(1);console.log('Tab 1 clicked');}} className={activeTab === 1 ? 'active' : ''}>정보</TabButton>
-                                    <TabButton onClick={() => {handleTabClick(2);console.log('Tab 2 clicked');}} className={activeTab === 2 ? 'active' : ''}>여행지</TabButton>
-                                    <TabButton onClick={() => {handleTabClick(3);console.log('Tab 3 clicked');}} className={activeTab === 3 ? 'active' : ''}>갤러리</TabButton>
-                                    <TabButton onClick={() => {handleTabClick(4);console.log('Tab 4 clicked');}} className={activeTab === 4 ? 'active' : ''}>후기</TabButton>
+                                    <TabButton onClick={() => {handleTabClick(1);}} className={activeTab === 1 ? 'active' : ''}>신규 코스</TabButton>
+                                    <TabButton onClick={() => {handleTabClick(2);}} className={activeTab === 2 ? 'active' : ''}>테마별 코스</TabButton>
+                                    <TabButton onClick={() => {handleTabClick(3);}} className={activeTab === 3 ? 'active' : ''}>지역별 코스</TabButton>
+                                    <TabButton onClick={() => {handleTabClick(4);}} className={activeTab === 4 ? 'active' : ''}>추천 코스</TabButton>
                                 </MenuTitle>
                             </MenuContainer>
                         </BottomContainer>
@@ -232,32 +249,12 @@ const MiddleContainer = styled.div`
   flex-direction: column;
   flex: 1;
 `;
-const MiddleTopContainer = styled.div`
-  //background-color: blue;
-  display: flex;
-  flex: 2;
-  justify-content: flex-end;
-`;
-const ThreeImgs = styled.div`
-  display: flex;
-  flex-direction: row;
-  //background-color: gray;
-  justify-content: space-between;
-  align-items: center;
-  margin-right: 2rem;
-`;
-const StyledButton = styled.button`
-  background: none;
-  border: none;
-`;
-const StyledImage = styled.img`
-  width: 20px;
-  height: 15px;
-`;
+
 const MiddleBottomContainer = styled.div`
   //background-color: pink;
   display: flex;
   flex: 8;
+  margin-top: 10px;
 `;
 
 const NewCourseContainer = styled.div`
@@ -457,6 +454,102 @@ const TravelContent = styled.div`
   align-items: center;
   color: white; /* 텍스트의 색상을 흰색으로 설정 */
   font-size: 24px; /* 텍스트의 크기를 24px로 설정 (원하는 크기로 조절) */
+`;
+
+const AreaContentContainer = styled.div`
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+
+const GridContainer = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 20px;
+  width: 80%;
+  margin: 0 auto;
+`;
+
+const GridItem = styled.div`
+  border: 1px solid #ddd;
+  padding: 15px;
+  text-align: center;
+  background-color: #f9f9f9;
+  box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
+  border-radius: 10px;
+`;
+
+const StyledImage = styled.img`
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  margin-bottom: 10px;
+  border-radius: 5px;
+`;
+
+const SearchBoxContainer = styled.div`
+  margin-bottom: 20px;
+  padding: 20px;
+  border-radius: 10px;
+  background-color: #f5f5f5; // 박스의 배경색
+  box-shadow: 0px 2px 4px rgba(0,0,0,0.1); // 박스에 그림자 효과 추가
+  width: 80%;
+  justify-content: center;
+  align-items: center;
+`;
+
+const SearchContainer = styled.div`
+  display: flex;
+  margin-bottom: 20px;
+  justify-content: center;
+`;
+
+const SearchInput = styled.input`
+  width: 30%;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  margin-right: 10px;
+  text-align: center;
+`;
+
+const SearchButton = styled.button`
+  padding: 10px 15px;
+  border-radius: 5px;
+  border: none;
+  background-color: #4CAF50;
+  color: white;
+  cursor: pointer;
+  &:hover {
+    background-color: #45a049;
+  }
+`;
+
+const PaginationContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+`;
+
+const PageButton = styled.button`
+  padding: 10px 15px;
+  border-radius: 5px;
+  border: none;
+  background-color: #008CBA;
+  color: white;
+  margin: 0 10px;
+  cursor: pointer;
+  &:hover {
+    background-color: #007B9E;
+  }
+`;
+
+const SearchResultText = styled.div`
+  margin-bottom: 10px;
+  color: #333;
+  font-size: 17px;
 `;
 
 export default NewPage;

@@ -82,7 +82,7 @@ const Navigate = () => {
     };
 
     const CoursePageButton = () => {
-        navigate("/recommendcourse");
+        navigate("/newcourse");
     }
     const AboutPageButton = () => {
         navigate("/about");
