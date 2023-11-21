@@ -93,7 +93,7 @@ const CompanySignUpPage = () => {
 
         // 회사명
         if (!formData.companyName) {
-            errors.companyName = "선호 지역을 입력해주세요.";
+            errors.companyName = "회사명을 입력해주세요.";
         }
 
         setValidationErrors(errors);
