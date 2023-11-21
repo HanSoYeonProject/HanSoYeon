@@ -1,20 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { XMLParser } from 'fast-xml-parser';
 
 const RecommendPage = () => {
     const [touristSpots, setTouristSpots] = useState([]);
 
+    const serviceKey = 'YRUALCBQQWvU6w/tG7ZkUtWtjAeaO9bJjyummGjvfF9SjR0QYO+CRveierZlwe97v5toXybLb6aoFCl1sZ8q4Q==';
+
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get('/B551011/KorService1', {
-                    params: {
-                        serviceKey: 'YRUALCBQQWvU6w/tG7ZkUtWtjAeaO9bJjyummGjvfF9SjR0QYO+CRveierZlwe97v5toXybLb6aoFCl1sZ8q4Q==',
-                        // 여기에 필요한 기타 파라미터 추가
-                    }
-                });
-                // 데이터 구조에 따라 적절한 경로 설정
-                setTouristSpots(response.data.items.item);
+                const encodedServiceKey = encodeURIComponent(serviceKey);
+                const keyword = encodeURIComponent("강원");
+                const url = `http://apis.data.go.kr/B551011/KorService1/searchKeyword1?serviceKey=${encodedServiceKey}&MobileApp=AppTest&MobileOS=ETC&pageNo=1&numOfRows=10&listYN=Y&keyword=${keyword}`;
+                const response = await axios.get(url);
+
+                // fast-xml-parser 객체 생성 및 사용
+                const parser = new XMLParser();
+                const jsonObj = parser.parse(response.data);
+
+                console.log(jsonObj); // 파싱된 객체 구조 확인
+
+                // 파싱된 데이터에서 필요한 부분 추출
+                const spots = jsonObj.response.body.items.item;
+                setTouristSpots(spots);
             } catch (error) {
                 console.error('Error fetching data: ', error);
             }
@@ -29,9 +38,8 @@ const RecommendPage = () => {
                 <ul>
                     {touristSpots.map((spot, index) => (
                         <li key={index}>
-                            <h3>{spot.title}</h3> {/* 'title'은 관광지의 제목 필드를 가정 */}
-                            <p>{spot.description}</p> {/* 'description'은 설명 필드를 가정 */}
-                            {/* 기타 필요한 정보를 표시 */}
+                            <h3>{spot.title}</h3>
+                            <br/>
                         </li>
                     ))}
                 </ul>

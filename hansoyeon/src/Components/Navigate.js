@@ -170,7 +170,7 @@ const Navigate = () => {
                                 <>
                                     <Button color="inherit" variant="light" onClick={handleLogin}
                                             style={{marginRight: '0.5rem'}}>로그인</Button>
-                                    <Button color="inherit" variant="light" onClick={handleSignUp}>회원가입</Button>
+                                    <Button color="inherit" variant="light" style={{marginRight: '0.5rem'}} onClick={handleSignUp}>회원가입</Button>
                                 </>
                             )}
                         </div>
@@ -285,27 +285,27 @@ const AboutPageInfo = styled.button`
   border: none;
   background-color: white;
   font-weight: 600;
-  font-size: 28px;
+  font-size: 24px;
   color: #D1774C;
 `
 const CoursePageInfo = styled.button`
   border: none;
   background-color: white;
   font-weight: 600;
-  font-size: 28px;
+  font-size: 24px;
   color: #D1774C;
 `
 const RecruitPageInfo =styled.button`
   border: none;
   background-color: white;
   font-weight: 600;
-  font-size: 28px;
+  font-size: 24px;
   color: #D1774C;
 `
 const ReviewButton = styled.button`
   border: none;
   font-weight: 600;
-  font-size: 28px;
+  font-size: 24px;
   background-color: white;
   color: #D1774C;
 `
@@ -313,7 +313,7 @@ const AnnouncementPageInfo = styled.button`
   border: none;
   background-color: white;
   font-weight: 600;
-  font-size: 28px;
+  font-size: 24px;
   color: #D1774C;
 `
 
