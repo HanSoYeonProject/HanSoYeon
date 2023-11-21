@@ -81,25 +81,23 @@ const Navigate = () => {
         navigate("/MyInfo")
     };
 
-    const NewPageButton = () => {
-        navigate("/newcourse");
-    }
-    const ReCommendPageButton = () => {
+    const CoursePageButton = () => {
         navigate("/recommendcourse");
     }
-    const ThemaPageButton = () => {
-        navigate("/themecourse");
-    }
-    const RegionPageButton = () => {
-        navigate("/regioncourse");
+    const AboutPageButton = () => {
+        navigate("/about");
     }
     const ReviewPageButton = () => {
         navigate("/review");
     }
+    const RecruitPageButton = () => {
+        navigate("/recruit");
+    }
     const AnnouncementListPageButton = () => {
         navigate("/announcementlist");
     }
-        const getProfilePicSrc = () => {
+
+    const getProfilePicSrc = () => {
             if(userType === "company"){
                 if (user.providerProfile === "hansoyeon/src/imgs/default_profile.png" || !user.providerProfile) {
                     return defaultProfilePic;
@@ -114,76 +112,81 @@ const Navigate = () => {
         };
 
         return (
-
-            <Navbar fixed="top" style={{
-                position: "fixed",
-                backgroundColor: "white",
-                boxShadow: "1.5px 1.5px 1.5px 1.5px #F3F4F6",
-                width: "100%",
-                zIndex: "1000"
+            <TopNav>
+            <Navbar style={{
+                display: "flex",
+                flex: "1",
             }}>
-                <NavContainer>
-                    <Navbar.Brand>
-                        <UserImg onClick={MainButton}>
-                            <LogoImg alt="Logo" src={logo}/>
-                        </UserImg>
-                    </Navbar.Brand>
-                    <PageNav style={{marginRight: `${size}rem`}}>
-                        <NewPageInfo onClick={NewPageButton}>신규 코스</NewPageInfo>
-                        <RecommendPageInfo onClick={ReCommendPageButton}>추천 코스</RecommendPageInfo>
-                        <ThemaPageInfo onClick={ThemaPageButton}>테마별 코스</ThemaPageInfo>
-                        <RegionPageInfo onClick={RegionPageButton}>지역별 코스</RegionPageInfo>
-                        <ReviewPageInfo onClick={ReviewPageButton}>체험 후기</ReviewPageInfo>
-                        <AnnouncementPageInfo onClick={AnnouncementListPageButton}>공지 사항</AnnouncementPageInfo>
-                    </PageNav>
-                    <div>
-                        {isLoggedIn ? (
-                            <>
-                                <ProfileSection>
-                                    {userType === 'company' ?
-                                        <Badge bg="primary" style={{marginRight: '20px', fontSize: "16px"}}>기업
-                                            회원</Badge>
-                                        :
-                                        <Badge bg="success" style={{marginRight: '20px', fontSize: "16px"}}>일반
-                                            회원</Badge>
-                                    }
-                                    {userType === 'company' ?
-                                        <span style={{
-                                            marginRight: '20px',
-                                            fontSize: '19px'
-                                        }}>{user.providerName + "님" || 'No Name'}</span>
-                                        :
-                                        <span style={{
-                                            marginRight: '20px',
-                                            fontSize: '19px'
-                                        }}>{user.userName + "님" || 'No Name'}</span>
-                                    }
-                                    <StyledDropdown>
-                                        <Dropdown.Toggle as={CustomToggle}>
-                                            <ProfileImage src={getProfilePicSrc()} alt="Profile"/>
-                                        </Dropdown.Toggle>
+                <Navbar.Brand>
+                    <Nav_Str>
+                        <UserContainer>
+                            <UserImg onClick={MainButton}>
+                                <img className="logoImage" alt="Logo" src={logo}/>
+                            </UserImg>
+                        </UserContainer>
+                        <PageNav style={{marginRight: `${size}rem`}}>
+                            <AboutPageInfo onClick={AboutPageButton}>한소연이란?</AboutPageInfo>
+                            <CoursePageInfo onClick={CoursePageButton}>코스</CoursePageInfo>
+                            <RecruitPageInfo onClick={RecruitPageButton}>모집 일정</RecruitPageInfo>
+                            <ReviewButton onClick={ReviewPageButton}>체험 후기</ReviewButton>
+                            <AnnouncementPageInfo onClick={AnnouncementListPageButton}>공지 사항</AnnouncementPageInfo>
+                        </PageNav>
+                        <div>
+                            {isLoggedIn ? (
+                                <>
+                                    <ProfileSection>
+                                        {userType === 'company' ?
+                                            <Badge bg="primary" style={{marginRight: '20px', fontSize: "16px"}}>기업
+                                                회원</Badge>
+                                            :
+                                            <Badge bg="success" style={{marginRight: '20px', fontSize: "16px"}}>일반
+                                                회원</Badge>
+                                        }
+                                        {userType === 'company' ?
+                                            <span style={{
+                                                marginRight: '20px',
+                                                fontSize: '19px'
+                                            }}>{user.providerName + "님" || 'No Name'}</span>
+                                            :
+                                            <span style={{
+                                                marginRight: '20px',
+                                                fontSize: '19px'
+                                            }}>{user.userName + "님" || 'No Name'}</span>
+                                        }
+                                        <StyledDropdown>
+                                            <Dropdown.Toggle as={CustomToggle}>
+                                                <ProfileImage src={getProfilePicSrc()} alt="Profile"/>
+                                            </Dropdown.Toggle>
 
-                                        <Dropdown.Menu>
-                                            <Dropdown.Item onClick={handleMyInfo}>내 정보</Dropdown.Item>
-                                            <Dropdown.Item href="#action/3.2">스케줄러</Dropdown.Item>
-                                            <Dropdown.Item onClick={handleLogout}>로그아웃</Dropdown.Item>
-                                        </Dropdown.Menu>
-                                    </StyledDropdown>
-                                </ProfileSection>
-                            </>
-                        ) : (
-                            <>
-                                <Button color="inherit" variant="light" onClick={handleLogin}
-                                        style={{marginRight: '0.5rem'}}>로그인</Button>
-                                <Button color="inherit" variant="light" onClick={handleSignUp}>회원가입</Button>
-                            </>
-                        )}
-                    </div>
-                </NavContainer>
+                                            <Dropdown.Menu>
+                                                <Dropdown.Item onClick={handleMyInfo}>내 정보</Dropdown.Item>
+                                                <Dropdown.Item href="#action/3.2">스케줄러</Dropdown.Item>
+                                                <Dropdown.Item onClick={handleLogout}>로그아웃</Dropdown.Item>
+                                            </Dropdown.Menu>
+                                        </StyledDropdown>
+                                    </ProfileSection>
+                                </>
+                            ) : (
+                                <>
+                                    <Button color="inherit" variant="light" onClick={handleLogin}
+                                            style={{marginRight: '0.5rem'}}>로그인</Button>
+                                    <Button color="inherit" variant="light" onClick={handleSignUp}>회원가입</Button>
+                                </>
+                            )}
+                        </div>
+                    </Nav_Str>
+                </Navbar.Brand>
             </Navbar>
+            </TopNav>
         )
     }
 
+const TopNav = styled.div`
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  border-bottom: 2px solid #dee2e6;
+`
 
     const NavContainer = styled.div`
       display: flex;
@@ -201,21 +204,26 @@ const Navigate = () => {
       cursor: pointer;
     `;
 
-    const UserImg = styled.button`
-      background: none;
-      border: none;
-      cursor: pointer;
-    `;
+const UserImg = styled.button`
+  background: none;
+  border: none;
+  position: relative;
+  left: 2rem;
+  margin-bottom: 10px;
+  margin-right: 30px;
 
-    const Nav_Str = styled.div`
+  img {
+    width: 200px;
+    height: 80px;
+  }
+`;
 
-      display: flex;
-      flex-direction: row;
-      width: 100vw;
-      justify-content: space-between;
-      align-items: center;
-
-    `
+const Nav_Str = styled.div`
+  display: flex;
+  width: 100vw;
+  flex-direction: row;
+  align-items: center;
+`
 
     const ProfileImage = styled.img`
       width: 50px;
@@ -223,6 +231,14 @@ const Navigate = () => {
       border-radius: 50%;
       cursor: pointer;
     `;
+
+const UserContainer = styled.div`
+  display: flex;
+  flex: 2;
+  height: 80px;
+  align-items: center;
+  justify-content: center;
+`
 
     const StyledDropdown = styled(Dropdown)`
       .dropdown-toggle::after {
@@ -249,50 +265,56 @@ const Navigate = () => {
       align-items: center;
     `;
 
-    const PageNav = styled.div`
-      display: flex;
-      flex: 8;
-      align-items: center;
-      justify-content: center;
-      margin-right: 15rem;
-      margin-left: 3rem;
-    `
-    const NewPageInfo = styled.button`
-      margin-right: 3rem;
-      border: none;
-      background: none;
-      font-weight: 600;
-    `
-
-    const RecommendPageInfo = styled.button`
-      margin-right: 3rem;
-      border: none;
-      background-color: white;
-      font-weight: 600;
-    `
-    const ThemaPageInfo = styled.button`
-      margin-right: 3rem;
-      border: none;
-      background-color: white;
-      font-weight: 600;
-    `
-    const RegionPageInfo = styled.button`
-      margin-right: 3rem;
-      border: none;
-      background-color: white;
-      font-weight: 600;
-    `
-    const ReviewPageInfo = styled.button`
-      margin-right: 3rem;
-      border: none;
-      background-color: white;
-      font-weight: 600;
-    `
-    const AnnouncementPageInfo = styled.button`
-  margin-right: 3rem;
+const PageNav = styled.div`
+  display: flex;
+  flex: 6;
+  align-items: center;
+  justify-content: space-between;
+  height: 80px;
+  margin-left: 4rem;
+`
+const MypageConatiner = styled.div`
+  display: flex;
+  flex: 2;
+  margin-right: 2rem;
+  height: 80px;
+  justify-content: center;
+  align-items: center;
+`
+const AboutPageInfo = styled.button`
   border: none;
   background-color: white;
   font-weight: 600;
+  font-size: 28px;
+  color: #D1774C;
+`
+const CoursePageInfo = styled.button`
+  border: none;
+  background-color: white;
+  font-weight: 600;
+  font-size: 28px;
+  color: #D1774C;
+`
+const RecruitPageInfo =styled.button`
+  border: none;
+  background-color: white;
+  font-weight: 600;
+  font-size: 28px;
+  color: #D1774C;
+`
+const ReviewButton = styled.button`
+  border: none;
+  font-weight: 600;
+  font-size: 28px;
+  background-color: white;
+  color: #D1774C;
+`
+const AnnouncementPageInfo = styled.button`
+  border: none;
+  background-color: white;
+  font-weight: 600;
+  font-size: 28px;
+  color: #D1774C;
 `
 
 export default Navigate;

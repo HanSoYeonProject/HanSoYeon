@@ -38,7 +38,8 @@ public class WebSecurityConfig {
                 // 세션 기반 인증 (현재는 Session 기반 인증을 사용하지 않기 때문에 상태를 없앰)
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 // "/", "/api/auth/**" 모듈에 대해서는 모두 허용 (인증을 하지 않고 사용 가능 하게 함)
-                .authorizeRequests().antMatchers("/", "/api/auth/**").permitAll()
+                .authorizeRequests()
+                .antMatchers("/", "/api/auth/**", "/api/createAnnouncement","/api/announcements/**", "/api/reviews", "/api/uploadProfileImage" ).permitAll()
                 // 나머지 Request에 대해서는 모두 인증된 사용자만 사용 가능하게 함
                 .anyRequest().authenticated();
 

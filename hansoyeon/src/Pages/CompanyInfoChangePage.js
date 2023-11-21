@@ -16,7 +16,7 @@ const CompanyInfoChangePage = (props) => {
     const navigate = useNavigate();
     const [cookies, setCookie, removeCookie] = useCookies(['token']);
     const { user, setUser } = useUserStore();
-    const userType = cookies.userType === "company";
+    const userType = cookies.userType;
     const [step, setStep] = useState(1);
 
     const [providerPassword, setProviderPassword] = useState('');
@@ -152,14 +152,13 @@ const CompanyInfoChangePage = (props) => {
         if (!profileImage) return null;
 
         const formData = new FormData();
-        formData.append('file', profileImage);
+        formData.append('profileImage', profileImage);
 
         try {
-            const response = await axios.post('http://localhost:8050/api/upload', formData, {
+            const response = await axios.post('http://localhost:8050/api/uploadProfileImage', formData, {
                 headers: {
-                    'Content-Type': 'multipart/form-data',
-                    Authorization: `Bearer ${cookies.token}`,
-                },
+                    'Content-Type': 'multipart/form-data'
+                }
             });
             return response.data.imageUrl;
         } catch (error) {
@@ -187,13 +186,27 @@ const CompanyInfoChangePage = (props) => {
 
             if (response.status === 200) {
                 alert('회사 정보가 성공적으로 업데이트되었습니다.');
-                navigate("/"); // 성공시 메인 페이지로 이동
+                window.location.href = "/";
             } else {
                 alert('회사 정보 업데이트에 실패했습니다.');
             }
         } catch (error) {
             console.error('Error updating company information:', error);
             alert('업데이트 중 오류가 발생했습니다.');
+        }
+    };
+
+    const getProfilePic = () => {
+        if(userType === "company"){
+            if (user.providerProfile === "hansoyeon/src/imgs/default_profile.png" || !user.providerProfile) {
+                return defaultProfilePic;
+            }
+            return user.providerProfile;
+        }else{
+            if (user.userProfile === "hansoyeon/src/imgs/default_profile.png" || !user.userProfile) {
+                return defaultProfilePic;
+            }
+            return user.userProfile;
         }
     };
 
@@ -236,7 +249,7 @@ const CompanyInfoChangePage = (props) => {
                         <EditInfoTitle>정보 수정</EditInfoTitle>
                         <ProfileEditSection>
                             <ImageEditContainer>
-                                <ProfileImagePreview src={previewImage || defaultProfilePic} alt="Profile Preview" />
+                                <ProfileImagePreview src={getProfilePic()} alt="Profile Preview" />
                             </ImageEditContainer>
                             <Name>{user.providerName + "님" || 'No Name'}</Name>
                             <Email>{user.providerEmail || 'No Email'}</Email>
@@ -261,7 +274,7 @@ const CompanyInfoChangePage = (props) => {
                         <EditInfoTitle>정보 수정</EditInfoTitle>
                         <ProfileEditSection>
                             <ImageEditContainer>
-                                <ProfileImagePreview src={previewImage || defaultProfilePic} alt="Profile Preview" />
+                                <ProfileImagePreview src={previewImage || getProfilePic()} alt="Profile Preview" />
                                 <CameraIconLabel onClick={triggerFileInput}>
                                     <FontAwesomeIcon icon={faCamera} />
                                 </CameraIconLabel>

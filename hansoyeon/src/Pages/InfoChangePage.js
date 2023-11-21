@@ -16,7 +16,7 @@ const InfoChangePage = (props) => {
     const navigate = useNavigate();
     const [cookies, setCookie, removeCookie] = useCookies(['token']);
     const { user, setUser } = useUserStore();
-    const userType = cookies.userType === "company";
+    const userType = cookies.userType;
     const [step, setStep] = useState(1);
 
     const [userPassword, setUserPassword] = useState('');
@@ -67,14 +67,6 @@ const InfoChangePage = (props) => {
             document.body.removeChild(script);
         };
     }, []);
-
-    const getProfilePicSrc = () => {
-        if (user.userProfile === "hansoyeon/src/imgs/default_profile.png" || !user.userProfile) {
-            return defaultProfilePic;
-        }
-        return user.userProfile;
-    };
-
     const handlePasswordConfirm = async () => {
         try {
             const token = cookies.token;
@@ -191,7 +183,7 @@ const InfoChangePage = (props) => {
 
             if (response.status === 200) {
                 alert('정보가 성공적으로 업데이트되었습니다.');
-                navigate("/");
+                window.location.href = "/";
             } else {
                 alert('정보 업데이트에 실패했습니다.');
             }
@@ -234,6 +226,19 @@ const InfoChangePage = (props) => {
         setUserPhone(e.target.value);
     };
 
+    const getProfilePic = () => {
+        if(userType === "company"){
+            if (user.providerProfile === "hansoyeon/src/imgs/default_profile.png" || !user.providerProfile) {
+                return defaultProfilePic;
+            }
+            return user.providerProfile;
+        }else{
+            if (user.userProfile === "hansoyeon/src/imgs/default_profile.png" || !user.userProfile) {
+                return defaultProfilePic;
+            }
+            return user.userProfile;
+        }
+    };
 
     return (
         <StyledContainer>
@@ -249,7 +254,7 @@ const InfoChangePage = (props) => {
                         <EditInfoTitle>정보 수정</EditInfoTitle>
                         <ProfileEditSection>
                             <ImageEditContainer>
-                                <ProfileImagePreview src={previewImage || defaultProfilePic} alt="Profile Preview" />
+                                <ProfileImagePreview src={getProfilePic()} alt="Profile Preview" />
                             </ImageEditContainer>
                             <Name>{user.userName + "님" || 'No Name'}</Name>
                             <Email>{user.userEmail || 'No Email'}</Email>
@@ -274,7 +279,7 @@ const InfoChangePage = (props) => {
                         <EditInfoTitle>정보 수정</EditInfoTitle>
                         <ProfileEditSection>
                             <ImageEditContainer>
-                                <ProfileImagePreview src={previewImage || defaultProfilePic} alt="Profile Preview" />
+                                <ProfileImagePreview src={previewImage || getProfilePic()} alt="Profile Preview" />
                                 <CameraIconLabel onClick={triggerFileInput}>
                                     <FontAwesomeIcon icon={faCamera} />
                                 </CameraIconLabel>
