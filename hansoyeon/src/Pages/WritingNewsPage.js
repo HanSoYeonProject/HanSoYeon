@@ -77,65 +77,65 @@ const WritingNewsPage = () => {
 };
 
 const Container = styled.div`
-      display: flex;
-      flex: 1;
-      height: 700px;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-    `
+  display: flex;
+  flex: 1;
+  height: 700px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`
 
 const MiddleContainer = styled.div`
-      display: flex;
-      flex-direction: column;
-      flex: 1;
-      width: 800px;
-      height: 500px;
-    `
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  width: 800px;
+  height: 500px;
+`
 
 const NoticeTitleContainer = styled.div`
-      font-size: 40px;
-      font-weight: 700;
-      width: 800px;
-      display: flex;
-      margin-bottom: 1rem;
-    `
+  font-size: 40px;
+  font-weight: 700;
+  width: 800px;
+  display: flex;
+  margin-bottom: 1rem;
+`
 const Title = styled.div`
-      display: flex;
-      flex: 1;
-      font-size: 20px;
-      align-items: center;
+  display: flex;
+  flex: 1;
+  font-size: 20px;
+  align-items: center;
 
-      input {
-        width: 700px;
-        margin-left: 1rem;
-      }
-    `
+  input {
+    width: 700px;
+    margin-left: 1rem;
+  }
+`
 
 const WriterContainer = styled.div`
-      display: flex;
-      font-size: 20px;
-      flex: 1;
-      align-items: center;
-    `
+  display: flex;
+  font-size: 20px;
+  flex: 1;
+  align-items: center;
+`
 
 const ContentContainer = styled.div`
-      display: flex;
-      flex: 7;
-      font-size: 20px;
-      align-items: center;
+  display: flex;
+  flex: 7;
+  font-size: 20px;
+  align-items: center;
 
-      textarea {
-        width: 700px;
-        height: 350px;
-        margin-left: 1rem;
-      }
-    `
+  textarea {
+    width: 700px;
+    height: 350px;
+    margin-left: 1rem;
+  }
+`
 const ButtonContainer = styled.div`
-      display: flex;
-      justify-content: flex-end;
-      margin-right: 1rem;
-    `
+  display: flex;
+  justify-content: flex-end;
+  margin-right: 1rem;
+`
 const SubmitButton = styled.button`
   display: flex;
   justify-content: center;
