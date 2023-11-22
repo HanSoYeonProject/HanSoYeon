@@ -266,7 +266,7 @@ const BottomCenterContainer = styled.div`
     font-weight: 700;
   }
   h3 {
-    font-size: 28px;
+    font-size: 20px;
     font-weight: 600;
   }
 `;
