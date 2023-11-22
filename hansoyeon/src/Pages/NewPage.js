@@ -4,6 +4,9 @@ import winter from '../imgs/winter.jpg';
 import axios from 'axios';
 import { XMLParser } from 'fast-xml-parser';
 import noImage from "../imgs/noImage.png"
+import banner from "../imgs/banner.png"
+import banner2 from "../imgs/banner2.png"
+import banner3 from "../imgs/banner3.png"
 
 const NewPage = (props) => {
 
@@ -24,8 +27,11 @@ const NewPage = (props) => {
     const [localNum, setLocalNum] = useState("1");
     const [detailNum, setDetailNum] = useState("1");
 
+    const [modalVisible, setModalVisible] = useState(false);
+    const [selectedSpot, setSelectedSpot] = useState(null);
+
     // 라디오 버튼 상태
-    const [selectedContentType, setSelectedContentType] = useState('12');
+    const [selectedContentType, setSelectedContentType] = useState("12");
 
     const sidoOptions = [
         "시/도 선택", "서울특별시", "인천광역시", "대전광역시", "광주광역시",
@@ -188,14 +194,15 @@ const NewPage = (props) => {
     const serviceKey = 'YRUALCBQQWvU6w/tG7ZkUtWtjAeaO9bJjyummGjvfF9SjR0QYO+CRveierZlwe97v5toXybLb6aoFCl1sZ8q4Q==';
 
     useEffect(() => {
+        fetchContentData(searchContentKeyword, pageContentNo);
         fetchLocalData(keyword, pageNo);
     }, [pageNo]);
 
     const fetchContentData = async (contentTypeCode, pageNo, retryCount = 0) => {
         try {
             const encodedServiceKey = encodeURIComponent(serviceKey);
-            const encodedKeyword = encodeURIComponent(searchKeyword || "서울");
-            const url = `http://apis.data.go.kr/B551011/KorService1/searchKeyword1?serviceKey=${encodedServiceKey}&MobileApp=AppTest&MobileOS=ETC&pageNo=${pageContentNo}&numOfRows=12&listYN=Y&contentTypeId=${selectedContentType}&keyword=${encodedKeyword}`;
+            const encodedKeyword = encodeURIComponent(searchKeyword || "가");
+            const url = `http://apis.data.go.kr/B551011/KorService1/searchKeyword1?serviceKey=${encodedServiceKey}&MobileApp=AppTest&MobileOS=ETC&pageNo=${pageContentNo}&numOfRows=12&arrange=O&listYN=Y&contentTypeId=${selectedContentType}&keyword=${encodedKeyword}`;
             const response = await axios.get(url);
 
             const parser = new XMLParser();
@@ -223,7 +230,7 @@ const NewPage = (props) => {
     const fetchLocalData = async (searchKeyword, pageNo, retryCount = 0) => {
         try {
             const encodedServiceKey = encodeURIComponent(serviceKey);
-            const url = `http://apis.data.go.kr/B551011/KorService1/areaBasedList1?serviceKey=${encodedServiceKey}&pageNo=${pageNo}&numOfRows=12&MobileApp=AppTest&MobileOS=ETC&arrange=A&areaCode=${localNum}&sigunguCode=${detailNum}`;
+            const url = `http://apis.data.go.kr/B551011/KorService1/areaBasedList1?serviceKey=${encodedServiceKey}&pageNo=${pageNo}&numOfRows=12&MobileApp=AppTest&MobileOS=ETC&arrange=O&areaCode=${localNum}&sigunguCode=${detailNum}`;
             const response = await axios.get(url);
 
             const parser = new XMLParser();
@@ -300,80 +307,47 @@ const NewPage = (props) => {
         );
     };
 
+    const handleGridItemClick = (spot) => {
+        setSelectedSpot(spot);
+        setModalVisible(true);
+    };
+
+    const Modal = ({ spot, onClose }) => {
+        return (
+            <ModalContainer>
+                <ModalContent>
+                    <ModalTitle>{spot.title}</ModalTitle>
+                    <ModalImage src={spot.firstimage || noImage} alt={spot.title} />
+                    <ModalText>주소 : {spot.addr1}</ModalText>
+                    {spot.addr2 && <ModalText>{spot.addr2}</ModalText>}
+
+                    <CloseButton onClick={onClose}>닫기</CloseButton>
+                </ModalContent>
+            </ModalContainer>
+        );
+    };
+
+
     const renderTabContent = () => {
         switch (activeTab) {
             case 1:
                 return (
                     <>
                         <TopContainer>
-                            <TopImage className="NewCourse" alt="Title" src={winter} />
+                            <MiddleContainer>
+                                <MiddleBottomContainer>
+                                    <NewCourseContainer>
+                                        <NewCourseTitle>테마별 코스</NewCourseTitle>
+                                    </NewCourseContainer>
+                                </MiddleBottomContainer>
+                            </MiddleContainer>
                         </TopContainer>
-                        <MiddleContainer>
-                            <MiddleBottomContainer>
-                                <NewCourseContainer>
-                                    <NewCourseTitle>신규 코스</NewCourseTitle>
-                                </NewCourseContainer>
-                            </MiddleBottomContainer>
-                        </MiddleContainer>
                         <BottomContainer>
                             <MenuContainer>
                                 <MenuTitle>
-                                    <TabButton onClick={() => {handleTabClick(1);}} className={activeTab === 1 ? 'active' : ''}>신규 코스</TabButton>
-                                    <TabButton onClick={() => {handleTabClick(2);}} className={activeTab === 2 ? 'active' : ''}>테마별 코스</TabButton>
-                                    <TabButton onClick={() => {handleTabClick(3);}} className={activeTab === 3 ? 'active' : ''}>지역별 코스</TabButton>
-                                    <TabButton onClick={() => {handleTabClick(4);}} className={activeTab === 4 ? 'active' : ''}>추천 코스</TabButton>
-                                </MenuTitle>
-                            </MenuContainer>
-                            <SmallTitleContainer>
-                                <SmallTitle>
-                                    <SmallTitleContent>[차 한잔으로 완성되는 휴식, 김포다도박물관]</SmallTitleContent>
-                                </SmallTitle>
-                                <SmallTag>{/* 이부분에 InputSkill 추가하면됨 */}</SmallTag>
-                            </SmallTitleContainer>
-                            <ContentContainer>
-                                <ContentTitleContainer>
-                                    <ContentSmallTitleContainer>모집 일정</ContentSmallTitleContainer>
-                                </ContentTitleContainer>
-                                <ContentMainContainer>
-                                    <ContentMainTextContainer>
-                                        <ContentTitle>
-                                            <h2>웹 디자이너</h2>
-                                            <h3>(경력)</h3>
-                                        </ContentTitle>
-                                        <ContentMemory>
-                                            <h2>이런 일을 해요</h2>
-                                            <ul>
-                                                <li>11</li>
-                                                <li>22</li>
-                                                <li>33</li>
-                                            </ul>
-                                        </ContentMemory>
-                                    </ContentMainTextContainer>
-                                </ContentMainContainer>
-                            </ContentContainer>
-                        </BottomContainer>
-                    </>
-                );
-            case 2:
-                return (
-                    <>
-                        <TopContainer>
-                            <TopImage className="NewCourse" alt="Title" src={winter} />
-                        </TopContainer>
-                        <MiddleContainer>
-                            <MiddleBottomContainer>
-                                <NewCourseContainer>
-                                    <NewCourseTitle>테마별 코스</NewCourseTitle>
-                                </NewCourseContainer>
-                            </MiddleBottomContainer>
-                        </MiddleContainer>
-                        <BottomContainer>
-                            <MenuContainer>
-                                <MenuTitle>
-                                    <TabButton onClick={() => {handleTabClick(1);}} className={activeTab === 1 ? 'active' : ''}>신규 코스</TabButton>
-                                    <TabButton onClick={() => {handleTabClick(2);}} className={activeTab === 2 ? 'active' : ''}>테마별 코스</TabButton>
-                                    <TabButton onClick={() => {handleTabClick(3);}} className={activeTab === 3 ? 'active' : ''}>지역별 코스</TabButton>
-                                    <TabButton onClick={() => {handleTabClick(4);}} className={activeTab === 4 ? 'active' : ''}>추천 코스</TabButton>
+                                    <TabButton onClick={() => {handleTabClick(1);}} className={activeTab === 1 ? 'active' : ''}>테마별 코스</TabButton>
+                                    <TabButton onClick={() => {handleTabClick(2);}} className={activeTab === 2 ? 'active' : ''}>지역별 코스</TabButton>
+                                    <TabButton onClick={() => {handleTabClick(3);}} className={activeTab === 3 ? 'active' : ''}>나만의 코스</TabButton>
                                 </MenuTitle>
                             </MenuContainer>
                         </BottomContainer>
@@ -387,8 +361,8 @@ const NewPage = (props) => {
                             <GridContainer>
                                 {Array.isArray(searchResults) && searchResults.length > 0 ? (
                                     searchResults.map((spot, index) => (
-                                        <GridItem key={index}>
-                                            <h3>{spot.title}</h3>
+                                        <GridItem key={index} onClick={() => handleGridItemClick(spot)}>
+                                            <GridTitle>{spot.title}</GridTitle>
                                             {spot.firstimage && <StyledImage src={spot.firstimage} alt={spot.title} />}
                                             {!spot.firstimage && <StyledImage src={noImage} alt="No image available" />}
                                         </GridItem>
@@ -397,6 +371,10 @@ const NewPage = (props) => {
                                     <p>Loading...</p>
                                 )}
                             </GridContainer>
+
+                            {modalVisible && selectedSpot && (
+                                <Modal spot={selectedSpot} onClose={() => setModalVisible(false)} />
+                            )}
                             <PaginationContainer>
                                 <PageButton onClick={() => setContentPageNo(prev => Math.max(prev - 1, 1))}>이전</PageButton>
                                 <PageButton onClick={() => setContentPageNo(prev => prev + 1)}>다음</PageButton>
@@ -404,26 +382,24 @@ const NewPage = (props) => {
                         </AreaContentContainer>
                     </>
                 );
-            case 3:
+            case 2:
                 return (
                     <>
-                        <TopContainer>
-                            <TopImage className="NewCourse" alt="Title" src={winter} />
-                        </TopContainer>
-                        <MiddleContainer>
-                            <MiddleBottomContainer>
-                                <NewCourseContainer>
-                                    <NewCourseTitle>지역별 코스</NewCourseTitle>
-                                </NewCourseContainer>
-                            </MiddleBottomContainer>
-                        </MiddleContainer>
+                        <TopContainer2>
+                            <MiddleContainer>
+                                <MiddleBottomContainer>
+                                    <NewCourseContainer>
+                                        <NewCourseTitle>지역별 코스</NewCourseTitle>
+                                    </NewCourseContainer>
+                                </MiddleBottomContainer>
+                            </MiddleContainer>
+                        </TopContainer2>
                         <BottomContainer>
                             <MenuContainer>
                                 <MenuTitle>
-                                    <TabButton onClick={() => {handleTabClick(1);}} className={activeTab === 1 ? 'active' : ''}>신규 코스</TabButton>
-                                    <TabButton onClick={() => {handleTabClick(2);}} className={activeTab === 2 ? 'active' : ''}>테마별 코스</TabButton>
-                                    <TabButton onClick={() => {handleTabClick(3);}} className={activeTab === 3 ? 'active' : ''}>지역별 코스</TabButton>
-                                    <TabButton onClick={() => {handleTabClick(4);}} className={activeTab === 4 ? 'active' : ''}>추천 코스</TabButton>
+                                    <TabButton onClick={() => {handleTabClick(1);}} className={activeTab === 1 ? 'active' : ''}>테마별 코스</TabButton>
+                                    <TabButton onClick={() => {handleTabClick(2);}} className={activeTab === 2 ? 'active' : ''}>지역별 코스</TabButton>
+                                    <TabButton onClick={() => {handleTabClick(3);}} className={activeTab === 3 ? 'active' : ''}>나만의 코스</TabButton>
                                 </MenuTitle>
                             </MenuContainer>
                         </BottomContainer>
@@ -454,8 +430,8 @@ const NewPage = (props) => {
                             <GridContainer>
                                 {Array.isArray(touristSpots) && touristSpots.length > 0 ? (
                                     touristSpots.map((spot, index) => (
-                                        <GridItem key={index}>
-                                            <h3>{spot.title}</h3>
+                                        <GridItem key={index} onClick={() => handleGridItemClick(spot)}>
+                                            <GridTitle>{spot.title}</GridTitle>
                                             {spot.firstimage && <StyledImage src={spot.firstimage} alt={spot.title} />}
                                             {!spot.firstimage && <StyledImage src={noImage} alt={spot.title} />}
                                         </GridItem>
@@ -464,6 +440,9 @@ const NewPage = (props) => {
                                     <p>Loading...</p>
                                 )}
                             </GridContainer>
+                            {modalVisible && selectedSpot && (
+                                <Modal spot={selectedSpot} onClose={() => setModalVisible(false)} />
+                            )}
                             <PaginationContainer>
                                 <PageButton onClick={() => setPageNo(prev => Math.max(prev - 1, 1))}>이전</PageButton>
                                 <PageButton onClick={() => setPageNo(prev => prev + 1)}>다음</PageButton>
@@ -471,26 +450,24 @@ const NewPage = (props) => {
                         </AreaContentContainer>
                     </>
                 );
-            case 4:
+            case 3:
                 return (
                     <>
-                        <TopContainer>
-                            <TopImage className="NewCourse" alt="Title" src={winter} />
-                        </TopContainer>
-                        <MiddleContainer>
-                            <MiddleBottomContainer>
-                                <NewCourseContainer>
-                                    <NewCourseTitle>추천 코스</NewCourseTitle>
-                                </NewCourseContainer>
-                            </MiddleBottomContainer>
-                        </MiddleContainer>
+                        <TopContainer3>
+                            <MiddleContainer>
+                                <MiddleBottomContainer>
+                                    <NewCourseContainer>
+                                        <NewCourseTitle>나만의 코스</NewCourseTitle>
+                                    </NewCourseContainer>
+                                </MiddleBottomContainer>
+                            </MiddleContainer>
+                        </TopContainer3>
                         <BottomContainer>
                             <MenuContainer>
                                 <MenuTitle>
-                                    <TabButton onClick={() => {handleTabClick(1);}} className={activeTab === 1 ? 'active' : ''}>신규 코스</TabButton>
-                                    <TabButton onClick={() => {handleTabClick(2);}} className={activeTab === 2 ? 'active' : ''}>테마별 코스</TabButton>
-                                    <TabButton onClick={() => {handleTabClick(3);}} className={activeTab === 3 ? 'active' : ''}>지역별 코스</TabButton>
-                                    <TabButton onClick={() => {handleTabClick(4);}} className={activeTab === 4 ? 'active' : ''}>추천 코스</TabButton>
+                                    <TabButton onClick={() => {handleTabClick(1);}} className={activeTab === 1 ? 'active' : ''}>테마별 코스</TabButton>
+                                    <TabButton onClick={() => {handleTabClick(2);}} className={activeTab === 2 ? 'active' : ''}>지역별 코스</TabButton>
+                                    <TabButton onClick={() => {handleTabClick(3);}} className={activeTab === 3 ? 'active' : ''}>나만의 코스</TabButton>
                                 </MenuTitle>
                             </MenuContainer>
                         </BottomContainer>
@@ -511,18 +488,51 @@ const Container = styled.div`
   flex-direction: column;
   //background-color: blue;
 `;
+
 const TopImage = styled.img`
   height: 300px;
   width: 500px;
 `;
+
 const TopContainer = styled.div`
   //background-color: red;
+  background-image: url(${banner});
+  background-size: cover; // 배경 이미지가 컨테이너를 덮도록 설정
+  background-position: center; // 배경 이미지를 중앙에 위치시킴
+  background-repeat: no-repeat; // 배경 이미지 반복 없음
   display: flex;
   flex: 2;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 `;
+
+const TopContainer2 = styled.div`
+  //background-color: red;
+  background-image: url(${banner2});
+  background-size: cover; // 배경 이미지가 컨테이너를 덮도록 설정
+  background-position: center; // 배경 이미지를 중앙에 위치시킴
+  background-repeat: no-repeat; // 배경 이미지 반복 없음
+  display: flex;
+  flex: 2;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`;
+
+const TopContainer3 = styled.div`
+  //background-color: red;
+  background-image: url(${banner3});
+  background-size: cover; // 배경 이미지가 컨테이너를 덮도록 설정
+  background-position: center; // 배경 이미지를 중앙에 위치시킴
+  background-repeat: no-repeat; // 배경 이미지 반복 없음
+  display: flex;
+  flex: 2;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`;
+
 const MiddleContainer = styled.div`
   //background-color: orange;
   display: flex;
@@ -544,9 +554,11 @@ const NewCourseContainer = styled.div`
   align-items: center;
 `;
 const NewCourseTitle = styled.div`
-  font-size: 44px;
-  color: orange;
+  font-size: 38px;
+  color: #663399;
   font-weight: 800;
+  margin-top: 120px;
+  margin-bottom: 180px;
   //background-color: green;
 `;
 
@@ -577,7 +589,7 @@ const TabButton = styled.button`
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 24px;
+  font-size: 20px;
   margin: 0 10px;
   position: relative;
 
@@ -599,7 +611,7 @@ const TabButton = styled.button`
   // 선택된 탭의 스타일
   &.active {
     color: orange;
-    font-size: 32px;
+    font-size: 24px;
     font-weight: 700;
     &::after {
       content: "";
@@ -752,6 +764,13 @@ const GridContainer = styled.div`
   margin: 0 auto;
 `;
 
+const GridTitle = styled.h2`
+    color: #333;
+    font-size: 20px;
+    margin-bottom: 10px;
+    font-weight: bold;
+`;
+
 const GridItem = styled.div`
   border: 1px solid #ddd;
   padding: 15px;
@@ -782,7 +801,7 @@ const SearchBoxContainer = styled.div`
 
 const SearchContainer = styled.div`
   display: flex;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   justify-content: center;
 `;
 
@@ -797,6 +816,7 @@ const SearchInput = styled.input`
 
 const SearchButton = styled.button`
   padding: 10px 15px;
+  margin-left: 10px;
   border-radius: 5px;
   border: none;
   background-color: #4CAF50;
@@ -827,7 +847,6 @@ const PageButton = styled.button`
 `;
 
 const SearchResultText = styled.div`
-  margin-bottom: 10px;
   color: #333;
   font-size: 17px;
 `;
@@ -874,4 +893,60 @@ const RadioButton = styled.input`
 const RadioButtonSpan = styled.span`
 `;
 
+const ModalContainer = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+`;
+
+const ModalContent = styled.div`
+  background-color: white;
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  max-width: 500px;
+  width: 90%;
+`;
+
+const ModalImage = styled.img`
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    margin-bottom: 20px;
+`;
+
+const ModalTitle = styled.h2`
+    color: #333;
+    font-size: 24px;
+    margin-bottom: 10px;
+    font-weight: bold;
+`;
+
+const ModalText = styled.h5`
+    color: #555;
+    font-size: 16px;
+    margin: 5px 0;
+`;
+
+const CloseButton = styled.button`
+    padding: 10px 20px;
+    margin-top: 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #f44336;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    &:hover {
+        background-color: #d32f2f;
+    }
+`;
 export default NewPage;
