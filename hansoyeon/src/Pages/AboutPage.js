@@ -270,6 +270,7 @@ const BottomCenterContainer = styled.div`
     font-weight: 600;
   }
 `;
+
 const DeatailButton = styled.button`
   background-color: #EF6C00;
   color: white;

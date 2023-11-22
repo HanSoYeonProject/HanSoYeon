@@ -25,6 +25,8 @@ import InputSkill from './Components/InputSkill';
 import WritingReviewPage from "./Pages/WritingReviewPage";
 import ReviewContentPage from './Pages/ReviewContentPage';
 import AboutPolicyPage from "./Pages/AboutPolicyPage";
+import WritingRecruitPage from "./Pages/WritingRecruitPage";
+import RecruitViewPage from "./Pages/RecruitViewPage";
 
 function App() {
   return (
@@ -54,6 +56,8 @@ function App() {
             <Route path="/writeReview" element={<WritingReviewPage/>}></Route>
             <Route path="/reviewContent/:id" element={<ReviewContentPage />} />
             <Route path="/aboutPolicy" element={<AboutPolicyPage />} />
+            <Route path="/recruit/:id" element={<RecruitViewPage/>}></Route>
+            <Route path="/recruit/write" element={<WritingRecruitPage />} />
           </Routes>
         </BrowserRouter>
       </div>
