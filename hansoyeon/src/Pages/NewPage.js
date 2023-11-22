@@ -14,11 +14,18 @@ const NewPage = (props) => {
     const [searchDetailKeyword, setSearchDetailKeyword] = useState("");
     const [pageNo, setPageNo] = useState(1);
 
+    const [pageContentNo, setContentPageNo] = useState(1);
+    const [searchContentKeyword, setSearchContentKeyword] = useState("");
+    const [searchResults, setSearchResults] = useState([]);
+
     const [selectedSido, setSelectedSido] = useState('');
     const [selectedGugun, setSelectedGugun] = useState('');
     const [gugunOptions, setGugunOptions] = useState([]);
     const [localNum, setLocalNum] = useState("1");
     const [detailNum, setDetailNum] = useState("1");
+
+    // 라디오 버튼 상태
+    const [selectedContentType, setSelectedContentType] = useState('12');
 
     const sidoOptions = [
         "시/도 선택", "서울특별시", "인천광역시", "대전광역시", "광주광역시",
@@ -184,11 +191,11 @@ const NewPage = (props) => {
         fetchLocalData(keyword, pageNo);
     }, [pageNo]);
 
-    const fetchData = async (searchKeyword, pageNo, retryCount = 0) => {
+    const fetchContentData = async (contentTypeCode, pageNo, retryCount = 0) => {
         try {
             const encodedServiceKey = encodeURIComponent(serviceKey);
             const encodedKeyword = encodeURIComponent(searchKeyword || "서울");
-            const url = `http://apis.data.go.kr/B551011/KorService1/searchKeyword1?serviceKey=${encodedServiceKey}&MobileApp=AppTest&MobileOS=ETC&pageNo=${pageNo}&numOfRows=12&listYN=Y&keyword=${encodedKeyword}`;
+            const url = `http://apis.data.go.kr/B551011/KorService1/searchKeyword1?serviceKey=${encodedServiceKey}&MobileApp=AppTest&MobileOS=ETC&pageNo=${pageContentNo}&numOfRows=12&listYN=Y&contentTypeId=${selectedContentType}&keyword=${encodedKeyword}`;
             const response = await axios.get(url);
 
             const parser = new XMLParser();
@@ -196,12 +203,11 @@ const NewPage = (props) => {
 
             if (jsonObj && jsonObj.response && jsonObj.response.body && jsonObj.response.body.items) {
                 const spots = jsonObj.response.body.items.item;
-                setTouristSpots(spots);
-                setSearchKeyword(searchKeyword)
+                setSearchResults(spots);
             } else {
                 // 유효하지 않은 응답일 경우 재시도
                 if (retryCount < 3) { // 최대 3번 재시도
-                    fetchData(searchKeyword, pageNo, retryCount + 1);
+                    fetchContentData(searchKeyword, pageNo, retryCount + 1);
                 } else {
                     console.error("Invalid API response");
                 }
@@ -209,7 +215,7 @@ const NewPage = (props) => {
         } catch (error) {
             console.error('Error fetching data: ', error);
             if (retryCount < 3) {
-                fetchData(searchKeyword, pageNo, retryCount + 1);
+                fetchContentData(searchKeyword, pageNo, retryCount + 1);
             }
         }
     };
@@ -257,6 +263,41 @@ const NewPage = (props) => {
 
     const handleTabClick = (tabNumber) => {
         setActiveTab(tabNumber);
+    };
+
+    // 검색 버튼 클릭 핸들러
+    const handleSearch = () => {
+        setSearchContentKeyword()
+        fetchContentData(selectedContentType, 1); // 선택된 컨텐트 타입으로 검색
+    };
+
+    // 라디오 버튼 UI
+    const renderRadioButtons = () => {
+        const contentTypeOptions = [
+            { label: "관광지", value: "12" },
+            { label: "문화시설", value: "14" },
+            { label: "행사/공연/축제", value: "15" },
+            { label: "레포츠", value: "28" },
+            { label: "숙박", value: "32" },
+            { label: "쇼핑", value: "38" },
+            { label: "음식점", value: "39" }
+        ];
+
+        return (
+            <div>
+                {contentTypeOptions.map((option, index) => (
+                    <RadioButtonLabel key={index}>
+                        <RadioButton
+                            type="radio"
+                            name="contentType"
+                            value={option.value}
+                            onChange={() => setSelectedContentType(option.value)}
+                        />
+                        <RadioButtonSpan>{option.label}</RadioButtonSpan>
+                    </RadioButtonLabel>
+                ))}
+            </div>
+        );
     };
 
     const renderTabContent = () => {
@@ -336,6 +377,31 @@ const NewPage = (props) => {
                                 </MenuTitle>
                             </MenuContainer>
                         </BottomContainer>
+                        <AreaContentContainer>
+                            <SearchBoxContainer>
+                                <SearchContainer>
+                                    {renderRadioButtons()}
+                                    <SearchButton onClick={handleSearch}>검색</SearchButton>
+                                </SearchContainer>
+                            </SearchBoxContainer>
+                            <GridContainer>
+                                {Array.isArray(searchResults) && searchResults.length > 0 ? (
+                                    searchResults.map((spot, index) => (
+                                        <GridItem key={index}>
+                                            <h3>{spot.title}</h3>
+                                            {spot.firstimage && <StyledImage src={spot.firstimage} alt={spot.title} />}
+                                            {!spot.firstimage && <StyledImage src={noImage} alt="No image available" />}
+                                        </GridItem>
+                                    ))
+                                ) : (
+                                    <p>Loading...</p>
+                                )}
+                            </GridContainer>
+                            <PaginationContainer>
+                                <PageButton onClick={() => setContentPageNo(prev => Math.max(prev - 1, 1))}>이전</PageButton>
+                                <PageButton onClick={() => setContentPageNo(prev => prev + 1)}>다음</PageButton>
+                            </PaginationContainer>
+                        </AreaContentContainer>
                     </>
                 );
             case 3:
@@ -778,6 +844,34 @@ const StyledSelect = styled.select`
   &:hover {
     border-color: #aaa;
   }
+`;
+
+const RadioButtonLabel = styled.label`
+  display: inline-block;
+  background-color: #f0f0f0;
+  padding: 10px 20px;
+  margin: 5px;
+  border-radius: 20px;
+  border: 2px solid #ddd;
+  cursor: pointer;
+  font-weight: 500;
+
+  &:hover {
+    background-color: #e8e8e8;
+  }
+`;
+
+const RadioButton = styled.input`
+  display: none;
+
+  &:checked + span {
+    color: #0000ff;
+    font-weight: bold;
+    border-color: #4CAF50;
+  }
+`;
+
+const RadioButtonSpan = styled.span`
 `;
 
 export default NewPage;
