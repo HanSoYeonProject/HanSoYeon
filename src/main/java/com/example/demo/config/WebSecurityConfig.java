@@ -34,7 +34,7 @@ public class WebSecurityConfig {
                 .httpBasic().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests()
-                .antMatchers("/", "/api/auth/**", "/api/createAnnouncement","/api/announcements/**" ).permitAll()
+                .antMatchers("/", "/api/auth/**", "/api/createAnnouncement","/api/announcements/**", "/api/reviews", "/api/uploadProfileImage" ).permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

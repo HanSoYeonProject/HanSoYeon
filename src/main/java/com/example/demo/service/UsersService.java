@@ -82,12 +82,12 @@ public class UsersService {
     public ResponseEntity<?> updateUserInfo(String userId, UserUpdateDto userUpdateDto) {
         UsersEntity userEntity = usersRepository.findByUserId(userId);
         if (userEntity != null) {
-            // Update user information
             userEntity.setUserInfo(userUpdateDto.getUserInfo());
             userEntity.setUserAddress(userUpdateDto.getUserAddress());
             userEntity.setUserPrefer(userUpdateDto.getUserPrefer());
             userEntity.setUserGender(userUpdateDto.getUserGender());
             userEntity.setUserPhone(userUpdateDto.getUserPhone());
+            userEntity.setUserProfile(userUpdateDto.getUserProfile());
 
             usersRepository.save(userEntity);
             return ResponseEntity.ok("User information updated successfully");

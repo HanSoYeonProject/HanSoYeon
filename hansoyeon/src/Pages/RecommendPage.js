@@ -212,6 +212,7 @@ const Container = styled.div`
   flex: 1;
   height: 100vh;
   flex-direction: column;
+
   //background-color: blue;
 `;
 const TopImage = styled.img`

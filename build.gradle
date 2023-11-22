@@ -39,6 +39,11 @@ dependencies {
 	// build.gradle
 	implementation 'ch.qos.logback:logback-classic:1.2.9'
 
+	// GCS
+	implementation group: 'org.springframework.cloud', name: 'spring-cloud-gcp-starter', version: '1.2.8.RELEASE'
+	implementation group: 'org.springframework.cloud', name: 'spring-cloud-gcp-storage', version: '1.2.8.RELEASE'
+	implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+	implementation 'org.json:json:20230227'
 }
 
 tasks.named('test') {

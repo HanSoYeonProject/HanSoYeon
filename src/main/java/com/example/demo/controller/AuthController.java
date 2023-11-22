@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.*;
+import com.example.demo.entity.ProvidersEntity;
 import com.example.demo.entity.UsersEntity;
 import com.example.demo.security.TokenProvider;
 import com.example.demo.service.ProvidersService;
@@ -118,6 +119,18 @@ public class AuthController {
         return ResponseEntity.ok(user);
     }
 
+    @GetMapping("/currentCompany")
+    public ResponseEntity<?> getCurrentCompany(@RequestHeader("Authorization") String token) {
+        // Bearer 토큰에서 실제 토큰을 추출합니다.
+        String jwtToken = token.split(" ")[1];
+
+        // TokenProvider를 사용하여 토큰에서 이메일을 추출합니다.
+        String providerId = tokenProvider.getIdFromToken(jwtToken);
+
+        ProvidersEntity user = providersService.getUserById(providerId);
+        return ResponseEntity.ok(user);
+    }
+
     @PostMapping("/verifyPassword")
     public ResponseEntity<?> verifyPassword(@RequestBody Map<String, String> request) {
         String token = request.get("token"); // 토큰 가져오기
@@ -139,6 +152,32 @@ public class AuthController {
         String userPassword = request.get("userPassword");
 
         boolean isValid = usersService.verifyUserPassword(userId, userPassword);
+
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("isValid", isValid);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/verifyPasswordCompany")
+    public ResponseEntity<?> verifyPasswordCompany(@RequestBody Map<String, String> request) {
+        String token = request.get("token"); // 토큰 가져오기
+
+        // 토큰 값이 null이거나 비어 있으면 오류 응답을 반환합니다.
+        if (token == null || token.isEmpty()) {
+            return ResponseEntity.badRequest().body("Token is missing or empty: " + token);
+        }
+
+        String jwtToken = null;
+        if (token.contains(" ")) {
+            jwtToken = token.split(" ")[1];
+        } else {
+            jwtToken = token;
+        }
+
+        String providerId = tokenProvider.getIdFromToken(jwtToken); // 토큰에서 이메일 주소 추출
+        String providerPassword = request.get("providerPassword");
+
+        boolean isValid = providersService.verifyProviderPassword(providerId, providerPassword);
 
         Map<String, Boolean> response = new HashMap<>();
         response.put("isValid", isValid);
@@ -173,6 +212,16 @@ public class AuthController {
 
         return usersService.updateUserInfo(userId, userUpdateDto);
     }
+
+    @PostMapping("/updateCompanyInfo")
+    public ResponseEntity<?> updateCompanyInfo(@RequestBody CompanyUpdateDto companyUpdateDto,
+                                               @RequestHeader("Authorization") String tokenHeader) {
+        String token = tokenHeader.split(" ")[1];
+        String providerId = tokenProvider.getIdFromToken(token);
+
+        return providersService.updateCompanyInfo(providerId, companyUpdateDto);
+    }
+
 
 
 

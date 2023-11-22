@@ -16,7 +16,7 @@ const InfoChangePage = (props) => {
     const navigate = useNavigate();
     const [cookies, setCookie, removeCookie] = useCookies(['token']);
     const { user, setUser } = useUserStore();
-    const userType = cookies.userType === "company";
+    const userType = cookies.userType;
     const [step, setStep] = useState(1);
 
     const [userPassword, setUserPassword] = useState('');
@@ -46,7 +46,10 @@ const InfoChangePage = (props) => {
                     Authorization: `Bearer ${cookies.token}`
                 }
             }).then(response => {
+                console.log(cookies.token)
+                // 토큰이 유효한 경우
                 const fetchedUser = response.data;
+                console.log(fetchedUser)
                 setUser(fetchedUser);
             }).catch(error => {
                 // 토큰이 유효하지 않은 경우
@@ -64,14 +67,6 @@ const InfoChangePage = (props) => {
             document.body.removeChild(script);
         };
     }, []);
-
-    const getProfilePicSrc = () => {
-        if (user.userProfile === "hansoyeon/src/imgs/default_profile.png" || !user.userProfile) {
-            return defaultProfilePic;
-        }
-        return user.userProfile;
-    };
-
     const handlePasswordConfirm = async () => {
         try {
             const token = cookies.token;
@@ -151,21 +146,21 @@ const InfoChangePage = (props) => {
         if (!profileImage) return null;
 
         const formData = new FormData();
-        formData.append('file', profileImage);
+        formData.append('profileImage', profileImage);
 
         try {
-            const response = await axios.post('http://localhost:8050/api/upload', formData, {
+            const response = await axios.post('http://localhost:8050/api/uploadProfileImage', formData, {
                 headers: {
-                    'Content-Type': 'multipart/form-data',
-                    Authorization: `Bearer ${cookies.token}`,
-                },
+                    'Content-Type': 'multipart/form-data'
+                }
             });
-            return response.data.imageUrl; // Assuming response contains the URL of the uploaded image
+            return response.data.imageUrl;
         } catch (error) {
             console.error('Error uploading profile image:', error);
             return null;
         }
     };
+
 
     const handleSaveChanges = async () => {
         const imageUrl = await uploadProfileImage();
@@ -176,18 +171,19 @@ const InfoChangePage = (props) => {
             userPrefer: userPrefer,
             userGender: userGender,
             userPhone: userPhone,
-            userProfileImage: imageUrl
+            userProfile: imageUrl
         };
 
         try {
             const response = await axios.post('http://localhost:8050/api/auth/updateUserInfo', updatedInfo, {
                 headers: {
-                    Authorization: `Bearer ${cookies.token}`,
-                },
+                    Authorization: `Bearer ${cookies.token}`
+                }
             });
 
             if (response.status === 200) {
                 alert('정보가 성공적으로 업데이트되었습니다.');
+                window.location.href = "/";
             } else {
                 alert('정보 업데이트에 실패했습니다.');
             }
@@ -196,6 +192,7 @@ const InfoChangePage = (props) => {
             alert('업데이트 중 오류가 발생했습니다.');
         }
     };
+
 
     const goToNextStep = () => {
         setStep(2);
@@ -229,6 +226,19 @@ const InfoChangePage = (props) => {
         setUserPhone(e.target.value);
     };
 
+    const getProfilePic = () => {
+        if(userType === "company"){
+            if (user.providerProfile === "hansoyeon/src/imgs/default_profile.png" || !user.providerProfile) {
+                return defaultProfilePic;
+            }
+            return user.providerProfile;
+        }else{
+            if (user.userProfile === "hansoyeon/src/imgs/default_profile.png" || !user.userProfile) {
+                return defaultProfilePic;
+            }
+            return user.userProfile;
+        }
+    };
 
     return (
         <StyledContainer>
@@ -236,7 +246,7 @@ const InfoChangePage = (props) => {
                 <ImageBox>
                     <LargeImage src={logo} alt="logo" />
                 </ImageBox>
-                {passwordConfirmed === false && userType === true && (
+                {passwordConfirmed === false && (
                     <InfoBox>
                         <BackButton onClick={handleBack}>
                             <FontAwesomeIcon icon={faArrowLeft} />
@@ -244,7 +254,7 @@ const InfoChangePage = (props) => {
                         <EditInfoTitle>정보 수정</EditInfoTitle>
                         <ProfileEditSection>
                             <ImageEditContainer>
-                                <ProfileImagePreview src={getProfilePicSrc || defaultProfilePic} alt="Profile Preview" />
+                                <ProfileImagePreview src={getProfilePic()} alt="Profile Preview" />
                             </ImageEditContainer>
                             <Name>{user.userName + "님" || 'No Name'}</Name>
                             <Email>{user.userEmail || 'No Email'}</Email>
@@ -261,7 +271,7 @@ const InfoChangePage = (props) => {
                         </ProfileEditSection>
                     </InfoBox>
                 )}
-                {passwordConfirmed === false && userType === false && (
+                {passwordConfirmed && step === 1 && (
                     <InfoBox>
                         <BackButton onClick={handleBack}>
                             <FontAwesomeIcon icon={faArrowLeft} />
@@ -269,32 +279,7 @@ const InfoChangePage = (props) => {
                         <EditInfoTitle>정보 수정</EditInfoTitle>
                         <ProfileEditSection>
                             <ImageEditContainer>
-                                <ProfileImagePreview src={previewImage || defaultProfilePic} alt="Profile Preview" />
-                            </ImageEditContainer>
-                            <Name>{user.userName + "님" || 'No Name'}</Name>
-                            <Email>{user.userEmail || 'No Email'}</Email>
-                            <Divider3>비밀번호 확인</Divider3>
-                            <InfoSection>
-                                <PasswordInput
-                                    type="password"
-                                    value={userPassword}
-                                    onChange={(e) => setUserPassword(e.target.value)}
-                                    placeholder="비밀번호를 입력하세요"
-                                />
-                            </InfoSection>
-                            <SaveChangesButton onClick={handlePasswordConfirm}>확인</SaveChangesButton>
-                        </ProfileEditSection>
-                    </InfoBox>
-                )}
-                {passwordConfirmed && userType === false && step === 1 && (
-                    <InfoBox>
-                        <BackButton onClick={handleBack}>
-                            <FontAwesomeIcon icon={faArrowLeft} />
-                        </BackButton>
-                        <EditInfoTitle>정보 수정</EditInfoTitle>
-                        <ProfileEditSection>
-                            <ImageEditContainer>
-                                <ProfileImagePreview src={previewImage || defaultProfilePic} alt="Profile Preview" />
+                                <ProfileImagePreview src={previewImage || getProfilePic()} alt="Profile Preview" />
                                 <CameraIconLabel onClick={triggerFileInput}>
                                     <FontAwesomeIcon icon={faCamera} />
                                 </CameraIconLabel>
@@ -316,7 +301,7 @@ const InfoChangePage = (props) => {
                         <SaveChangesButton onClick={goToNextStep}>다음</SaveChangesButton>
                     </InfoBox>
                 )}
-                {passwordConfirmed && userType === false && step === 2 && (
+                {passwordConfirmed && step === 2 && (
                     <InfoBox>
                         <BackButton onClick={goToPreviousStep}>
                             <FontAwesomeIcon icon={faArrowLeft} />
@@ -379,7 +364,7 @@ const BoxContainer = styled.div`
   justify-content: space-around;
   align-items: center;
   width: 100%;
-  max-width: 1000px; 
+  max-width: 1000px;
   margin: 0 auto;
 `;
 
@@ -396,8 +381,8 @@ const InfoBox = styled.div`
 const EditInfoTitle = styled.h2`
   text-align: center;
   margin-top: 0;
-  margin-bottom: 20px; 
-  color: #381E1F; 
+  margin-bottom: 20px;
+  color: #381E1F;
   font-size: 25px;
   font-weight: bold;
 `;
@@ -436,7 +421,7 @@ const LargeImage = styled.img`
   max-width: 100%;
   max-height: 90%;
   border-radius: 10px;
-  object-fit: cover; 
+  object-fit: cover;
 `;
 
 const Name = styled.h2`
@@ -530,20 +515,20 @@ const PasswordInput = styled.input`
 
 const SelfIntroductionTextarea = styled.textarea`
   width: 100%;
-  height: 120px; 
+  height: 120px;
   padding: 10px;
   border-radius: 10px;
   border: 1px solid #ccc;
   resize: none;
   font-size: 15px;
   color: #333;
-  background-color: #f7f7f7; 
+  background-color: #f7f7f7;
   margin-top: 10px;
   margin-bottom: 10px;
 
   &:focus {
-    outline: none; 
-    border-color: #F7E600; 
+    outline: none;
+    border-color: #F7E600;
   }
 `;
 const ProfileEditSection = styled.div`
@@ -584,10 +569,10 @@ const CameraIconLabel = styled.label`
   bottom: 0;
   transform: translate(50%, 50%);
   cursor: pointer;
-  background-color: white; 
+  background-color: white;
   border-radius: 50%;
   padding: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); 
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 `;
 
 const HiddenFileInput = styled.input`
@@ -599,18 +584,18 @@ const AddressContainer = styled.div`
   align-items: center;
   justify-content: center;
   margin-bottom: 10px;
-  width: 80%; 
+  width: 80%;
 `;
 
 const SearchButton = styled.button`
-  margin-left: 10px; 
-  padding: 8px 12px; 
-  border: 1px solid #ccc; 
+  margin-left: 10px;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
   background-color: white;
   cursor: pointer;
 
   &:hover {
-    background-color: #f7f7f7; 
+    background-color: #f7f7f7;
   }
 `;
 

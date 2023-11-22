@@ -19,7 +19,8 @@ const CompanySignUpPage = () => {
         providerPasswordCheck: '',
         companyName: '',
         companyAddress: '',
-        companyTel: ''
+        companyTel: '',
+        providerProfile: ''
     });
     const [addressFields, setAddressFields] = useState({
         postalCode: '',
