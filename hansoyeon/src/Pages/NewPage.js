@@ -2,14 +2,17 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import winter from '../imgs/winter.jpg';
 import axios from 'axios';
+import { useCookies } from 'react-cookie';
+import { useUserStore } from '../stores';
 import { XMLParser } from 'fast-xml-parser';
 import noImage from "../imgs/noImage.png"
 import banner from "../imgs/banner.png"
 import banner2 from "../imgs/banner2.png"
 import banner3 from "../imgs/banner3.png"
+import {useNavigate} from "react-router-dom";
 
 const NewPage = (props) => {
-
+    const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState(1);
     const [touristSpots, setTouristSpots] = useState([]);
     const [keyword, setKeyword] = useState("");
@@ -29,6 +32,10 @@ const NewPage = (props) => {
 
     const [modalVisible, setModalVisible] = useState(false);
     const [selectedSpot, setSelectedSpot] = useState(null);
+
+    const [cookies, setCookie, removeCookie] = useCookies(['token']);
+    const {user, setUser} = useUserStore();
+    const userType = cookies.userType;
 
     // 라디오 버튼 상태
     const [selectedContentType, setSelectedContentType] = useState("12");
@@ -194,6 +201,51 @@ const NewPage = (props) => {
     const serviceKey = 'YRUALCBQQWvU6w/tG7ZkUtWtjAeaO9bJjyummGjvfF9SjR0QYO+CRveierZlwe97v5toXybLb6aoFCl1sZ8q4Q==';
 
     useEffect(() => {
+        if (cookies.token) {
+            console.log(userType)
+            if(userType === "company"){
+                axios.get('http://localhost:8050/api/auth/currentCompany', {
+                    headers: {
+                        Authorization: `Bearer ${cookies.token}`
+                    }
+                }).then(response => {
+                    console.log(cookies.token)
+                    // 토큰이 유효한 경우
+                    const fetchedUser = response.data;
+                    console.log(fetchedUser)
+                    setUser(fetchedUser);
+                }).catch(error => {
+                    // 토큰이 유효하지 않은 경우
+                    console.error("Token verification failed:", error);
+                    handleLogout();
+                });
+            }else{
+                axios.get('http://localhost:8050/api/auth/currentUser', {
+                    headers: {
+                        Authorization: `Bearer ${cookies.token}`
+                    }
+                }).then(response => {
+                    console.log(cookies.token)
+                    // 토큰이 유효한 경우
+                    const fetchedUser = response.data;
+                    console.log(fetchedUser)
+                    setUser(fetchedUser);
+                }).catch(error => {
+                    // 토큰이 유효하지 않은 경우
+                    console.error("Token verification failed:", error);
+                    handleLogout();
+                });
+            }
+        }
+    }, []);
+
+    const handleLogout = () => {
+        removeCookie('token');
+        setUser(null);
+        navigate("/");
+    };
+
+    useEffect(() => {
         fetchContentData(searchContentKeyword, pageContentNo);
         fetchLocalData(keyword, pageNo);
     }, [pageNo]);
@@ -313,10 +365,107 @@ const NewPage = (props) => {
     };
 
     const Modal = ({ spot, onClose }) => {
+        const [isFavorited, setIsFavorited] = useState(false);
+
+        useEffect(() => {
+            const checkFavoriteStatus = async () => {
+                try {
+                    const userId = user.userId;
+                    const response = await axios.get(`http://localhost:8050/api/cos/check/${encodeURIComponent(spot.title)}/${userId}`, {
+                        headers: {
+                            Authorization: `Bearer ${cookies.token}`
+                        }
+                    });
+                    if (response.data.isFavorited) {
+                        setIsFavorited(true);
+                    }
+                } catch (error) {
+                    console.error('Error checking favorite status:', error);
+                }
+            };
+
+            checkFavoriteStatus();
+        }, [spot.title]);
+
+
+        const uploadImage = async (image) => {
+            const formData = new FormData();
+            formData.append('image', image);
+
+            try {
+                const response = await axios.post('http://localhost:8050/api/uploadProfileImage', formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                });
+                return response.data.imageUrl;
+            } catch (error) {
+                console.error('Error uploading image:', error);
+                return null;
+            }
+        };
+
+        const deleteFavoriteSpot = async () => {
+            try {
+                await axios.post(`http://localhost:8050/api/cos/delete`,
+                    { title: encodeURIComponent(spot.title) },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${cookies.token}`
+                        }
+                    }
+                );
+            } catch (error) {
+                console.error('Error deleting favorite spot:', error);
+            }
+        };
+
+
+        const saveFavoriteSpot = async (imageUrl) => {
+            const courseData = {
+                cosUserId: user.userId, // 현재 로그인한 사용자 ID
+                cosTitle: spot.title,
+                cosPicture: imageUrl,
+                cosAddress: spot.addr1 + " " + spot.addr2
+            };
+
+            try {
+                await axios.post('http://localhost:8050/api/cos/add', courseData, {
+                    headers: {
+                        Authorization: `Bearer ${cookies.token}`
+                    }
+                });
+            } catch (error) {
+                console.error('Error saving favorite spot:', error);
+            }
+        };
+
+        const toggleFavorite = async () => {
+            setIsFavorited(!isFavorited);
+
+            if (!isFavorited) {
+                let imageUrl = spot.firstimage;
+                if (imageUrl) {
+                    const uploadedImageUrl = await uploadImage(imageUrl);
+                    if (uploadedImageUrl) {
+                        imageUrl = uploadedImageUrl;
+                    }
+                }
+                await saveFavoriteSpot(imageUrl);
+            }else {
+                await deleteFavoriteSpot();
+            }
+        };
+
         return (
             <ModalContainer>
                 <ModalContent>
-                    <ModalTitle>{spot.title}</ModalTitle>
+                    <ModalHeader>
+                        <ModalTitle>{spot.title}</ModalTitle>
+                        <FavoriteButton onClick={toggleFavorite}>
+                            {isFavorited ? '♥' : '♡'}
+                        </FavoriteButton>
+                    </ModalHeader>
                     <ModalImage src={spot.firstimage || noImage} alt={spot.title} />
                     <ModalText>주소 : {spot.addr1}</ModalText>
                     {spot.addr2 && <ModalText>{spot.addr2}</ModalText>}
@@ -831,6 +980,7 @@ const PaginationContainer = styled.div`
   display: flex;
   justify-content: center;
   margin-top: 20px;
+  margin-bottom: 20px;
 `;
 
 const PageButton = styled.button`
@@ -928,6 +1078,21 @@ const ModalTitle = styled.h2`
     font-size: 24px;
     margin-bottom: 10px;
     font-weight: bold;
+`;
+
+const ModalHeader = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+`;
+
+const FavoriteButton = styled.button`
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 24px;
+    color: red;
+    margin-bottom: 10px;
 `;
 
 const ModalText = styled.h5`
