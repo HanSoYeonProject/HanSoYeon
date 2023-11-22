@@ -1,9 +1,14 @@
 import React from "react";
 import styled from "styled-components";
 import {useNavigate} from "react-router-dom";
-import About from "../imgs/About.png";
-import carina from "../imgs/carina.jpg";
-import jijele from "../imgs/jijele.jpeg";
+import aboutLogo from "../imgs/aboutLogo.jpg";
+import about1 from "../imgs/about1.png";
+import about2 from "../imgs/about2.png";
+import about3 from "../imgs/about3.png";
+import about4 from "../imgs/about4.jpg";
+import about5 from "../imgs/about5.jpg";
+import about6 from "../imgs/about6.jpg";
+
 import Flow1 from "../imgs/Flow1.png";
 import Flow2 from "../imgs/Flow2.png";
 import Flow3 from "../imgs/Flow3.png";
@@ -15,7 +20,7 @@ const AboutPage = () => {
     const navigate = useNavigate();
 
     const Detailbutton = () => {
-        navigate("/");
+        navigate("/aboutPolicy");
     }
 
     const Flowbutton = () => {
@@ -28,7 +33,7 @@ const AboutPage = () => {
             <AboutContainer>
                 <TopAboutContainer>
                     <ImageContainer>
-                        <img src={About} alt="About Image" />
+                        <img src={aboutLogo} alt="About Image" />
                         <OverlayTextContainer>
                             <OverlayTextTop>
                                 <h2>한소연이란 무엇입니까?</h2>
@@ -55,17 +60,17 @@ const AboutPage = () => {
                     <h2 style={{color:"#EF6C00"}}>매일의 특징</h2>
                 <BigFeatureContainer>
                     <FirstFeatureContainer>
-                        <img src={About} alt="About Image" />
+                        <img src={about1} alt="about1 Image" />
                         <h2>도움(일)을 하고 <br/>돈을 벌 수 있습니다.</h2>
                         <h3>※최저임금 이상의 보상을 얻을 수 있습니다.</h3>
                     </FirstFeatureContainer>
                     <FirstFeatureContainer>
-                        <img src={carina} alt="Carina Image" />
+                        <img src={about2} alt="about2 Image" />
                         <h2>지역 여행</h2>
                         <h3>※교통비 지급은 없습니다.</h3>
                     </FirstFeatureContainer>
                     <FirstFeatureContainer>
-                        <img src={jijele} alt="Jiejele Image" />
+                        <img src={about3} alt="about3 Image" />
                         <h2>무료로 숙박을 제공해주는 <br/> 지역도 매칭해 드립니다.</h2>
                         <h3>※일부 예외도 있습니다.</h3>
                     </FirstFeatureContainer>
@@ -75,29 +80,38 @@ const AboutPage = () => {
                 <h2 style={{color:"#EF6C00", fontSize:"28px", fontWeight:"700"}}>조건 포인트</h2>
                 <BottomBigFeatureContainer>
                     <FirstFeatureContainer>
-                        <img src={About} alt="About Image" />
+                        <img src={about5} alt="about4 Image" />
                         <h2>도움을 통해 <br/>지역사람과 관계성이 있다!</h2>
                         <h3>지역에는 다양한 곤란이 넘치고 있습니다.</h3>
                         <h3>지역에서는 인력 부족으로 곤란을 <br/>겪고 있기 때문에 <br/>항상 진심으로 도움이 되어 관계치를 <br/>유지할 수 있습니다.</h3>
                     </FirstFeatureContainer>
                     <FirstFeatureContainer>
-                        <img src={carina} alt="Carina Image" />
+                        <img src={about6} alt="about5 Image" />
                         <h2>지역 여행</h2>
                         <h3>※교통비 지급은 없습니다.</h3>
                     </FirstFeatureContainer>
                     <FirstFeatureContainer>
-                        <img src={jijele} alt="Jiejele Image" />
+                        <img src={about6} alt="about6 Image" />
                         <h2>무료로 숙박을 제공해주는 <br/> 지역도 매칭해 드립니다.</h2>
                         <h3>※일부 예외도 있습니다.</h3>
                     </FirstFeatureContainer>
                 </BottomBigFeatureContainer>
             </BottomFeatureContainer>
+            <SocialContainer>
+                <SocialBigContainer>
+                    <h2>안녕하세요!</h2>
+                    <h4>동해물과 백두산이 마르고닳도록 하느님이 보우하사 우리나라만세 무궁화 삼천리 화려강산 대한사람 대한으로 길이 보전하세</h4>
+                    <h4>남산 위에 저 소나무 철갑을 두른듯 바람서리 분별함은 우리 기상일세 무궁화 삼천리 화려강산 대한사람 대한으로 길이 보전하세</h4>
+                    <h4>가을 하늘 공활한데 높고 구름 없이 밝은 달은 우리 가삼 일편 단심일세 무궁화 삼천리 화려강산 대한사람 대한으로 길이 보전하세</h4>
+                    <h4>이 기상과 이 맘으로 충성을 다하여 괴로우나 즐거우나 나라 사랑하세 무궁화 삼천리 화려강산 대한사람 대한으로 길이 보전하세</h4>
+                </SocialBigContainer>
+            </SocialContainer>
             <FlowContainer>
                 <FlowBigContainer>
-                    <TopText>
-                <h2>매번 참가까지의 흐름</h2>
-                    </TopText>
                     <FlowCenterContainer>
+                        <TopText>
+                            <h2>매번 참가까지의 흐름</h2>
+                        </TopText>
                         <BBContainer>
                         <div className={"Image1"} style={{display:"flex",flexDirection:"column",justifyContent:"center",alignItems:"center",width: "300px", height: "300px"}}>
                             <img src={Flow1} alt="Flow1 Image" style={{borderBottom:"2px dashed red",width: "200px", height: "150px"}}/>
@@ -122,22 +136,12 @@ const AboutPage = () => {
                             <h4 style={{fontSize:"18px", fontWeight:"600"}}>출발일이 오면, 매칭한 굉장히 먼저 출발!</h4>
                         </div>
                         </BBContainer>
+                        <FlowButtonContainer>
+                            <FlowButton onClick={Flowbutton}>매번 시작하기</FlowButton>
+                        </FlowButtonContainer>
                     </FlowCenterContainer>
-                    <FlowButtonContainer>
-                        <FlowButton onClick={Flowbutton}>매번 시작하기</FlowButton>
-                    </FlowButtonContainer>
                 </FlowBigContainer>
             </FlowContainer>
-            <SocialContainer>
-                <SocialBigContainer>
-                    <h2>안녕하세요!</h2>
-                    <h4>동해물과 백두산이 마르고닳도록 하느님이 보우하사 우리나라만세 무궁화 삼천리 화려강산 대한사람 대한으로 길이 보전하세</h4>
-                    <h4>남산 위에 저 소나무 철갑을 두른듯 바람서리 분별함은 우리 기상일세 무궁화 삼천리 화려강산 대한사람 대한으로 길이 보전하세</h4>
-                    <h4>가을 하늘 공활한데 높고 구름 없이 밝은 달은 우리 가삼 일편 단심일세 무궁화 삼천리 화려강산 대한사람 대한으로 길이 보전하세</h4>
-                    <h4>이 기상과 이 맘으로 충성을 다하여 괴로우나 즐거우나 나라 사랑하세 무궁화 삼천리 화려강산 대한사람 대한으로 길이 보전하세</h4>
-                </SocialBigContainer>
-            </SocialContainer>
-
         </Container>
     )
 }
@@ -348,7 +352,7 @@ const FlowContainer = styled.div`
   grid-template-columns: 1fr; /* Single column for the entire container */
   gap: 20px;
   width: 100%;
-  height: 450px;
+  height: 400px;
   align-items: center;
   justify-items: center;
 `;
@@ -356,8 +360,8 @@ const FlowContainer = styled.div`
 const FlowBigContainer = styled.div`
   display: grid;
   grid-template-rows: auto 1fr auto; /* Three rows for TopText, FlowCenterContainer, and FlowButtonContainer */
-  width: 95%;
-  height: 400px;
+  width: 100%;
+  height: auto;
   
 `;
 
@@ -365,7 +369,6 @@ const TopText = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #f7e8cb;
   
   h2 {
     font-size: 28px;
@@ -376,45 +379,48 @@ const TopText = styled.div`
 
 const FlowCenterContainer = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: 1fr;
+  grid-template-rows: auto auto; /* 자동으로 행의 크기를 조정 */
   gap: 20px;
   justify-content: space-between;
-  padding: 20px; /* 필요에 따라 패딩 조정 */
-  background-color: #f7e8cb;
-  
+  padding: 30px; /* 필요에 따라 패딩 조정 */
+  background-color: #FDF9EA;
+  margin-top: 2rem;
+  margin-bottom: 3rem;
   /* 각 요소에 일정한 간격을 위해 마진 추가 */
   .Image1, .Image2, .Image3, .Image4 {
     margin: 10px;
   }
-  margin: 0;
 `;
 const BBContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* 반응형 그리드 */
   gap: 20px;
-  padding: 50px; /* 필요에 따라 패딩 조정 */
   justify-content: space-around;
-  
-  margin: 0;
+  background-color: #FDF9EA;
 `;
+
 const FlowButtonContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
-
 `;
 
 const FlowButton = styled.button`
-  margin-top: 20px;
-  margin-bottom: 3rem;
-  height: 40px;
-  width: 300px;
-  background-color: #f7e8cb;
+  height: 50px;
+  width: 500px;
+  background-color: #FDF9EA;
   border-radius: 5px;
   border-color: orange;
   color: orange;
   font-weight: 700;
+  font-size: 24px;
+  
+  &:hover {
+    background-color: #FBCEB1;
+    color: #f7e8cb;
+  }
 `;
 const SocialContainer = styled.div`
   display: flex;

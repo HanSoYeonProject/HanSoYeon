@@ -1,48 +1,60 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const ReviewPage = () => {
     const navigate = useNavigate();
-    const [currentPage, setCurrentPage] = useState(1);
     const [reviews, setReviews] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const ITEMS_PER_PAGE = 8;
 
-    // 서버에서 리뷰 데이터 가져오기
     useEffect(() => {
-        fetch('http://localhost:8050/api/reviews')
-            .then(response => response.json())
-            .then(data => setReviews(data))
+        axios.get('http://localhost:8050/api/reviews')
+            .then(response => {
+                setReviews(response.data.reverse());
+            })
             .catch(error => console.error('Error fetching reviews:', error));
     }, []);
-
-    const ITEMS_PER_PAGE = 4;
-    const indexOfLastItem = currentPage * ITEMS_PER_PAGE;
-    const indexOfFirstItem = indexOfLastItem - ITEMS_PER_PAGE;
-    const currentItems = reviews.slice(indexOfFirstItem, indexOfLastItem);
-
-    const paginate = pageNumber => setCurrentPage(pageNumber);
 
     const handleWriteButtonClick = () => {
         navigate('/writeReview');
     };
 
+    const handleReviewClick = (reviewId) => {
+        navigate(`/reviewContent/${reviewId}`);
+    };
+
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+    };
+
+    const indexOfLastItem = currentPage * ITEMS_PER_PAGE;
+    const indexOfFirstItem = indexOfLastItem - ITEMS_PER_PAGE;
+    const currentItems = reviews.slice(indexOfFirstItem, indexOfLastItem);
+
+    const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
     return (
         <Container>
             <ReviewPageTitle>
                 <h1>후기 체험담</h1>
-                <button onClick={handleWriteButtonClick}><h4>글쓰기</h4></button>
+                <Button onClick={handleWriteButtonClick}>글쓰기</Button>
             </ReviewPageTitle>
-            <ReviewPageSubTitle><h4>생생한 후기</h4></ReviewPageSubTitle>
             <ReviewPageContentContainer>
-                <ReviewPageContent>
-                    {currentItems.map(item => (
-                        <ReviewPageContentItem key={item.id}>
-                            <Image src={item.imagePath} alt="Review" />
-                            <h3>{item.title}</h3>
-                            <p>{item.content}</p>
-                        </ReviewPageContentItem>
-                    ))}
-                </ReviewPageContent>
+                {currentItems.map(item => (
+                    <ReviewPageContentItem key={item.reviewId} onClick={() => handleReviewClick(item.reviewId)}>
+                        <ReviewDetails>
+                            <p>Review ID: {item.reviewId}</p>
+                            <p>Job ID: {item.jobId}</p>
+                            <p>User ID: {item.userId}</p>
+                            <p>Review Content: {item.reviewContent}</p>
+                            <p>Review Recommend: {item.reviewRecommend}</p>
+                            <p>Date: {formatDate(item.reviewDate)}</p>
+                        </ReviewDetails>
+                    </ReviewPageContentItem>
+                ))}
             </ReviewPageContentContainer>
             <Pagination>
                 {Array.from({ length: Math.ceil(reviews.length / ITEMS_PER_PAGE) }, (_, i) => (
@@ -55,84 +67,63 @@ const ReviewPage = () => {
     );
 };
 
-
 const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 100vh;
-`
+  width: 80%;
+  margin: auto;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+`;
+
 const ReviewPageTitle = styled.div`
   display: flex;
-  flex-direction: row; // 가로 방향으로 내용을 정렬
-  align-items: center; // 수직 방향으로 가운데 정렬
-  justify-content: space-between; // 내용을 양 끝으로 정렬
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+`;
 
-  background-color: lightgreen;
-  margin-top: 20%;
-  flex: 2;
-  text-align: right; // 텍스트 오른쪽 정렬
-  margin-left: 40px;
-`
-
-const ReviewPageSubTitle = styled.div`
-  display: flex;
-  flex: 1; // 비율 1로 설정
-  text-align: right; // 텍스트 오른쪽 정렬
-  margin-left: 40px;
-`
+const Button = styled.button`
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  &:hover {
+    background-color: #45a049;
+  }
+`;
 
 const ReviewPageContentContainer = styled.div`
-  //display:flex;
-  //flex: 7;
-  width: 80%;
-  margin: 0 auto;// 좌우 마진을 auto로 설정하여 가운데 정렬
-`
-
-const ReviewPageContent = styled.div`
   display: grid;
-  grid-template-columns: repeat(2, 1fr); // 세 개의 열을 동일한 너비로 생성합니다.
-  gap: 20px; // 그리드 아이템 사이의 간격을 추가합니다.
-  padding: 20px; // 그리드 컨테이너 안쪽에 패딩을 추가합니다.
-  background-color: darkviolet; // 원래의 배경색입니다.
-`
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+`;
 
 const ReviewPageContentItem = styled.div`
-  display: flex;
-  flex-direction: column; // 세로 방향으로 내용을 쌓기 위해 변경합니다.
-  align-items: center; // 내용을 가운데 정렬합니다.
-  background-color: yellow;
-  padding: 16px; // 패딩을 추가하여 내용과 테두리 사이에 공간을 만듭니다.
-  border-radius: 8px; // 카드 모서리를 둥글게 합니다.
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1); // 그림자를 추가하여 입체감을 줍니다.
-  overflow: hidden; // 내용이 밖으로 넘치지 않도록 합니다.
-  height: 300px;
-`
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 10px;
+  cursor: pointer;
+`;
 
-// 이미지 컴포넌트를 만듭니다.
-const Image = styled.img`
-  width: 100%; // 이미지의 너비를 부모 요소에 맞춥니다.
-  height: auto; // 이미지의 높이를 자동으로 설정하여 비율을 유지합니다.
-  margin-bottom: 8px; // 이미지와 텍스트 사이의 간격을 추가합니다.
-`
+const ReviewDetails = styled.div`
+  margin-bottom: 10px;
+`;
 
 const Pagination = styled.div`
   display: flex;
   justify-content: center;
-  margin: 20px 0;
+  margin-top: 20px;
 `;
 
-const PageNumber = styled.button`
-  border: none;
-  background-color: #f0f0f0;
-  margin: 0 5px;
-  padding: 8px 16px;
+const PageNumber = styled.span`
   cursor: pointer;
+  margin: 0 10px;
+  padding: 5px 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
   &:hover {
-    background-color: #ddd;
-  }
-  &:focus {
-    outline: none;
+    background-color: #eee;
   }
 `;
 
