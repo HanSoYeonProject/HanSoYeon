@@ -4,9 +4,13 @@ import navigate from "../Components/Navigate";
 import {useNavigate} from "react-router-dom";
 import axios from "axios";
 import data from "bootstrap/js/src/dom/data";
+import {useCookies} from "react-cookie";
 const AnnouncementListPage = (props) => {
     const navigate = useNavigate();
+    const [cookies, setCookie, removeCookie] = useCookies(['token']);
     const [announcements, setAnnouncements] = useState([]);
+    //admin일 경우만 실행
+    const [isAdmin, setIsAdmin] = useState(false);
     //페이지 시작번호
     const [currentPage, setCurrentPage] = useState(1);
     //최대 5개까지만 목록에 표시
@@ -47,6 +51,28 @@ const AnnouncementListPage = (props) => {
             .catch(error => console.error('Error fetching announcements:', error));
     }, []);
 
+    //admin구분
+    useEffect(() => {
+        axios.get('http://localhost:8050/api/auth/currentUser', {
+            headers: {
+                Authorization: `Bearer ${cookies.token}`
+            }
+        })
+            .then((response) => {
+                console.log(response.data);
+                const user = response.data;
+                const isAdminUser = user.userId === 'admin';
+                setIsAdmin(isAdminUser);
+            })
+            .catch(error => {
+                console.error('Error fetching user info:', error);
+                if (error.response) {
+                    console.error('Status Code:', error.response.status);
+                    console.error('Response Data:', error.response.data);
+                }
+            });
+    }, []);
+
     // 페이지 번호 클릭 시 호출되는 함수
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
     return (
@@ -57,7 +83,7 @@ const AnnouncementListPage = (props) => {
                     <SmallNewsTitle>
                         <LeftNewsTitle>한소연 소식</LeftNewsTitle>
                         <RightNewsTitle>
-                            <WritingButton onClick={WritingNews}>글 작성</WritingButton>
+                            {isAdmin && <WritingButton onClick={WritingNews}>글 작성</WritingButton>}
                             <ExitButton>더 보기 ></ExitButton>
                         </RightNewsTitle>
                     </SmallNewsTitle>

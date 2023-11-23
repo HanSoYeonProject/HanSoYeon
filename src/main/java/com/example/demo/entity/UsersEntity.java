@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -28,7 +29,11 @@ public class UsersEntity {
     private String userPrefer;
     private String userPhone;
     private String userAddress;
+    private String userRole;
 
+    public boolean isAdmin() {
+        return "admin".equals(userRole);
+    }
     public UsersEntity(SignUpDto dto) {
         this.userId = dto.getUserId();
         this.userName = dto.getUserName();

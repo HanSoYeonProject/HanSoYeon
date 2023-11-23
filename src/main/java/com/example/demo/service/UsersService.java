@@ -11,6 +11,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.example.demo.entity.UsersEntity;
 
+import java.util.Optional;
+
 @Service
 public class UsersService {
     @Autowired
@@ -53,6 +55,10 @@ public class UsersService {
         return ResponseDto.setSuccess("로그인 성공", signInResponseDto);
     }
 
+    public String getUserRoleById(String userId) {
+        Optional<UsersEntity> userOptional = usersRepository.findById(userId);
+        return userOptional.map(UsersEntity::getUserRole).orElse(null);
+    }
     public ResponseDto<SignInResponseDto> signInWithKakaoEmail(String userEmail){
         UsersEntity usersEntity = usersRepository.findByUserEmail(userEmail);
         if(usersEntity == null){

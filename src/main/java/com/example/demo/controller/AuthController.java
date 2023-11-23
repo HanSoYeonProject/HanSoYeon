@@ -112,10 +112,13 @@ public class AuthController {
         // Bearer 토큰에서 실제 토큰을 추출합니다.
         String jwtToken = token.split(" ")[1];
 
-        // TokenProvider를 사용하여 토큰에서 이메일을 추출합니다.
+        // TokenProvider를 사용하여 토큰에서 이메일 및 역할을 추출합니다.
         String userId = tokenProvider.getIdFromToken(jwtToken);
+        String userRole = usersService.getUserRoleById(userId);
 
         UsersEntity user = usersService.getUserById(userId);
+        user.setUserRole(userRole);
+
         return ResponseEntity.ok(user);
     }
 
