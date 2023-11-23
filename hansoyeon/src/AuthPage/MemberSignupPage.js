@@ -12,6 +12,9 @@ const MemberSignUpPage = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const [isKakaoOrGoogleEmail, setIsKakaoOrGoogleEmail] = useState(false);
+    const [showVerificationInput, setShowVerificationInput] = useState(false);
+    const [verificationPhone, setVerificationPhone] = useState(false);
+    const [verificationMessage, setVerificationMessage] = useState("");
 
     useEffect(() => {
         if (location.state && location.state.email) {
@@ -35,7 +38,8 @@ const MemberSignUpPage = () => {
         userPrefer: '',
         userPhone: '',
         userAddress: '',
-        userProfile: ''
+        userProfile: '',
+        verificationCode: ''
     });
     const [addressFields, setAddressFields] = useState({
         postalCode: '',
@@ -106,6 +110,10 @@ const MemberSignUpPage = () => {
             errors.userPhone = "올바른 휴대폰 번호를 입력해주세요.";
         }
 
+        if(!verificationPhone){
+            errors.userPhoneCheck = "휴대폰 인증을 진행해주세요. "
+        }
+
         // 선호 지역 유효성 검사
         if (!formData.userPrefer) {
             errors.userPrefer = "선호 지역을 입력해주세요.";
@@ -168,6 +176,36 @@ const MemberSignUpPage = () => {
                 });
         }
     };
+
+    const handleSendVerification = async () => {
+        const userPhone = formData.userPhone;
+        // 백엔드의 SMS 서비스를 호출하여 인증번호 전송
+        try {
+            await axios.post('http://localhost:8050/api/sms/sendVerification', { phone: userPhone });
+            // 성공적으로 전송된 경우, 인증번호 입력 칸 표시
+            setShowVerificationInput(true);
+        } catch (error) {
+            console.error('Error sending verification code:', error);
+        }
+    };
+
+    const handleVerifyCode = async () => {
+        const phone = formData.userPhone;
+        const code = formData.verificationCode;
+
+        try {
+            const response = await axios.post('http://localhost:8050/api/sms/verifyCode', { phone, code });
+            if (response.status === 200) {
+                setVerificationMessage("인증번호가 일치합니다.");
+                setVerificationPhone(true);
+                console.log("인증번호 검증 성공");
+            }
+        } catch (error) {
+            setVerificationMessage("인증번호를 확인해주세요.");
+            console.error("인증번호 검증 실패:", error);
+        }
+    };
+
 
     return (
         <StyledContainer>
@@ -236,15 +274,41 @@ const MemberSignUpPage = () => {
                             </StyledFormGroup>
 
                             <StyledFormGroup controlId="formBasicPhone">
-                                <StyledFormControl
-                                    type="text"
-                                    placeholder="전화번호(-빼고 입력)"
-                                    name="userPhone"
-                                    value={formData.userPhone}
-                                    onChange={handleChange}
-                                />
+                                <Row>
+                                    <Col>
+                                        <StyledFormControl
+                                            type="text"
+                                            placeholder="전화번호(-빼고 입력)"
+                                            name="userPhone"
+                                            value={formData.userPhone}
+                                            onChange={handleChange}
+                                        />
+                                    </Col>
+                                    <Col md="auto">
+                                        <Button variant="outline-secondary" onClick={handleSendVerification}>
+                                            인증번호 전송
+                                        </Button>
+                                    </Col>
+                                </Row>
                                 {validationErrors.userPhone && <ErrorText>{validationErrors.userPhone}</ErrorText>}
+                                {validationErrors.userPhoneCheck && <ErrorText>{validationErrors.userPhoneCheck}</ErrorText>}
                             </StyledFormGroup>
+
+                            {showVerificationInput && (
+                                <StyledFormGroup controlId="formBasicVerificationCode">
+                                    <StyledFormControl
+                                        type="text"
+                                        placeholder="인증번호"
+                                        name="verificationCode"
+                                        value={formData.verificationCode}
+                                        onChange={handleChange}
+                                    />
+                                    <StyledButton variant="outline-secondary" onClick={handleVerifyCode}>
+                                        인증번호 검증
+                                    </StyledButton>
+                                    {verificationMessage && <ErrorText>{verificationMessage}</ErrorText>}
+                                </StyledFormGroup>
+                            )}
 
                             <StyledButton variant="secondary" onClick={handleNext}>
                                 다음

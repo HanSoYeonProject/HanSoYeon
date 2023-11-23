@@ -7,12 +7,18 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {faArrowLeft, faCamera} from '@fortawesome/free-solid-svg-icons';
 import logo from "../imgs/logo2.png";
 import license from "../imgs/license.jpg"
+import question from "../imgs/question.png"
+import noImage from "../imgs/noImage.png";
 
 const CompanySignUpPage = () => {
     const navigate = useNavigate();
     const [imagePreview, setImagePreview] = useState(null);
     const [licenseImage, setLicenseImage] = useState(null);
     const fileInputRef = useRef(null);
+    const [modalVisible, setModalVisible] = useState(false);
+    const [showVerificationInput, setShowVerificationInput] = useState(false);
+    const [verificationPhone, setVerificationPhone] = useState(false);
+    const [verificationMessage, setVerificationMessage] = useState("");
 
     const [showSecondPart, setShowSecondPart] = useState(false);
     const [formData, setFormData] = useState({
@@ -26,7 +32,8 @@ const CompanySignUpPage = () => {
         companyTel: '',
         providerProfile: '',
         companyLicense: '',
-        providerApproval: ''
+        providerApproval: '',
+        verificationCode: ''
     });
     const [addressFields, setAddressFields] = useState({
         postalCode: '',
@@ -95,6 +102,10 @@ const CompanySignUpPage = () => {
         const telPattern = /^[0-9]{8,11}$/;
         if (!telPattern.test(formData.companyTel)) {
             errors.companyTel = "올바른 전화번호를 입력해주세요.";
+        }
+
+        if(!verificationPhone){
+            errors.userPhoneCheck = "휴대폰 인증을 진행해주세요. "
         }
 
         // 라이센스 유효성 검사
@@ -189,6 +200,53 @@ const CompanySignUpPage = () => {
         }
     };
 
+    const handleSendVerification = async () => {
+        const userPhone = formData.companyTel;
+        // 백엔드의 SMS 서비스를 호출하여 인증번호 전송
+        try {
+            await axios.post('http://localhost:8050/api/sms/sendVerification', { phone: userPhone });
+            // 성공적으로 전송된 경우, 인증번호 입력 칸 표시
+            setShowVerificationInput(true);
+        } catch (error) {
+            console.error('Error sending verification code:', error);
+        }
+    };
+
+    const handleVerifyCode = async () => {
+        const phone = formData.companyTel;
+        const code = formData.verificationCode;
+
+        try {
+            const response = await axios.post('http://localhost:8050/api/sms/verifyCode', { phone, code });
+            if (response.status === 200) {
+                setVerificationMessage("인증번호가 일치합니다.");
+                setVerificationPhone(true);
+                console.log("인증번호 검증 성공");
+            }
+        } catch (error) {
+            setVerificationMessage("인증번호를 확인해주세요.");
+            console.error("인증번호 검증 실패:", error);
+        }
+    };
+
+    const toggleModal = () => {
+        setModalVisible(!modalVisible);
+    };
+
+    const Modal = ({onClose}) => {
+        return (
+            <ModalContainer>
+                <ModalContent>
+                    <ModalTitle>사업자 등록</ModalTitle>
+                    <LogoImg src={logo} alt="Logo" />
+                    <ModalText>공고 작성을 위해서는 검증 요소가 필요합니다. </ModalText>
+                    <ModalText>Ex. 사업자 등록증 또는 농업 경영체 등록증</ModalText>
+                    <CloseButton onClick={onClose}>닫기</CloseButton>
+                </ModalContent>
+            </ModalContainer>
+        );
+    };
+
     return (
         <StyledContainer>
             <FormBox>
@@ -266,6 +324,7 @@ const CompanySignUpPage = () => {
                                 <CameraIconLabel onClick={triggerFileInput}>
                                     사업자 등록증 추가
                                 </CameraIconLabel>
+                                <QuestionImg src={question} alt="question" onClick={toggleModal} />
                                 <HiddenFileInput
                                     type="file"
                                     ref={fileInputRef}
@@ -324,15 +383,41 @@ const CompanySignUpPage = () => {
                             </StyledFormGroup>
 
                             <StyledFormGroup controlId="formBasicTel">
-                                <StyledFormControl
-                                    type="text"
-                                    placeholder="전화번호(-빼고 입력)"
-                                    name="companyTel"
-                                    value={formData.companyTel}
-                                    onChange={handleChange}
-                                />
+                                <Row>
+                                    <Col>
+                                        <StyledFormControl
+                                            type="text"
+                                            placeholder="전화번호(-빼고 입력)"
+                                            name="companyTel"
+                                            value={formData.companyTel}
+                                            onChange={handleChange}
+                                        />
+                                    </Col>
+                                    <Col md="auto">
+                                        <Button variant="outline-secondary" onClick={handleSendVerification}>
+                                            인증번호 전송
+                                        </Button>
+                                    </Col>
+                                </Row>
                                 {validationErrors.companyTel && <ErrorText>{validationErrors.companyTel}</ErrorText>}
+                                {validationErrors.userPhoneCheck && <ErrorText>{validationErrors.userPhoneCheck}</ErrorText>}
                             </StyledFormGroup>
+
+                            {showVerificationInput && (
+                                <StyledFormGroup controlId="formBasicVerificationCode">
+                                    <StyledFormControl
+                                        type="text"
+                                        placeholder="인증번호"
+                                        name="verificationCode"
+                                        value={formData.verificationCode}
+                                        onChange={handleChange}
+                                    />
+                                    <StyledButton variant="outline-secondary" onClick={handleVerifyCode}>
+                                        인증번호 검증
+                                    </StyledButton>
+                                    {verificationMessage && <ErrorText>{verificationMessage}</ErrorText>}
+                                </StyledFormGroup>
+                            )}
 
                             <StyledButton variant="primary" type="submit">
                                 회원가입
@@ -341,6 +426,7 @@ const CompanySignUpPage = () => {
                     )}
                 </Form>
             </FormBox>
+            {modalVisible && <Modal onClose={toggleModal} />}
         </StyledContainer>
     );
 };
@@ -434,6 +520,64 @@ const CameraIconLabel = styled.label`
 
 const HiddenFileInput = styled.input`
   display: none;
+`;
+
+const QuestionImg = styled.img`
+  height: 4vh;
+  width: auto;
+  margin-left: 8px;
+  margin-bottom: 8px;
+  cursor: pointer; 
+`;
+
+const ModalContainer = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+`;
+
+const ModalContent = styled.div`
+  background-color: white;
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  max-width: 500px;
+  width: 90%;
+`;
+
+const ModalTitle = styled.h2`
+    color: #333;
+    font-size: 24px;
+    margin-bottom: 10px;
+    font-weight: bold;
+`;
+
+const ModalText = styled.h5`
+    color: #555;
+    font-size: 16px;
+    margin: 5px 0;
+`;
+
+const CloseButton = styled.button`
+    padding: 10px 20px;
+    margin-top: 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #f44336;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    &:hover {
+        background-color: #d32f2f;
+    }
 `;
 
 export default CompanySignUpPage;

@@ -47,6 +47,10 @@ dependencies {
 	//Base64 (image)
 	implementation 'commons-codec:commons-codec:1.15'
 
+	// CoolSMS
+	implementation 'net.nurigo:javaSDK:2.2'
+	implementation 'net.nurigo:sdk:4.3.0'
+
 }
 
 tasks.named('test') {
