@@ -33,6 +33,11 @@ const NewPage = (props) => {
     const [modalVisible, setModalVisible] = useState(false);
     const [selectedSpot, setSelectedSpot] = useState(null);
 
+    const [myModalVisible, setMyModalVisible] = useState(false);
+    const [selectedMySpot, setSelectedMySpot] = useState(null);
+
+    const [mySpots, setMySpots] = useState([]);
+
     const [cookies, setCookie, removeCookie] = useCookies(['token']);
     const {user, setUser} = useUserStore();
     const userType = cookies.userType;
@@ -407,14 +412,11 @@ const NewPage = (props) => {
 
         const deleteFavoriteSpot = async () => {
             try {
-                await axios.post(`http://localhost:8050/api/cos/delete`,
-                    { title: encodeURIComponent(spot.title) },
-                    {
-                        headers: {
-                            Authorization: `Bearer ${cookies.token}`
-                        }
+                await axios.delete(`http://localhost:8050/api/cos/delete/${encodeURIComponent(spot.title)}/${user.userId}`, {
+                    headers: {
+                        Authorization: `Bearer ${cookies.token}`
                     }
-                );
+                });
             } catch (error) {
                 console.error('Error deleting favorite spot:', error);
             }
@@ -423,7 +425,7 @@ const NewPage = (props) => {
 
         const saveFavoriteSpot = async (imageUrl) => {
             const courseData = {
-                cosUserId: user.userId, // 현재 로그인한 사용자 ID
+                cosUserId: user.userId,
                 cosTitle: spot.title,
                 cosPicture: imageUrl,
                 cosAddress: spot.addr1 + " " + spot.addr2
@@ -469,6 +471,142 @@ const NewPage = (props) => {
                     <ModalImage src={spot.firstimage || noImage} alt={spot.title} />
                     <ModalText>주소 : {spot.addr1}</ModalText>
                     {spot.addr2 && <ModalText>{spot.addr2}</ModalText>}
+
+                    <CloseButton onClick={onClose}>닫기</CloseButton>
+                </ModalContent>
+            </ModalContainer>
+        );
+    };
+
+    const fetchFavoritedSpots = async () => {
+        try {
+            const userId = user.userId;
+            const response = await axios.get(`http://localhost:8050/api/cos/favorites/${userId}`, {
+                headers: {
+                    Authorization: `Bearer ${cookies.token}`
+                }
+            });
+
+            if (response.data) {
+                setMySpots(response.data);
+            }
+        } catch (error) {
+            console.error('Error fetching favorited spots:', error);
+        }
+    };
+
+    useEffect(() => {
+        if (activeTab === 3) {
+            fetchFavoritedSpots();
+        }
+    }, [activeTab]);
+
+    const handleMyGridItemClick = (spot) => {
+        setSelectedMySpot(spot);
+        setMyModalVisible(true);
+    };
+
+    const MyModal = ({ spot, onClose }) => {
+        const [isFavorited, setIsFavorited] = useState(false);
+
+        useEffect(() => {
+            const checkFavoriteStatus = async () => {
+                try {
+                    const userId = user.userId;
+                    const response = await axios.get(`http://localhost:8050/api/cos/check/${encodeURIComponent(spot.cosTitle)}/${userId}`, {
+                        headers: {
+                            Authorization: `Bearer ${cookies.token}`
+                        }
+                    });
+                    if (response.data.isFavorited) {
+                        setIsFavorited(true);
+                    }
+                } catch (error) {
+                    console.error('Error checking favorite status:', error);
+                }
+            };
+
+            checkFavoriteStatus();
+        }, [spot.title]);
+
+
+        const uploadImage = async (image) => {
+            const formData = new FormData();
+            formData.append('image', image);
+
+            try {
+                const response = await axios.post('http://localhost:8050/api/uploadProfileImage', formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                });
+                return response.data.imageUrl;
+            } catch (error) {
+                console.error('Error uploading image:', error);
+                return null;
+            }
+        };
+
+        const deleteFavoriteSpot = async () => {
+            try {
+                await axios.delete(`http://localhost:8050/api/cos/delete/${encodeURIComponent(spot.cosTitle)}/${user.userId}`, {
+                    headers: {
+                        Authorization: `Bearer ${cookies.token}`
+                    }
+                });
+            } catch (error) {
+                console.error('Error deleting favorite spot:', error);
+            }
+        };
+
+
+        const saveFavoriteSpot = async (imageUrl) => {
+            const courseData = {
+                cosUserId: user.userId,
+                cosTitle: spot.cosTitle,
+                cosPicture: imageUrl,
+                cosAddress: spot.cosAddress
+            };
+
+            try {
+                await axios.post('http://localhost:8050/api/cos/add', courseData, {
+                    headers: {
+                        Authorization: `Bearer ${cookies.token}`
+                    }
+                });
+            } catch (error) {
+                console.error('Error saving favorite spot:', error);
+            }
+        };
+
+        const toggleFavorite = async () => {
+            setIsFavorited(!isFavorited);
+
+            if (!isFavorited) {
+                let imageUrl = spot.cosPicture;
+                if (imageUrl) {
+                    const uploadedImageUrl = await uploadImage(imageUrl);
+                    if (uploadedImageUrl) {
+                        imageUrl = uploadedImageUrl;
+                    }
+                }
+                await saveFavoriteSpot(imageUrl);
+            }else {
+                await deleteFavoriteSpot();
+            }
+        };
+
+        return (
+            <ModalContainer>
+                <ModalContent>
+                    <ModalHeader>
+                        <ModalTitle>{spot.cosTitle}</ModalTitle>
+                        <FavoriteButton onClick={toggleFavorite}>
+                            {isFavorited ? '♥' : '♡'}
+                        </FavoriteButton>
+                    </ModalHeader>
+                    <ModalImage src={spot.cosPicture || noImage} alt={spot.title} />
+                    <ModalText>주소 : {spot.cosAddress}</ModalText>
 
                     <CloseButton onClick={onClose}>닫기</CloseButton>
                 </ModalContent>
@@ -620,6 +758,29 @@ const NewPage = (props) => {
                                 </MenuTitle>
                             </MenuContainer>
                         </BottomContainer>
+                        <AreaContentContainer>
+                            <SearchBoxContainer>
+                                <SearchResultText>
+                                    {user.userName}님이 선택한 여행지 목록입니다.
+                                </SearchResultText>
+                            </SearchBoxContainer>
+                            <GridContainer2>
+                                {Array.isArray(mySpots) && mySpots.length > 0 ? (
+                                    mySpots.map((spot, index) => (
+                                        <GridItem key={index} onClick={() => handleMyGridItemClick(spot)}>
+                                            <GridTitle>{spot.cosTitle}</GridTitle>
+                                            {spot.cosPicture && <StyledImage src={spot.cosPicture} alt={spot.cosTitle} />}
+                                            {!spot.cosPicture && <StyledImage src={noImage} alt={spot.cosTitle} />}
+                                        </GridItem>
+                                    ))
+                                ) : (
+                                    <p>Loading...</p>
+                                )}
+                            </GridContainer2>
+                            {myModalVisible && selectedMySpot && (
+                                <MyModal spot={selectedMySpot} onClose={() => setMyModalVisible(false)} />
+                            )}
+                        </AreaContentContainer>
                     </>
                 );
             default:
@@ -775,128 +936,6 @@ const TabButton = styled.button`
   }
 `;
 
-const SmallTitleContainer = styled.div`
-  //background-color: purple;
-  display: flex;
-  flex-direction: column;
-  flex: 2;
-  margin-top: 1rem;
-`;
-const SmallTitle = styled.div`
-  display: flex;
-  flex: 5;
-  //background-color: yellow;
-  justify-content: center;
-  align-items: center;
-`;
-const SmallTitleContent = styled.div`
-  display: flex;
-  flex: 0.6;
-  //background-color: orange;
-  font-size: 36px;
-  font-weight: 700;
-`;
-const SmallTag = styled.div`
-  display: flex;
-  flex: 5;
-  //background-color: green;
-`;
-const ContentContainer = styled.div`
-  //background-color: bisque;
-  display: flex;
-  flex-direction: column;
-  flex: 7;
-`;
-const ContentTitleContainer = styled.div`
-  display: flex;
-  flex: 1.5;
-  //background-color: gray;
-  justify-content: center;
-  font-size: 28px;
-  font-weight: 700;
-  align-items: center;
-`;
-const ContentSmallTitleContainer = styled.div`
-  display: flex;
-  flex: 0.6;
-  margin-top: 1rem;
-`;
-const ContentMainContainer = styled.div`
-  display: flex;
-  flex: 8.5;
-  justify-content: center;
-  align-items: flex-start; /* 세로 기준으로 top에 위치하도록 설정 */
-`;
-const ContentMainTextContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  //background-color: brown;
-  border-radius: 5px;
-  border: dodgerblue 5px solid;
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-  width: 1100px;
-  height: 400px;
-`;
-const ContentTitle = styled.div`
-  display: flex;
-  flex-direction: column;
-  flex: 2;
-  align-items: flex-start;
-  //background-color: white;
-  h2 {
-    color: dodgerblue;
-    font-weight: 800;
-    margin-left: 2rem;
-    margin-top: 2rem;
-  }
-
-  h3 {
-    color: dodgerblue;
-    font-weight: 600;
-    margin-left: 2rem;
-  }
-`;
-const ContentMemory = styled.div`
-  display: flex;
-  flex: 8;
-  flex-direction: column;
-  //background-color: yellow;
-  border-left: dodgerblue 3px solid;
-  align-items: flex-start;
-  h2 {
-    color: black;
-    font-weight: 800;
-    margin-left: 2rem;
-    margin-top: 2rem;
-    //background-color: red;
-  }
-  ul {
-    //background-color: gray;
-    display: block;
-    flex-direction: column;
-    list-style-type: disc; /* 원형 글머리 기호 */
-    margin-top: 1rem;
-  }
-
-  li {
-    font-size: 24px;
-    display: flex;
-    color: black;
-    font-weight: 600;
-    margin-bottom: 0.5em; /* 각 항목 사이의 간격 조절 */
-  }
-`;
-const TravelContent = styled.div`
-  display: flex;
-  flex: 1;
-  background-color: green;
-  justify-content: center;
-  align-items: center;
-  color: white; /* 텍스트의 색상을 흰색으로 설정 */
-  font-size: 24px; /* 텍스트의 크기를 24px로 설정 (원하는 크기로 조절) */
-`;
-
 const AreaContentContainer = styled.div`
   margin-top: 20px;
   display: flex;
@@ -913,6 +952,14 @@ const GridContainer = styled.div`
   margin: 0 auto;
 `;
 
+const GridContainer2 = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 20px;
+  width: 80%;
+  margin-bottom: 200px;
+`;
+
 const GridTitle = styled.h2`
     color: #333;
     font-size: 20px;
@@ -927,6 +974,7 @@ const GridItem = styled.div`
   background-color: #f9f9f9;
   box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
   border-radius: 10px;
+  cursor: pointer;
 `;
 
 const StyledImage = styled.img`
@@ -941,8 +989,8 @@ const SearchBoxContainer = styled.div`
   margin-bottom: 20px;
   padding: 20px;
   border-radius: 10px;
-  background-color: #f5f5f5; // 박스의 배경색
-  box-shadow: 0px 2px 4px rgba(0,0,0,0.1); // 박스에 그림자 효과 추가
+  background-color: #f5f5f5; 
+  box-shadow: 0px 2px 4px rgba(0,0,0,0.1); 
   width: 80%;
   justify-content: center;
   align-items: center;
