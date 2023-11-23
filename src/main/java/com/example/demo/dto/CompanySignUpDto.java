@@ -16,4 +16,6 @@ public class CompanySignUpDto {
     private String companyName;
     private String companyAddress;
     private String companyTel;
+    private String companyLicense;
+    private String providerApproval;
 }

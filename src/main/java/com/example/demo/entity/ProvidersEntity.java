@@ -26,6 +26,8 @@ public class ProvidersEntity {
     private String companyName;
     private String companyAddress;
     private String companyTel;
+    private String companyLicense;
+    private String providerApproval;
 
     public ProvidersEntity(CompanySignUpDto companySignUpDto) {
         this.providerId = companySignUpDto.getProviderId();
@@ -38,5 +40,7 @@ public class ProvidersEntity {
         this.companyName = companySignUpDto.getCompanyName();
         this.companyAddress = companySignUpDto.getCompanyAddress();
         this.companyTel = companySignUpDto.getCompanyTel();
+        this.companyLicense = companySignUpDto.getCompanyLicense();
+        this.providerApproval = companySignUpDto.getProviderApproval();
     }
 }

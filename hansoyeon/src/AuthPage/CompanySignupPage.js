@@ -1,14 +1,18 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import axios from "axios"
 import { Form, Button, InputGroup, Row, Col } from 'react-bootstrap';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import {faArrowLeft, faCamera} from '@fortawesome/free-solid-svg-icons';
 import logo from "../imgs/logo2.png";
+import license from "../imgs/license.jpg"
 
 const CompanySignUpPage = () => {
     const navigate = useNavigate();
+    const [imagePreview, setImagePreview] = useState(null);
+    const [licenseImage, setLicenseImage] = useState(null);
+    const fileInputRef = useRef(null);
 
     const [showSecondPart, setShowSecondPart] = useState(false);
     const [formData, setFormData] = useState({
@@ -20,7 +24,9 @@ const CompanySignUpPage = () => {
         companyName: '',
         companyAddress: '',
         companyTel: '',
-        providerProfile: ''
+        providerProfile: '',
+        companyLicense: '',
+        providerApproval: ''
     });
     const [addressFields, setAddressFields] = useState({
         postalCode: '',
@@ -88,7 +94,12 @@ const CompanySignUpPage = () => {
         // 휴대폰 번호 유효성 검사
         const telPattern = /^[0-9]{8,11}$/;
         if (!telPattern.test(formData.companyTel)) {
-            errors.companyTel = "올바른 회사 전화번호를 입력해주세요.";
+            errors.companyTel = "올바른 전화번호를 입력해주세요.";
+        }
+
+        // 라이센스 유효성 검사
+        if(!imagePreview){
+            errors.companyLicense = "사업자 등록증을 제출해주세요. "
         }
 
         // 회사명
@@ -120,23 +131,61 @@ const CompanySignUpPage = () => {
         }
     };
 
-    const handleSignUp = (event) => {
+    const uploadProfileImage = async () => {
+        if (!licenseImage) return null;
+
+        const formData = new FormData();
+        formData.append('profileImage', licenseImage);
+
+        try {
+            const response = await axios.post('http://localhost:8050/api/uploadProfileImage', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+            return response.data.imageUrl;
+        } catch (error) {
+            console.error('Error uploading profile image:', error);
+            return null;
+        }
+    };
+
+    const handleSignUp = async (event) => {
         event.preventDefault();
         if (validateForm()) {
+            const imageUrl = await uploadProfileImage();
             const combinedAddress = `${addressFields.postalCode} ${addressFields.address} ${addressFields.detailAddress}`.trim();
             const signUpData = {
                 ...formData,
-                companyAddress: combinedAddress
+                companyAddress: combinedAddress,
+                companyLicense: imageUrl,
+                providerApproval: "false"
             };
 
             axios.post('http://localhost:8050/api/auth/signUp/company', signUpData)
                 .then(response => {
                     console.log("회원가입 성공: ", response.data);
-                    navigate("/login");
+                    navigate("/approval");
                 })
                 .catch(error => {
                     console.error("회원가입 실패: ", error);
                 });
+        }
+    };
+
+    const triggerFileInput = () => {
+        fileInputRef.current.click();
+    };
+
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setLicenseImage(file);
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                setImagePreview(e.target.result);
+            };
+            reader.readAsDataURL(file);
         }
     };
 
@@ -146,10 +195,10 @@ const CompanySignUpPage = () => {
                 <BackButton onClick={handleBack}>
                     <FontAwesomeIcon icon={faArrowLeft} />
                 </BackButton>
-                <LogoImg src={logo} alt="Logo" />
                 <Form onSubmit={handleSignUp}>
                     {!showSecondPart ? (
                         <>
+                            <LogoImg src={logo} alt="Logo" />
                             <StyledFormGroup controlId="formBasicProviderId">
                                 <StyledFormControl
                                     type="text"
@@ -175,7 +224,7 @@ const CompanySignUpPage = () => {
                             <StyledFormGroup controlId="formBasicProviderEmail">
                                 <StyledFormControl
                                     type="email"
-                                    placeholder="회사 이메일"
+                                    placeholder="이메일"
                                     name="providerEmail"
                                     value={formData.providerEmail}
                                     onChange={handleChange}
@@ -212,11 +261,24 @@ const CompanySignUpPage = () => {
                     ) : (
                         <>
                             <StyledFormGroup>
+                                {(imagePreview || license) && <CompanyImagePreview src={imagePreview || license} alt="사업자 등록증 첨부" />}
+                                <br/>
+                                <CameraIconLabel onClick={triggerFileInput}>
+                                    사업자 등록증 추가
+                                </CameraIconLabel>
+                                <HiddenFileInput
+                                    type="file"
+                                    ref={fileInputRef}
+                                    onChange={handleImageChange}
+                                />
+                                {validationErrors.companyLicense && <ErrorText>{validationErrors.companyLicense}</ErrorText>}
+                            </StyledFormGroup>
+                            <StyledFormGroup>
                                 <Row>
                                     <Col>
                                         <StyledFormControl
                                             type="text"
-                                            placeholder="회사 우편번호"
+                                            placeholder="우편번호"
                                             name="postalCode"
                                             value={addressFields.postalCode}
                                             onChange={handleAddressChange}
@@ -233,7 +295,7 @@ const CompanySignUpPage = () => {
                             <StyledFormGroup>
                                 <StyledFormControl
                                     type="text"
-                                    placeholder="회사 주소"
+                                    placeholder="주소"
                                     name="address"
                                     value={addressFields.address}
                                     onChange={handleAddressChange}
@@ -243,7 +305,7 @@ const CompanySignUpPage = () => {
                             <StyledFormGroup>
                                 <StyledFormControl
                                     type="text"
-                                    placeholder="회사 상세주소"
+                                    placeholder="상세주소"
                                     name="detailAddress"
                                     value={addressFields.detailAddress}
                                     onChange={handleAddressChange}
@@ -264,7 +326,7 @@ const CompanySignUpPage = () => {
                             <StyledFormGroup controlId="formBasicTel">
                                 <StyledFormControl
                                     type="text"
-                                    placeholder="회사 전화번호(-빼고 입력)"
+                                    placeholder="전화번호(-빼고 입력)"
                                     name="companyTel"
                                     value={formData.companyTel}
                                     onChange={handleChange}
@@ -300,7 +362,6 @@ const FormBox = styled.div`
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   width: 100%;
   max-width: 450px;
-  margin-top: 150px;
   position: relative;
 `;
 
@@ -354,6 +415,25 @@ const ErrorText = styled.div`
   color: red;
   font-size: 12px;
   margin-top: 5px;
+`;
+
+const CompanyImagePreview = styled.img`
+  width: 140px;
+  height: 160px;
+  margin-bottom: 10px;
+`;
+
+const CameraIconLabel = styled.label`
+  cursor: pointer;
+  background-color: purple;
+  color: white;
+  border-radius: 5px;
+  padding: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); 
+`;
+
+const HiddenFileInput = styled.input`
+  display: none;
 `;
 
 export default CompanySignUpPage;
