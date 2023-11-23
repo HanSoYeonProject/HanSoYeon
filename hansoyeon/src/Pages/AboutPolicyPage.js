@@ -31,7 +31,7 @@ const AboutPolicyPage = () => {
                         <h4>뭔가 멋진 발견이나 경험을 많이하고, 눈치채면 자신에게 있어서와 특별한 지역이 되어 돌아오는,</h4>
                         <h4>그런 새로운 여행의 형태를 제안할 수 있으면 하는 마음입니다.</h4>
                         <TextContainer>
-                            <h3>대표 한소원 일동</h3>
+                            <h3>대표 한소연 일동</h3>
                         </TextContainer>
                     </BottomContentContainer>
                 </BottomContainer>

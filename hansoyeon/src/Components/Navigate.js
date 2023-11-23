@@ -82,7 +82,7 @@ const Navigate = () => {
     };
 
     const CoursePageButton = () => {
-        navigate("/recommendcourse");
+        navigate("/newcourse");
     }
     const AboutPageButton = () => {
         navigate("/about");
@@ -189,20 +189,20 @@ const TopNav = styled.div`
 `
 
 const NavContainer = styled.div`
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      width: 100%;
-      padding: 0 1rem;
-      height: 10vh;
-    `;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 0 1rem;
+  height: 10vh;
+`;
 
 const LogoImg = styled.img`
-      height: 10vh;
-      width: auto;
-      margin-right: 60px;
-      cursor: pointer;
-    `;
+  height: 10vh;
+  width: auto;
+  margin-right: 60px;
+  cursor: pointer;
+`;
 
 const UserImg = styled.button`
   background: none;
@@ -226,11 +226,11 @@ const Nav_Str = styled.div`
 `
 
 const ProfileImage = styled.img`
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      cursor: pointer;
-    `;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  cursor: pointer;
+`;
 
 const UserContainer = styled.div`
   display: flex;
@@ -241,10 +241,10 @@ const UserContainer = styled.div`
 `
 
 const StyledDropdown = styled(Dropdown)`
-      .dropdown-toggle::after {
-        display: none;
-      }
-    `;
+  .dropdown-toggle::after {
+    display: none;
+  }
+`;
 
 const CustomToggle = React.forwardRef(({children, onClick}, ref) => (
     <a
@@ -261,9 +261,9 @@ const CustomToggle = React.forwardRef(({children, onClick}, ref) => (
 ));
 
 const ProfileSection = styled.div`
-      display: flex;
-      align-items: center;
-    `;
+  display: flex;
+  align-items: center;
+`;
 
 const PageNav = styled.div`
   display: flex;
