@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.dto.*;
+import com.example.demo.entity.ProvidersEntity;
 import com.example.demo.repository.UsersRepository;
 import com.example.demo.security.TokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.example.demo.entity.UsersEntity;
+
+import java.util.List;
 
 @Service
 public class UsersService {
@@ -95,5 +98,16 @@ public class UsersService {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
     }
 
+    public List<UsersEntity> getAllUsers() {
+        return usersRepository.findAll();
+    }
 
+    public ResponseEntity<?> deleteUser(String userId) {
+        UsersEntity user = usersRepository.findByUserId(userId);
+        if (user != null) {
+            usersRepository.delete(user);
+            return ResponseEntity.ok().body("user deleted successfully");
+        }
+        return ResponseEntity.badRequest().body("user not found");
+    }
 }

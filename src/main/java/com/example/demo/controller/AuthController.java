@@ -246,4 +246,15 @@ public class AuthController {
         return providersService.revokeProviderApproval(providerId);
     }
 
+    @GetMapping("/allUsers")
+    public ResponseEntity<?> getAllMembers() {
+        List<UsersEntity> companies = usersService.getAllUsers();
+        return ResponseEntity.ok(companies);
+    }
+
+    @DeleteMapping("/deleteUser/{userId}")
+    public ResponseEntity<?> deleteUser(@PathVariable String userId) {
+        return usersService.deleteUser(userId);
+    }
+
 }
