@@ -28,6 +28,9 @@ import ReviewContentPage from './Pages/ReviewContentPage';
 import AboutPolicyPage from "./Pages/AboutPolicyPage";
 import WritingRecruitPage from "./Pages/WritingRecruitPage";
 import RecruitViewPage from "./Pages/RecruitViewPage";
+import MemberManagePage from "./Pages/MemberManagePage";
+import CompanyManagePage from "./Pages/CompanyManagePage";
+import GeneralManagePage from "./Pages/GeneralManagePage";
 
 function App() {
   return (
@@ -47,6 +50,9 @@ function App() {
           <Route path = "/approval" element={<ApprovalPage />}></Route>
           <Route path = "/MyInfo" element={<MyInfoPage />}></Route>
           <Route path = "/infoChange" element={<InfoChange />}></Route>
+          <Route path = "/memberManage" element={<MemberManagePage />}></Route>
+          <Route path = "/companyManage" element={<CompanyManagePage />}></Route>
+          <Route path = "/generalManage" element={<GeneralManagePage />}></Route>
           <Route path = "/companyInfoChange" element={<CompanyInfoChange />}></Route>
           <Route path="/newcourse" element={<NewPage/>}></Route>
           <Route path="/writingNewsPage" element={<WritingNewsPage/>}></Route>

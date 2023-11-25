@@ -11,6 +11,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ProvidersService {
 
@@ -81,6 +83,39 @@ public class ProvidersService {
         }
 
         return ResponseEntity.badRequest().body("회사 정보를 찾을 수 없습니다.");
+    }
+
+    public List<ProvidersEntity> getAllCompanies() {
+        return providersRepository.findAll();
+    }
+
+    public ResponseEntity<?> deleteProvider(String providerId) {
+        ProvidersEntity provider = providersRepository.findByProviderId(providerId);
+        if (provider != null) {
+            providersRepository.delete(provider);
+            return ResponseEntity.ok().body("Provider deleted successfully");
+        }
+        return ResponseEntity.badRequest().body("Provider not found");
+    }
+
+    public ResponseEntity<?> approveProvider(String providerId) {
+        ProvidersEntity provider = providersRepository.findByProviderId(providerId);
+        if (provider != null) {
+            provider.setProviderApproval("true");
+            providersRepository.save(provider);
+            return ResponseEntity.ok().body("Provider approved successfully");
+        }
+        return ResponseEntity.badRequest().body("Provider not found");
+    }
+
+    public ResponseEntity<?> revokeProviderApproval(String providerId) {
+        ProvidersEntity provider = providersRepository.findByProviderId(providerId);
+        if (provider != null) {
+            provider.setProviderApproval("false");
+            providersRepository.save(provider);
+            return ResponseEntity.ok().body("Provider approval revoked successfully");
+        }
+        return ResponseEntity.badRequest().body("Provider not found");
     }
 
 

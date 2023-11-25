@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -222,7 +223,27 @@ public class AuthController {
         return providersService.updateCompanyInfo(providerId, companyUpdateDto);
     }
 
+    @GetMapping("/allCompanies")
+    public ResponseEntity<?> getAllCompanies() {
+        List<ProvidersEntity> companies = providersService.getAllCompanies();
+        return ResponseEntity.ok(companies);
+    }
 
+    @DeleteMapping("/deleteProvider/{providerId}")
+    public ResponseEntity<?> deleteProvider(@PathVariable String providerId) {
+        return providersService.deleteProvider(providerId);
+    }
 
+    @PostMapping("/approveProvider")
+    public ResponseEntity<?> approveProvider(@RequestBody Map<String, String> request) {
+        String providerId = request.get("providerId");
+        return providersService.approveProvider(providerId);
+    }
+
+    @PostMapping("/revokeProviderApproval")
+    public ResponseEntity<?> revokeProviderApproval(@RequestBody Map<String, String> request) {
+        String providerId = request.get("providerId");
+        return providersService.revokeProviderApproval(providerId);
+    }
 
 }

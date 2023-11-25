@@ -16,6 +16,7 @@ const Navigate = () => {
 
     const isLoggedIn = cookies.token && user;
     const userType = cookies.userType;
+    const userID = user ? user.userId : '';
 
     const [size, setSize] = useState("10");
 
@@ -81,6 +82,10 @@ const Navigate = () => {
         navigate("/MyInfo")
     };
 
+    const handleMemberManage = () => {
+        navigate("/memberManage")
+    };
+
     const CoursePageButton = () => {
         navigate("/newcourse");
     }
@@ -135,13 +140,16 @@ const Navigate = () => {
                             {isLoggedIn ? (
                                 <>
                                     <ProfileSection>
-                                        {userType === 'company' ?
-                                            <Badge bg="primary" style={{marginRight: '20px', fontSize: "16px"}}>기업
-                                                회원</Badge>
-                                            :
-                                            <Badge bg="success" style={{marginRight: '20px', fontSize: "16px"}}>일반
-                                                회원</Badge>
+                                        {userID === 'admin' ?
+                                                <Badge bg="warning" style={{marginRight: '20px', fontSize: "16px"}}>관리자</Badge>
+                                                :
+                                                (userType === 'company' ?
+                                                        <Badge bg="primary" style={{marginRight: '20px', fontSize: "16px"}}>기업 회원</Badge>
+                                                        :
+                                                        <Badge bg="success" style={{marginRight: '20px', fontSize: "16px"}}>일반 회원</Badge>
+                                                )
                                         }
+
                                         {userType === 'company' ?
                                             <span style={{
                                                 marginRight: '20px',
@@ -160,7 +168,11 @@ const Navigate = () => {
 
                                             <Dropdown.Menu>
                                                 <Dropdown.Item onClick={handleMyInfo}>내 정보</Dropdown.Item>
-                                                <Dropdown.Item href="#action/3.2">스케줄러</Dropdown.Item>
+                                                {userID === 'admin' ?
+                                                    <Dropdown.Item onClick={handleMemberManage}>회원관리</Dropdown.Item>
+                                                    :
+                                                    <Dropdown.Item href="#action/3.2">스케줄러</Dropdown.Item>
+                                                }
                                                 <Dropdown.Item onClick={handleLogout}>로그아웃</Dropdown.Item>
                                             </Dropdown.Menu>
                                         </StyledDropdown>
@@ -208,7 +220,6 @@ const UserImg = styled.button`
   background: none;
   border: none;
   position: relative;
-  left: 2rem;
   margin-bottom: 10px;
   margin-right: 30px;
 
@@ -241,6 +252,7 @@ const UserContainer = styled.div`
 `
 
     const StyledDropdown = styled(Dropdown)`
+      margin-right: 10px;
       .dropdown-toggle::after {
         display: none;
       }
