@@ -104,7 +104,7 @@ const CompanyManagePage = () => {
                     <th>회원명</th>
                     <th>기업명</th>
                     <th>전화번호</th>
-                    <th>작업</th>
+                    <th>삭제</th>
                 </tr>
                 </thead>
                 <tbody>

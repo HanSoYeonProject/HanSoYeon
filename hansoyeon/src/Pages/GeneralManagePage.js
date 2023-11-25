@@ -3,7 +3,6 @@ import axios from "axios";
 import { Table, Button, Modal } from "react-bootstrap";
 import styled from 'styled-components';
 import defaultProfile from '../imgs/default_profile.png';
-import approvalCheck from '../imgs/approvalCheck.png'
 
 const GeneralManagePage = () => {
     const [users, setUsers] = useState([]);
