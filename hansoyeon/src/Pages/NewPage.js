@@ -375,7 +375,12 @@ const NewPage = (props) => {
         useEffect(() => {
             const checkFavoriteStatus = async () => {
                 try {
-                    const userId = user.userId;
+                    let userId = null;
+                    if(userType === "company") {
+                        userId = user.providerId;
+                    }else{
+                        userId = user.userId;
+                    }
                     const response = await axios.get(`http://localhost:8050/api/cos/check/${encodeURIComponent(spot.title)}/${userId}`, {
                         headers: {
                             Authorization: `Bearer ${cookies.token}`
@@ -412,7 +417,13 @@ const NewPage = (props) => {
 
         const deleteFavoriteSpot = async () => {
             try {
-                await axios.delete(`http://localhost:8050/api/cos/delete/${encodeURIComponent(spot.title)}/${user.userId}`, {
+                let userId = null;
+                if(userType === "company") {
+                    userId = user.providerId;
+                }else{
+                    userId = user.userId;
+                }
+                await axios.delete(`http://localhost:8050/api/cos/delete/${encodeURIComponent(spot.title)}/${userId}`, {
                     headers: {
                         Authorization: `Bearer ${cookies.token}`
                     }
@@ -424,8 +435,14 @@ const NewPage = (props) => {
 
 
         const saveFavoriteSpot = async (imageUrl) => {
+            let userId = null;
+            if(userType === "company") {
+                userId = user.providerId;
+            }else{
+                userId = user.userId;
+            }
             const courseData = {
-                cosUserId: user.userId,
+                cosUserId: userId,
                 cosTitle: spot.title,
                 cosPicture: imageUrl,
                 cosAddress: spot.addr1 + " " + spot.addr2
@@ -480,7 +497,12 @@ const NewPage = (props) => {
 
     const fetchFavoritedSpots = async () => {
         try {
-            const userId = user.userId;
+            let userId = null;
+            if(userType === "company") {
+                userId = user.providerId;
+            }else{
+                userId = user.userId;
+            }
             const response = await axios.get(`http://localhost:8050/api/cos/favorites/${userId}`, {
                 headers: {
                     Authorization: `Bearer ${cookies.token}`
@@ -512,7 +534,12 @@ const NewPage = (props) => {
         useEffect(() => {
             const checkFavoriteStatus = async () => {
                 try {
-                    const userId = user.userId;
+                    let userId = null;
+                    if(userType === "company") {
+                        userId = user.providerId;
+                    }else{
+                        userId = user.userId;
+                    }
                     const response = await axios.get(`http://localhost:8050/api/cos/check/${encodeURIComponent(spot.cosTitle)}/${userId}`, {
                         headers: {
                             Authorization: `Bearer ${cookies.token}`
@@ -549,7 +576,13 @@ const NewPage = (props) => {
 
         const deleteFavoriteSpot = async () => {
             try {
-                await axios.delete(`http://localhost:8050/api/cos/delete/${encodeURIComponent(spot.cosTitle)}/${user.userId}`, {
+                let userId = null;
+                if(userType === "company") {
+                    userId = user.providerId;
+                }else{
+                    userId = user.userId;
+                }
+                await axios.delete(`http://localhost:8050/api/cos/delete/${encodeURIComponent(spot.cosTitle)}/${userId}`, {
                     headers: {
                         Authorization: `Bearer ${cookies.token}`
                     }
@@ -561,8 +594,14 @@ const NewPage = (props) => {
 
 
         const saveFavoriteSpot = async (imageUrl) => {
+            let userId = null;
+            if(userType === "company") {
+                userId = user.providerId;
+            }else{
+                userId = user.userId;
+            }
             const courseData = {
-                cosUserId: user.userId,
+                cosUserId: userId,
                 cosTitle: spot.cosTitle,
                 cosPicture: imageUrl,
                 cosAddress: spot.cosAddress

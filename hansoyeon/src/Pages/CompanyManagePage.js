@@ -3,6 +3,7 @@ import axios from "axios";
 import { Table, Button, Modal } from "react-bootstrap";
 import styled from 'styled-components';
 import defaultProfile from '../imgs/default_profile.png';
+import approvalCheck from '../imgs/approvalCheck.png'
 
 const CompanyManagePage = () => {
     const [companies, setCompanies] = useState([]);
@@ -121,6 +122,11 @@ const CompanyManagePage = () => {
                                         <img src={company.providerProfile} alt="Profile" />
                                         <span>{company.providerName}</span>
                                     </>
+                                }
+                                {company.providerApproval === "true" ?
+                                    <StyledLicenseCheckImage src={approvalCheck} alt="checkApproval"/>
+                                    :
+                                    null
                                 }
                             </CompanyProfile>
                         </td>
@@ -331,6 +337,12 @@ const StyledModalLicenseImage = styled.img`
 const StyledModalBigLicenseImage = styled.img`
   width: 300px;
   height: 300px;
+`;
+
+const StyledLicenseCheckImage = styled.img`
+  margin-left: 5px;
+  width: 15px;
+  height: 15px;
 `;
 
 
