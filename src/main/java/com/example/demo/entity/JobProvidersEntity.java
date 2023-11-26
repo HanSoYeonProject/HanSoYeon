@@ -3,23 +3,21 @@ package com.example.demo.entity;
 import javax.persistence.*;
 import java.util.Date;
 
+
 @Entity
 @Table(name = "Jobproviders")
-public class JobprovidersEntity {
+public class JobProvidersEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "job_id")
-    private Long id;
+    private int Id;
 
     @Column(name = "job_title", nullable = false)
     private String jobTitle;
 
     @Column(name = "job_content", nullable = false, columnDefinition = "TEXT")
     private String jobContent;
-
-    @Column(name = "job_work_schedule", length = 2000)
-    private String jobWorkSchedule;
 
     @Column(name = "job_region", nullable = false)
     private String jobRegion;
@@ -41,14 +39,12 @@ public class JobprovidersEntity {
     @Column(name = "job_money", nullable = false)
     private String jobMoney;
 
-    // Getter와 Setter 메서드는 생략 (필요한 경우 추가)
-
-    public Long getId() {
-        return id;
+    public int getId() {
+        return Id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setId(int Id) {
+        this.Id = Id;
     }
 
     public String getJobTitle() {
@@ -65,14 +61,6 @@ public class JobprovidersEntity {
 
     public void setJobContent(String jobContent) {
         this.jobContent = jobContent;
-    }
-
-    public String getJobWorkSchedule() {
-        return jobWorkSchedule;
-    }
-
-    public void setJobWorkSchedule(String jobWorkSchedule) {
-        this.jobWorkSchedule = jobWorkSchedule;
     }
 
     public String getJobRegion() {

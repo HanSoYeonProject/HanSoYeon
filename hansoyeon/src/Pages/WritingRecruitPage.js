@@ -1,52 +1,90 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const WritingRecruitPage = () => {
     const [title, setTitle] = useState('');
-    const [description, setDescription] = useState('');
-    const [workSchedule, setWorkSchedule] = useState('');
+    const [content, setContent] = useState('');
     const [region, setRegion] = useState('');
     const [providers, setProviders] = useState('');
     const [money, setMoney] = useState('');
     const [image, setImage] = useState(null);
     const navigate = useNavigate();
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
+
+    const handleInputTitle = (e) => {
+        setTitle(e.target.value);
+    };
+    const handleInputContent = (e) => {
+        setContent(e.target.value);
+    };
+    const handleImageChange = async (e) => {
+        // 이미지 선택 시
+        setImage(e.target.files[0]);
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const formData = new FormData();
-        formData.append('title', title);
-        formData.append('description', description);
-        formData.append('workSchedule', workSchedule);
-        formData.append('region', region);
-        formData.append('providers', providers);
-        formData.append('money', money);
-        formData.append('image', image || '');
+        // 이미지를 base64로 인코딩
+        let base64Image = '';
         if (image) {
-            formData.append('image', image);
-        }
+            const reader = new FileReader();
+            reader.readAsDataURL(image);
 
-        try {
-            const endpoint = 'http://localhost:8050/api/recruits';
-            const response = await axios.post(endpoint, formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
+            // Promise를 사용하기 위해 await를 사용하려면 handleImageChange도 async 함수여야 합니다.
+            base64Image = await new Promise((resolve) => {
+                reader.onloadend = () => {
+                    resolve(reader.result);
+                };
             });
-            if (response.status === 200) {
-                // 데이터 업데이트 및 페이지 이동 로직
-            } else {
-                // 오류 처리 로직
-            }
-            navigate('/recruit'); // 글 올리기 성공 후 /recruit 페이지로 이동
-        } catch (error) {
-            console.error('Error posting data:', error);
         }
-    };
 
-    const handleImageChange = (e) => {
-        setImage(e.target.files[0]); // 선택된 이미지 파일 저장
+        // 이미지를 포함한 recruitnewspost 객체 생성
+        const recruitnewspost = {
+            title,
+            content,
+            startDate,
+            endDate,
+            region,
+            providers,
+            money,
+            image: base64Image, // 이미지를 추가
+
+        };
+        console.log("Form Data:", {
+            title,
+            content,
+            region,
+            providers,
+            money,
+            startDate,
+            endDate,
+            image: base64Image,
+        });
+        // 서버에 전송
+        try {
+            const response = await axios.post(
+                'http://localhost:8050/api/createRecruitment',
+                recruitnewspost,
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
+
+            if (response.status === 201) {
+                console.log(response.data);
+                // 글 작성 성공 시, 페이지를 이동
+                navigate('/recruit');
+            } else {
+                console.error(`Http 오류! 상태 코드: ${response.status}`);
+            }
+        } catch (error) {
+            console.log('API 요청 중 오류 발생: ', error);
+        }
     };
 
     return (
@@ -64,28 +102,42 @@ const WritingRecruitPage = () => {
                         style={{ width: '50%', padding: '10px' }}
                     />
                 </div>
+
                 <div style={{ marginBottom: '20px' }}>
                     <label htmlFor="description" style={{ display: 'block', marginBottom: '5px' }}>내용</label>
                     <textarea
-                        id="description"
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
+                        id="content"
+                        value={content}
+                        onChange={(e) => setContent(e.target.value)}
                         placeholder="내용"
                         style={{ width: '50%', height: '200px', padding: '10px' }}
                     />
                 </div>
+
+                {/* 시작일 입력 필드 */}
                 <div style={{ marginBottom: '20px' }}>
-                    <label htmlFor="workSchedule" style={{ display: 'block', marginBottom: '5px' }}>근무 일정</label>
+                    <label htmlFor="startDate" style={{ display: 'block', marginBottom: '5px' }}>시작일</label>
                     <input
-                        id="workSchedule"
-                        type="text"
-                        value={workSchedule}
-                        onChange={(e) => setWorkSchedule(e.target.value)}
-                        placeholder="근무 일정"
+                        id="startDate"
+                        type="date"
+                        value={startDate}
+                        onChange={(e) => setStartDate(e.target.value)}
                         style={{ width: '50%', padding: '10px' }}
                     />
-                    {/* 캘린더 아이콘 또는 팝업을 추가하여 일정 선택 기능을 구현할 수 있습니다. */}
                 </div>
+
+                {/* 종료일 입력 필드 */}
+                <div style={{ marginBottom: '20px' }}>
+                    <label htmlFor="endDate" style={{ display: 'block', marginBottom: '5px' }}>종료일</label>
+                    <input
+                        id="endDate"
+                        type="date"
+                        value={endDate}
+                        onChange={(e) => setEndDate(e.target.value)}
+                        style={{ width: '50%', padding: '10px' }}
+                    />
+                </div>
+
                 <div style={{ marginBottom: '20px' }}>
                     <label htmlFor="region" style={{ display: 'block', marginBottom: '5px' }}>지역</label>
                     <input
@@ -97,6 +149,7 @@ const WritingRecruitPage = () => {
                         style={{ width: '50%', padding: '10px' }}
                     />
                 </div>
+
                 <div style={{ marginBottom: '20px' }}>
                     <label htmlFor="providers" style={{ display: 'block', marginBottom: '5px' }}>제공자</label>
                     <input
@@ -108,6 +161,7 @@ const WritingRecruitPage = () => {
                         style={{ width: '50%', padding: '10px' }}
                     />
                 </div>
+
                 <div style={{ marginBottom: '20px' }}>
                     <label htmlFor="money" style={{ display: 'block', marginBottom: '5px' }}>금액</label>
                     <input
@@ -119,6 +173,7 @@ const WritingRecruitPage = () => {
                         style={{ width: '50%', padding: '10px' }}
                     />
                 </div>
+
                 <div style={{ marginBottom: '20px' }}>
                     <label htmlFor="image" style={{ display: 'block', marginBottom: '5px' }}>사진 추가</label>
                     <input

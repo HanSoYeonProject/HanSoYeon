@@ -1,51 +1,87 @@
 package com.example.demo.service;
 
-import org.apache.commons.codec.binary.Base64;
-import com.example.demo.entity.JobprovidersEntity;
+import com.example.demo.dto.AnnouncementDto;
+import com.example.demo.dto.JobProvidersDto;
+import com.example.demo.entity.AnnouncementEntity;
+import com.example.demo.entity.JobProvidersEntity;
 import com.example.demo.repository.RecruitmentRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class RecruitmentService {
 
-    @Autowired
-    private RecruitmentRepository recruitmentRepository;
+    private final RecruitmentRepository recruitmentRepository;
+    private static final Logger logger = LoggerFactory.getLogger(RecruitmentService.class);
 
-    /* jobproviders SELECT */
-    public List<JobprovidersEntity> findAllRecruitments() {
-        return recruitmentRepository.findAll();
+    @Autowired
+    public RecruitmentService(RecruitmentRepository recruitmentRepository) {
+        this.recruitmentRepository = recruitmentRepository;
     }
 
-    /* jobproviders INSERT */
-    public JobprovidersEntity addRecruitment(String title, String description, String workSchedule, String region, String providers, String money, MultipartFile image) {
-        JobprovidersEntity recruitment = new JobprovidersEntity();
-        recruitment.setJobTitle(title);
-        recruitment.setJobContent(description);
-        recruitment.setJobWorkSchedule(workSchedule);
-        recruitment.setJobRegion(region);
-        recruitment.setJobProviders(providers);
-        recruitment.setJobMoney(money);
-        recruitment.setJobStartDate(new Date()); // 이 부분은 실제 비즈니스 로직에 맞게 조정 해야함
-        recruitment.setJobEndDate(new Date());   // 이 부분도 마찬가지
+    @Transactional
+    public JobProvidersDto createJobProviders(JobProvidersDto jobProvidersDto) {
+        JobProvidersEntity jobProviders = new JobProvidersEntity();
+        jobProviders.setJobTitle(jobProvidersDto.getTitle());
+        jobProviders.setJobContent(jobProvidersDto.getContent());
+        jobProviders.setJobRegion(jobProvidersDto.getRegion());
+        jobProviders.setJobProviders(jobProvidersDto.getProviders());
+        jobProviders.setJobStartDate(jobProvidersDto.getStartDate());
+        jobProviders.setJobEndDate(jobProvidersDto.getEndDate());
+        jobProviders.setJobImage(jobProvidersDto.getImage());
+        jobProviders.setJobMoney(jobProvidersDto.getMoney());
 
-        // 이미지 처리 로직
         try {
-            if (image != null && !image.isEmpty()) {
-                byte[] imageBytes = image.getBytes();
-                String base64Image = Base64.encodeBase64String(imageBytes);
-                recruitment.setJobImage(base64Image);
-            }
-        } catch (IOException e) {
-            // 이미지 처리 중 오류 발생 시 예외 처리
-            e.printStackTrace(); // 또는 로깅 또는 다른 예외 처리 방법을 선택합니다.
+            JobProvidersEntity savedJobProviders = recruitmentRepository.save(jobProviders);
+            return convertToDto(savedJobProviders);
+        } catch (Exception e) {
+            // 예외 처리 로직 추가
+            logger.error("Error creating job providers", e);
+            throw e; // 예외를 다시 던지거나 적절한 방식으로 처리
         }
 
-        return recruitmentRepository.save(recruitment);
+    }
+
+    private JobProvidersDto convertToDto(JobProvidersEntity jobProviders) {
+        if (jobProviders == null) {
+            // 예외를 throw하거나, 기본값을 설정하는 등의 처리를 수행할 수 있습니다.
+            throw new IllegalArgumentException("Input JobProvidersEntity cannot be null");
+        }
+
+        JobProvidersDto jobProvidersDto = new JobProvidersDto();
+        jobProvidersDto.setJob_id(jobProviders.getId());
+        jobProvidersDto.setTitle(jobProviders.getJobTitle());
+        jobProvidersDto.setContent(jobProviders.getJobContent());
+        jobProvidersDto.setRegion(jobProviders.getJobRegion());
+        jobProvidersDto.setProviders(jobProviders.getJobProviders());
+        jobProvidersDto.setStartDate(jobProviders.getJobStartDate());
+        jobProvidersDto.setEndDate(jobProviders.getJobEndDate());
+        jobProvidersDto.setImage(jobProviders.getJobImage());
+        jobProvidersDto.setMoney(jobProviders.getJobMoney());
+
+        return jobProvidersDto;
+    }
+
+    //전체 글 목록 불러오기
+    public List<JobProvidersDto> getAlljobProviders() {
+        return recruitmentRepository.findAll()
+                .stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+
+    public JobProvidersDto getProvidersById(int Id) {
+        return recruitmentRepository.findById(Id)
+                .map(this::convertToDto)
+                .orElse(null);
     }
 }

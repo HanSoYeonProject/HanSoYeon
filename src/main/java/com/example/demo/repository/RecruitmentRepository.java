@@ -1,11 +1,13 @@
 package com.example.demo.repository;
 
-import com.example.demo.entity.JobprovidersEntity;
+import com.example.demo.entity.JobProvidersEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface RecruitmentRepository extends JpaRepository<JobprovidersEntity, Long> {
-    // 여기에 필요한 메서드 추가 (예: findByJobTitle, deleteById 등)
+import java.util.List;
 
-    // 예시: 제목을 기반으로 JobprovidersEntity 검색
-    // List<JobprovidersEntity> findByJobTitle(String title);
+@Repository
+public interface RecruitmentRepository extends JpaRepository<JobProvidersEntity, Integer> {
+    // 모든 공지사항 조회
+    List<JobProvidersEntity> findAll();
 }

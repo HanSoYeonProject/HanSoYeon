@@ -4,32 +4,36 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
+import axios from "axios";
 
-const RecruitViewPage = () => {
-    const { id} = useParams();
-    console.log('idididid',id)
+const RecruitViewPage = ( props ) => {
+    const { id } = useParams();
+    const [isCompanyUser, setIsCompanyUser] = useState(false);
+    const navigate = useNavigate(); // navigate 함수 초기화
+    const [recruitments, setRecruitments] = useState([]);
 
-    //Todo id로 SELECT WHERE 조건 주기
+    //상세 페이지 불러오는 함수
+    const fetchAnnouncement = async () => {
+        try {
+            const response = await axios.get(`http://localhost:8050/api/recruitments/${id}`)
+            if (response.status !== 200 ) {
+                throw new Error('Failed to fetch announcement content');
+            }
+            const data = response.data;
+            setRecruitments(data);
+            console.log('Announcement Content: ', data);
+        } catch (error) {
+            console.error('Error fetching announcement content: ', error);
+        }
+    };
 
+    useEffect(() => {
+        fetchAnnouncement();
+    }, [id]);
 
     return (
         <Container>
-            <Row className="justify-content-start mt-3">
-                <Col md={2}>
-                    <h2 style={{ fontWeight: 'bold' }}>모집 일정</h2>
-                </Col>
-            </Row>
-            <Row className="justify-content-start">
-                <Col md={2}>
-                    <p style={{ fontSize: 'small' }}>앞으로의 일정</p>
-                </Col>
-            </Row>
-
-            <Row className="justify-content-start">
-                <Col>
-                    가운데
-                </Col>
-            </Row>
+            <h3></h3>
         </Container>
     );
 };
