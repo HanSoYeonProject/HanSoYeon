@@ -800,7 +800,11 @@ const NewPage = (props) => {
                         <AreaContentContainer>
                             <SearchBoxContainer>
                                 <SearchResultText>
-                                    {user.userName}님이 선택한 여행지 목록입니다.
+                                    {user ?
+                                        <p>{user.userName}님이 선택한 여행지 목록입니다.</p>
+                                        :
+                                        <p>로그인을 해주세요.</p>
+                                    }
                                 </SearchResultText>
                             </SearchBoxContainer>
                             <GridContainer2>
