@@ -338,3 +338,6 @@ gradle-app.setting
 *.hprof
 
 .idea/dbnavigator.xml
+
+application.properties
+application.yml
