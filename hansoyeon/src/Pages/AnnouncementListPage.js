@@ -2,17 +2,47 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import data from "bootstrap/js/src/dom/data";
+import {useCookies} from "react-cookie";
 
-const AnnouncementListPage = () => {
+const AnnouncementListPage = (props) => {
+
     const navigate = useNavigate();
+    const [cookies, setCookie, removeCookie] = useCookies(['token']);
     const [announcements, setAnnouncements] = useState([]);
 
-    // 페이지 시작 번호
+    //admin일 경우만 실행
+    const [isAdmin, setIsAdmin] = useState(false);
+    //페이지 시작번호
     const [currentPage, setCurrentPage] = useState(1);
     // 페이지당 표시할 항목 수
     const itemsPerPage = 5;
 
     // 공지사항 목록 가져오기
+
+    //글 작성 버튼 클릭시 작성페이지로 이동
+    const WritingNews = () => {
+        navigate("/WritingNewsPage");
+    }
+    // 전체 공지사항 목록에서 현재 페이지에 표시할 목록만 추출
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = announcements.slice(indexOfFirstItem, indexOfLastItem);
+    // 글 번호 고유Id값
+    // 글 제목 클릭시 상세내용 페이지 이동
+    const viewAnnouncement = async (annoId) => {
+        try {
+            const response = await axios.get(`http://localhost:8050/api/announcements/${annoId}`);
+            const data = response.data;
+            await axios.put(`http://localhost:8050/api/announcements/${annoId}/increaseViews`);
+            navigate(`/AnnouncementContent/${annoId}`);
+        } catch (error) {
+            console.error('Error fetching or updating announcement:', error);
+        }
+    };
+
+
+    //글 목록 띄우기
     useEffect(() => {
         axios.get('http://localhost:8050/api/announcements')
             .then(response => {
@@ -22,6 +52,7 @@ const AnnouncementListPage = () => {
             })
             .catch(error => console.error('Error fetching announcements:', error));
     }, []);
+
 
     // 글 작성 페이지로 이동
     const WritingNews = () => {
@@ -44,6 +75,30 @@ const AnnouncementListPage = () => {
     const currentItems = announcements.slice(indexOfFirstItem, indexOfLastItem);
 
     // 페이지 번호 변경
+
+    //admin구분
+    useEffect(() => {
+        axios.get('http://localhost:8050/api/auth/currentUser', {
+            headers: {
+                Authorization: `Bearer ${cookies.token}`
+            }
+        })
+            .then((response) => {
+                console.log(response.data);
+                const user = response.data;
+                const isAdminUser = user.userId === 'admin';
+                setIsAdmin(isAdminUser);
+            })
+            .catch(error => {
+                console.error('Error fetching user info:', error);
+                if (error.response) {
+                    console.error('Status Code:', error.response.status);
+                    console.error('Response Data:', error.response.data);
+                }
+            });
+    }, []);
+
+    // 페이지 번호 클릭 시 호출되는 함수
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
     return (
@@ -54,7 +109,8 @@ const AnnouncementListPage = () => {
                     <SmallNewsTitle>
                         <LeftNewsTitle>한소연 소식</LeftNewsTitle>
                         <RightNewsTitle>
-                            <WritingButton onClick={WritingNews}>글 작성</WritingButton>
+                            {isAdmin && <WritingButton onClick={WritingNews}>글 작성</WritingButton>}
+                            <ExitButton>더 보기 ></ExitButton>
                         </RightNewsTitle>
                     </SmallNewsTitle>
                 </NewsTitle>
@@ -68,12 +124,10 @@ const AnnouncementListPage = () => {
                     <BottomTitle>
                         {currentItems.map((announcement, index) => (
                             <BottomContent key={announcement.anno_id}>
-                                <h3 style={{ flex: '1', marginTop: "1rem", fontSize: '20px', fontWeight: '700', display: "flex", justifyContent: 'center', color: "#747474" }}>
-                                    {announcements.length - (index + indexOfFirstItem)}
-                                </h3>
-                                <button style={{ flex: '3', marginTop: "1rem", fontSize: '20px', fontWeight: '700', display: "flex", justifyContent: 'center', color: "#747474", border: 'none', backgroundColor: 'white' }} onClick={() => viewAnnouncement(announcement.anno_id)} >{announcement.anno_title}</button>
-                                <h3 style={{ flex: '1.3', marginTop: "1rem", fontSize: '20px', fontWeight: '700', display: "flex", justifyContent: 'center', color: "#747474" }}>{announcement.anno_regist.substring(0, 10)}</h3>
-                                <h3 style={{ flex: '0.7', marginTop: "1rem", fontSize: '20px', fontWeight: '700', color: "#747474", justifyContent: 'center' }}>{announcement.anno_views}</h3>
+                                <h3 style={{flex: '1', marginTop: "1rem",fontSize:'20px',fontWeight:'700', display: "flex",justifyContent:'center', color: "#747474"}}>{announcement.anno_id}</h3>
+                                <button style={{flex: '3', marginTop: "1rem",fontSize:'20px',fontWeight:'700', display: "flex",justifyContent:'center', color: "#747474",border: 'none', backgroundColor:'white'}} onClick={() => viewAnnouncement(announcement.anno_id)} >{announcement.anno_title}</button>
+                                <h3 style={{flex: '1.3', marginTop: "1rem",fontSize:'20px',fontWeight:'700', display: "flex",justifyContent:'center', color: "#747474"}}>{announcement.anno_regist.substring(0, 10)}</h3>
+                                <h3 style={{flex: '0.7', marginTop: "1rem",fontSize:'20px',fontWeight:'700', color: "#747474",justifyContent:'center'}}>{announcement.anno_views}</h3>
                             </BottomContent>
                         ))}
                     </BottomTitle>

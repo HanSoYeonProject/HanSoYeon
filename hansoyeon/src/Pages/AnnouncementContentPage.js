@@ -3,6 +3,7 @@ import {useNavigate, useParams} from 'react-router-dom';
 import styled from 'styled-components';
 import {responsivePropType} from "react-bootstrap/createUtilityClasses";
 import axios from "axios";
+import {useCookies} from "react-cookie";
 
 const AnnouncementContentPage = () => {
     const { anno_id } = useParams();
@@ -11,7 +12,9 @@ const AnnouncementContentPage = () => {
     const navigate = useNavigate();
     const [isEditing, setIsEditing] = useState(false);
     const [modifiedContent, setModifiedContent] = useState('');
+    const [cookies, setCookie, removeCookie] = useCookies(['token']);
     const [updateFlag, setUpdateFlag] = useState(false);
+    const [isAdmin, setIsAdmin] = useState(false);
 
     // 수정 버튼 클릭 시 수정 모드 활성화
     const activateEditMode = () => {
@@ -28,6 +31,26 @@ const AnnouncementContentPage = () => {
     const handleContentChange = (e) => {
         setModifiedContent(e.target.value);
     };
+
+    //상세 페이지 불러오는 함수
+    const fetchAnnouncement = async () => {
+        try {
+            const response = await axios.get(`http://localhost:8050/api/announcements/${anno_id}`)
+            if (response.status !== 200 ) {
+                throw new Error('Failed to fetch announcement content');
+            }
+            const data = response.data;
+            setAnnouncement(data);
+            setModifiedContent(data.anno_content);
+            console.log('Announcement Content: ', data);
+        } catch (error) {
+            console.error('Error fetching announcement content: ', error);
+        }
+    };
+
+    useEffect(() => {
+        fetchAnnouncement();
+    }, [anno_id]);
 
     //삭제 물어보는메서드
     const confirmDelete = () => {
@@ -51,6 +74,28 @@ const AnnouncementContentPage = () => {
             console.error('error', error);
         }
     };
+
+    //admin구분
+    useEffect(() => {
+        axios.get('http://localhost:8050/api/auth/currentUser', {
+            headers: {
+                Authorization: `Bearer ${cookies.token}`
+            }
+        })
+            .then((response) => {
+                console.log(response.data);
+                const user = response.data;
+                const isAdminUser = user.userId === 'admin';
+                setIsAdmin(isAdminUser);
+            })
+            .catch(error => {
+                console.error('Error fetching user info: ', error);
+                if (error.response) {
+                    console.error('Status Code: ', error.response.status);
+                    console.error('Response Data: ', error.response.data);
+                }
+            })
+    }, []);
 
     //수정 메서드
     const saveEdit = async () => {
@@ -83,24 +128,6 @@ const AnnouncementContentPage = () => {
         setUpdateFlag((prevFlag) => !prevFlag);
     };
 
-    const fetchAnnouncement = async () => {
-        try {
-            const response = await axios.get(`http://localhost:8050/api/announcements/${anno_id}`)
-            if (response.status !== 200 ) {
-                throw new Error('Failed to fetch announcement content');
-            }
-            const data = response.data;
-            setAnnouncement(data);
-            setModifiedContent(data.anno_content);
-            console.log('Announcement Content: ', data);
-        } catch (error) {
-            console.error('Error fetching announcement content: ', error);
-        }
-    };
-
-    useEffect(() => {
-        fetchAnnouncement();
-    }, [anno_id]);
 
 
     if (!announcement) {
@@ -111,7 +138,6 @@ const AnnouncementContentPage = () => {
         <Container>
             <NoticeTitleContainer>공지사항</NoticeTitleContainer>
             <MiddleContainer>
-
                 <Title>
                     <h2>글 제목 : {announcement.anno_title}</h2>
                     <h6>조회수 : {announcement.anno_views}</h6>
@@ -135,18 +161,18 @@ const AnnouncementContentPage = () => {
                 </ContentContainer>
             </MiddleContainer>
             <ButtonContainer>
-                {isEditing ? (
-                    // 수정 모드일 때 저장 및 취소 버튼 표시
+                {isAdmin && !isEditing && (
+                    <EditButton onClick={activateEditMode}>수정</EditButton>
+                )}
+                {isAdmin && !isEditing && (
+                    <DeleteButton onClick={confirmDelete}>삭제</DeleteButton>
+                )}
+                {isEditing && (
                     <>
                         <SaveButton onClick={saveEdit}>저장</SaveButton>
                         <CancelButton onClick={cancelEdit}>취소</CancelButton>
                     </>
-                ) : (
-
-                    // 수정 모드가 아닐 때 수정 버튼 표시
-                    <EditButton onClick={activateEditMode}>수정</EditButton>
                 )}
-                <DeleteButton onClick={confirmDelete}>삭제</DeleteButton>
             </ButtonContainer>
         </Container>
     );
