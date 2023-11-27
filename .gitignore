@@ -1,4 +1,4 @@
-# inteli J setting
+# intelliJ setting
 .idea/
 
 # gradle 설정 (각 pc가 알아서 다운)
@@ -12,9 +12,31 @@ bin/
 #npm의 nodule 기록삭제
 hansoyeon/node_modules/
 
+### VisualStudioCode ###
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/*.code-snippets
+
+# Local History for Visual Studio Code
+.history/
+
+# Built Visual Studio Code Extensions
+*.vsix
+
+### VisualStudioCode Patch ###
+# Ignore all local history of files
+.history
+
+### macOS ###
+# General
+.DS_Store
+.AppleDouble
+.LSOverride
+
 .idea/dbnavigator.xml
+
 application.properties
 application.yml
-
-*.lock
-*.bin
