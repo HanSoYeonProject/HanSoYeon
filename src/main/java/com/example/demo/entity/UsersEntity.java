@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -18,15 +19,25 @@ import javax.persistence.Table;
 @Table(name = "users")
 public class UsersEntity {
     @Id
+    @Column(name = "user_id")
     private String userId;
+    @Column(name = "user_name")
     private String userName;
+    @Column(name = "user_email")
     private String userEmail;
+    @Column(name = "user_password")
     private String userPassword;
+    @Column(name = "user_gender")
     private String userGender;
+    @Column(name = "user_profile")
     private String userProfile;
+    @Column(name = "user_info")
     private String userInfo;
+    @Column(name = "user_prefer")
     private String userPrefer;
+    @Column(name = "user_phone")
     private String userPhone;
+    @Column(name = "user_address")
     private String userAddress;
 
     public UsersEntity(SignUpDto dto) {
