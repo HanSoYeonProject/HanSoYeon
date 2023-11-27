@@ -5,6 +5,7 @@ import axios from "axios";
 import data from "bootstrap/js/src/dom/data";
 import {useCookies} from "react-cookie";
 
+
 const AnnouncementListPage = (props) => {
 
     const navigate = useNavigate();
