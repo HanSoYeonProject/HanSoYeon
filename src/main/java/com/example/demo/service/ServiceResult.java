@@ -41,6 +41,7 @@ public class ServiceResult {
         return this;
     }
 
+
     public boolean isSuccess(){
         return this.result;
     }
