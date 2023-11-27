@@ -9,10 +9,8 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/friendship")
-
+@RequestMapping("/api")
 public class FriendshipController {
-
 
     private final FriendshipService friendshipService;
 
@@ -67,7 +65,7 @@ public class FriendshipController {
      * @return 친구 삭제 결과에 따른 ResponseEntity
      */
     @DeleteMapping("/friends")
-    public ResponseEntity<?> deleteFriend(String userId, String friendId) {
+    public ResponseEntity<?> deleteFriend(@RequestParam("userId") String userId, @RequestParam("friendId") String friendId) {
         var sr = friendshipService.deleteFriendshipByUserIdAndFriendId(userId, friendId);
 
         return sr.isSuccess() ?
@@ -83,7 +81,7 @@ public class FriendshipController {
      * @return 친구 목록 조회 결과에 따른 ResponseEntity
      */
     @GetMapping("/friends/{userId}")
-    public ResponseEntity<?> getFriends(String userId) {
+    public ResponseEntity<?> getFriends(@PathVariable("userId") String userId) {
         var sr = friendshipService.getFriendList(userId);
 
         return sr.isSuccess() ?

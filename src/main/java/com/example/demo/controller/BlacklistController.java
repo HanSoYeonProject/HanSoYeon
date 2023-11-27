@@ -18,7 +18,7 @@ public class BlacklistController {
     private final BlacklistService blacklistService;
 
     /**
-     * [POST] /api/blacklist
+     * [POST] /api/blacklists?providerId={providerId}&userId={userId}
      * @apiNote 블랙리스트 추가
      * @param providerId 블랙을 수행하는 주체의 회원 식별자(기업 회원)
      * @param userId 블랙 당한 대상의 회원 식별자
@@ -35,7 +35,7 @@ public class BlacklistController {
     }
 
     /**
-     * [DELETE] /api/blacklist
+     * [DELETE] /api/blacklists/{blacklistId}
      * @apiNote 블랙리스트 식별자로 특정 블랙리스트 항목 삭제
      * @param blacklistId 블랙리스트 식별자
      */
@@ -49,7 +49,7 @@ public class BlacklistController {
     }
 
     /**
-     * [DELETE] /api/blacklist
+     * [DELETE] /api/blacklists
      * @apiNote 기업 회원 식별자와 블랙 당한 사용자 식별자로 특정 블랙리스트 항목 삭제
      * @param reqBody.providerId 블랙을 수행하는 주체의 회원 식별자(기업 회원)
      * @param reqBody.userId 블랙 당한 대상의 회원 식별자
@@ -81,7 +81,7 @@ public class BlacklistController {
     }
 
     /**
-     * [GET] /api/blacklist/providerId={providerId}
+     * [GET] /api/blacklists/providerId?value={providerId}
      * @apiNote 기업 회원 식별자로 기업의 블랙리스트 리스트를 조회
      * @param providerId 자신이 등록한 블랙리스트 목록을 조회하고자 하는 기업 회원의 식별자
      */
@@ -95,7 +95,7 @@ public class BlacklistController {
     }
 
     /**
-     * [GET] /api/blacklist/userId={userId}
+     * [GET] /api/blacklists/userId={userId}
      * @apiNote 특정 사용자가 블랙리스트에 한번이라도 등록되었는지 조회
      * @param userId 블랙리스트에 등록된 적이 있는지 조회하고자 하는 사용자의 식별자
      * @return 블랙리스트에 등록된 적이 있으면 true, 없으면 false

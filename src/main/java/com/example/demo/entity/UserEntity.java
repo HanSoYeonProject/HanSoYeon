@@ -17,7 +17,7 @@ import javax.persistence.Table;
 @NoArgsConstructor
 @Entity
 @Table(name = "users")
-public class UsersEntity {
+public class UserEntity {
     @Id
     @Column(name = "user_id")
     private String userId;
@@ -40,7 +40,7 @@ public class UsersEntity {
     @Column(name = "user_address")
     private String userAddress;
 
-    public UsersEntity(SignUpDto dto) {
+    public UserEntity(SignUpDto dto) {
         this.userId = dto.getUserId();
         this.userName = dto.getUserName();
         this.userEmail = dto.getUserEmail();

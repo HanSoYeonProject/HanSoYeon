@@ -1,15 +1,15 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.*;
-import com.example.demo.entity.ProvidersEntity;
-import com.example.demo.entity.UsersEntity;
+import com.example.demo.entity.ProviderEntity;
+import com.example.demo.entity.UserEntity;
 import com.example.demo.security.TokenProvider;
 import com.example.demo.service.ProvidersService;
 import org.springframework.http.*;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
-import com.example.demo.service.UsersService;
+import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.client.RestTemplate;
 
@@ -24,7 +24,7 @@ import java.util.Objects;
 public class AuthController {
 
     @Autowired
-    private UsersService usersService;
+    private UserService userService;
     @Autowired
     private ProvidersService providersService;
 
@@ -40,7 +40,7 @@ public class AuthController {
     @PostMapping("/signUp")
     public ResponseDto<?> signUp(@RequestBody SignUpDto signUpDto){
         try {
-            usersService.registerUser(signUpDto);
+            userService.registerUser(signUpDto);
             return ResponseDto.setSuccess("회원가입 성공", null);
         } catch (Exception e) {
             // 예외 처리
@@ -92,7 +92,7 @@ public class AuthController {
 
     @PostMapping("/signIn")
     public ResponseDto<SignInResponseDto> signIn(@RequestBody SignInDto requestBody){
-        ResponseDto<SignInResponseDto> result = usersService.signIn(requestBody);
+        ResponseDto<SignInResponseDto> result = userService.signIn(requestBody);
         return result;
     }
 
@@ -105,7 +105,7 @@ public class AuthController {
     @PostMapping("/signIn/kakao")
     public ResponseDto<SignInResponseDto> kakaoSignIn(@RequestBody Map<String, String> requestBody){
         String userEmail = requestBody.get("userEmail");
-        return usersService.signInWithKakaoEmail(userEmail);
+        return userService.signInWithKakaoEmail(userEmail);
     }
 
     @GetMapping("/currentUser")
@@ -116,7 +116,7 @@ public class AuthController {
         // TokenProvider를 사용하여 토큰에서 이메일을 추출합니다.
         String userId = tokenProvider.getIdFromToken(jwtToken);
 
-        UsersEntity user = usersService.getUserById(userId);
+        UserEntity user = userService.getUserById(userId);
         return ResponseEntity.ok(user);
     }
 
@@ -128,7 +128,7 @@ public class AuthController {
         // TokenProvider를 사용하여 토큰에서 이메일을 추출합니다.
         String providerId = tokenProvider.getIdFromToken(jwtToken);
 
-        ProvidersEntity user = providersService.getUserById(providerId);
+        ProviderEntity user = providersService.getUserById(providerId);
         return ResponseEntity.ok(user);
     }
 
@@ -152,7 +152,7 @@ public class AuthController {
         String userId = tokenProvider.getIdFromToken(jwtToken); // 토큰에서 이메일 주소 추출
         String userPassword = request.get("userPassword");
 
-        boolean isValid = usersService.verifyUserPassword(userId, userPassword);
+        boolean isValid = userService.verifyUserPassword(userId, userPassword);
 
         Map<String, Boolean> response = new HashMap<>();
         response.put("isValid", isValid);
@@ -194,7 +194,7 @@ public class AuthController {
             // 토큰 검증 로직
             if (tokenProvider.validate(token) != null) {
                 String id = tokenProvider.getIdFromToken(token);
-                UsersEntity user = usersService.getUserById(id);
+                UserEntity user = userService.getUserById(id);
 
                 return ResponseEntity.ok().body(user);
             } else {
@@ -211,7 +211,7 @@ public class AuthController {
         String token = tokenHeader.split(" ")[1];
         String userId = tokenProvider.getIdFromToken(token);
 
-        return usersService.updateUserInfo(userId, userUpdateDto);
+        return userService.updateUserInfo(userId, userUpdateDto);
     }
 
     @PostMapping("/updateCompanyInfo")
@@ -225,7 +225,7 @@ public class AuthController {
 
     @GetMapping("/allCompanies")
     public ResponseEntity<?> getAllCompanies() {
-        List<ProvidersEntity> companies = providersService.getAllCompanies();
+        List<ProviderEntity> companies = providersService.getAllCompanies();
         return ResponseEntity.ok(companies);
     }
 
@@ -248,13 +248,13 @@ public class AuthController {
 
     @GetMapping("/allUsers")
     public ResponseEntity<?> getAllMembers() {
-        List<UsersEntity> companies = usersService.getAllUsers();
+        List<UserEntity> companies = userService.getAllUsers();
         return ResponseEntity.ok(companies);
     }
 
     @DeleteMapping("/deleteUser/{userId}")
     public ResponseEntity<?> deleteUser(@PathVariable String userId) {
-        return usersService.deleteUser(userId);
+        return userService.deleteUser(userId);
     }
 
 }
