@@ -41,6 +41,7 @@ public class ServiceResult {
         return this;
     }
 
+<<<<<<< HEAD
     public boolean isSuccess(){
         return this.result;
     }
@@ -48,4 +49,6 @@ public class ServiceResult {
     public boolean isFail(){
         return !this.result;
     }
+=======
+>>>>>>> 69ef1c6e (Service 클래스 반환 값으로 사용할 ServiceResult 구현)
 }
