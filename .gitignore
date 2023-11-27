@@ -11,3 +11,7 @@ bin/
 
 #npm의 nodule 기록삭제
 hansoyeon/node_modules/
+
+.idea/dbnavigator.xml
+application.properties
+application.yml
