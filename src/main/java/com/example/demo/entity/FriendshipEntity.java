@@ -22,11 +22,11 @@ public class FriendshipEntity {
 
     @OneToOne
     @JoinColumn(name = "user_id", referencedColumnName = "user_id")
-    UsersEntity user;
+    UserEntity user;
 
     @OneToOne
     @JoinColumn(name = "friend_id", referencedColumnName = "user_id")
-    UsersEntity friend;
+    UserEntity friend;
 
     @Column(name = "status")
     String status;

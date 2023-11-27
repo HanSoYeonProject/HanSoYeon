@@ -17,7 +17,7 @@ import javax.persistence.Table;
 @NoArgsConstructor
 @Entity
 @Table(name = "providers")
-public class ProvidersEntity {
+public class ProviderEntity {
     @Id
     @Column(name = "provider_id")
     public String providerId;
@@ -40,7 +40,7 @@ public class ProvidersEntity {
     @Column(name = "provider_approval")
     public String providerApproval;
 
-    public ProvidersEntity(CompanySignUpDto companySignUpDto) {
+    public ProviderEntity(CompanySignUpDto companySignUpDto) {
         this.providerId = companySignUpDto.getProviderId();
         this.providerName = companySignUpDto.getProviderName();
         this.providerEmail = companySignUpDto.getProviderEmail();

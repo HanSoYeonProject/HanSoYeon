@@ -1,8 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.dto.*;
-import com.example.demo.entity.ProvidersEntity;
-import com.example.demo.entity.UsersEntity;
+import com.example.demo.entity.ProviderEntity;
 import com.example.demo.repository.ProvidersRepository;
 import com.example.demo.security.TokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,43 +24,43 @@ public class ProvidersService {
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     public void registerCompany(CompanySignUpDto companySignUpDto) {
-        ProvidersEntity providersEntity = new ProvidersEntity(companySignUpDto);
-        providersEntity.setProviderPassword(passwordEncoder.encode(companySignUpDto.getProviderPassword()));
-        providersRepository.save(providersEntity);
+        ProviderEntity providerEntity = new ProviderEntity(companySignUpDto);
+        providerEntity.setProviderPassword(passwordEncoder.encode(companySignUpDto.getProviderPassword()));
+        providersRepository.save(providerEntity);
     }
 
     public ResponseDto<CompanySignInResponseDto> signIn(CompanySignInDto dto){
         String providerId = dto.getProviderId();
         String providerPassword = dto.getProviderPassword();
 
-        ProvidersEntity providersEntity = null;
+        ProviderEntity providerEntity = null;
         try {
-            providersEntity = providersRepository.findByProviderId(providerId);
-            if(providersEntity == null){
+            providerEntity = providersRepository.findByProviderId(providerId);
+            if(providerEntity == null){
                 return ResponseDto.setFailed("로그인 실패");
             }
-            if(!passwordEncoder.matches(providerPassword, providersEntity.getProviderPassword())){
+            if(!passwordEncoder.matches(providerPassword, providerEntity.getProviderPassword())){
                 return ResponseDto.setFailed("로그인 실패");
             }
         }catch (Exception e) {
             return ResponseDto.setFailed("데이터베이스 오류");
         }
-        providersEntity.setProviderPassword("");
+        providerEntity.setProviderPassword("");
 
         String token = tokenProvider.create(providerId);
         int exprTime = 3600000;
         String userType = "company";
 
-        CompanySignInResponseDto companySignInResponseDto = new CompanySignInResponseDto(token, exprTime, providersEntity, userType);
+        CompanySignInResponseDto companySignInResponseDto = new CompanySignInResponseDto(token, exprTime, providerEntity, userType);
         return ResponseDto.setSuccess("로그인 성공", companySignInResponseDto);
     }
 
-    public ProvidersEntity getUserById(String providerId) {
+    public ProviderEntity getUserById(String providerId) {
         return providersRepository.findByProviderId(providerId);
     }
 
     public boolean verifyProviderPassword(String providerId, String providerPassword) {
-        ProvidersEntity providerEntity = providersRepository.findByProviderId(providerId);
+        ProviderEntity providerEntity = providersRepository.findByProviderId(providerId);
         if (providerEntity != null) {
             return passwordEncoder.matches(providerPassword, providerEntity.getProviderPassword());
         }
@@ -69,7 +68,7 @@ public class ProvidersService {
     }
 
     public ResponseEntity<?> updateCompanyInfo(String providerId, CompanyUpdateDto companyUpdateDto) {
-        ProvidersEntity providerEntity = providersRepository.findByProviderId(providerId);
+        ProviderEntity providerEntity = providersRepository.findByProviderId(providerId);
 
         if (providerEntity != null) {
             // DTO의 값들을 entity에 할당
@@ -85,12 +84,12 @@ public class ProvidersService {
         return ResponseEntity.badRequest().body("회사 정보를 찾을 수 없습니다.");
     }
 
-    public List<ProvidersEntity> getAllCompanies() {
+    public List<ProviderEntity> getAllCompanies() {
         return providersRepository.findAll();
     }
 
     public ResponseEntity<?> deleteProvider(String providerId) {
-        ProvidersEntity provider = providersRepository.findByProviderId(providerId);
+        ProviderEntity provider = providersRepository.findByProviderId(providerId);
         if (provider != null) {
             providersRepository.delete(provider);
             return ResponseEntity.ok().body("Provider deleted successfully");
@@ -99,7 +98,7 @@ public class ProvidersService {
     }
 
     public ResponseEntity<?> approveProvider(String providerId) {
-        ProvidersEntity provider = providersRepository.findByProviderId(providerId);
+        ProviderEntity provider = providersRepository.findByProviderId(providerId);
         if (provider != null) {
             provider.setProviderApproval("true");
             providersRepository.save(provider);
@@ -109,7 +108,7 @@ public class ProvidersService {
     }
 
     public ResponseEntity<?> revokeProviderApproval(String providerId) {
-        ProvidersEntity provider = providersRepository.findByProviderId(providerId);
+        ProviderEntity provider = providersRepository.findByProviderId(providerId);
         if (provider != null) {
             provider.setProviderApproval("false");
             providersRepository.save(provider);

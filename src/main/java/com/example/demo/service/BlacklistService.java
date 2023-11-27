@@ -3,7 +3,7 @@ package com.example.demo.service;
 import com.example.demo.entity.BlacklistEntity;
 import com.example.demo.repository.BlacklistRepository;
 import com.example.demo.repository.ProvidersRepository;
-import com.example.demo.repository.UsersRepository;
+import com.example.demo.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -16,7 +16,7 @@ import java.util.List;
 public class BlacklistService {
 
     private final BlacklistRepository blacklistRepository;
-    private final UsersRepository usersRepository;
+    private final UserRepository userRepository;
     private final ProvidersRepository providersRepository;
 
     /**
@@ -26,7 +26,7 @@ public class BlacklistService {
      */
     public ServiceResult addBlacklist(String providerId, String userId) {
         var provider = providersRepository.findByProviderId(providerId);
-        var user = usersRepository.findByUserId(userId);
+        var user = userRepository.findByUserId(userId);
 
         if (provider == null && user == null)
             return new ServiceResult().fail().message("Bad Request, Invalid userId or providerId");
