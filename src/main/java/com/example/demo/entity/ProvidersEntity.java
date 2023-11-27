@@ -14,8 +14,8 @@ import javax.persistence.Table;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity(name = "Providers")
-@Table(name = "Providers")
+@Entity
+@Table(name = "providers")
 public class ProvidersEntity {
     @Id
     private String providerId;
