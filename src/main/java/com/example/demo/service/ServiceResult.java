@@ -41,4 +41,12 @@ public class ServiceResult {
         return this;
     }
 
+
+    public boolean isSuccess(){
+        return this.result;
+    }
+
+    public boolean isFail(){
+        return !this.result;
+    }
 }
