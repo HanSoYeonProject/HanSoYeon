@@ -5,7 +5,6 @@ import axios from "axios";
 import data from "bootstrap/js/src/dom/data";
 import {useCookies} from "react-cookie";
 
-
 const AnnouncementListPage = (props) => {
 
     const navigate = useNavigate();
@@ -54,7 +53,6 @@ const AnnouncementListPage = (props) => {
             .catch(error => console.error('Error fetching announcements:', error));
     }, []);
 
-
     // 글 작성 페이지로 이동
     const WritingNews = () => {
         navigate("/WritingNewsPage");
@@ -76,6 +74,7 @@ const AnnouncementListPage = (props) => {
     const currentItems = announcements.slice(indexOfFirstItem, indexOfLastItem);
 
     // 페이지 번호 변경
+
 
     //admin구분
     useEffect(() => {
