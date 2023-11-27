@@ -15,3 +15,6 @@ hansoyeon/node_modules/
 .idea/dbnavigator.xml
 application.properties
 application.yml
+
+*.lock
+*.bin
