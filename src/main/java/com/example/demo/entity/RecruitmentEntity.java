@@ -5,13 +5,13 @@ import java.util.Date;
 
 
 @Entity
-@Table(name = "jobproviders")
-public class JobProvidersEntity {
+@Table(name = "recruitments")
+public class RecruitmentEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "job_id")
-    private int Id;
+    private int jobId;
 
     @Column(name = "job_title", nullable = false)
     private String jobTitle;
@@ -39,12 +39,12 @@ public class JobProvidersEntity {
     @Column(name = "job_money", nullable = false)
     private String jobMoney;
 
-    public int getId() {
-        return Id;
+    public int getJobId() {
+        return jobId;
     }
 
-    public void setId(int Id) {
-        this.Id = Id;
+    public void setJobId(int Id) {
+        this.jobId = Id;
     }
 
     public String getJobTitle() {

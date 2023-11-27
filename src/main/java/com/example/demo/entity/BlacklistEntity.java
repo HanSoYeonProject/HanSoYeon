@@ -20,10 +20,10 @@ public class BlacklistEntity {
 
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "user_id")
-    UsersEntity user;
+    UserEntity user;
 
     @ManyToOne
     @JoinColumn(name = "provider_id", referencedColumnName = "provider_id")
-    ProvidersEntity provider;
+    ProviderEntity provider;
 
 }

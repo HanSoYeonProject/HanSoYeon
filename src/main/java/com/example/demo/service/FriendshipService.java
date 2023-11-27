@@ -1,9 +1,9 @@
 package com.example.demo.service;
 
 import com.example.demo.entity.FriendshipEntity;
-import com.example.demo.entity.UsersEntity;
+import com.example.demo.entity.UserEntity;
 import com.example.demo.repository.FriendshipRepository;
-import com.example.demo.repository.UsersRepository;
+import com.example.demo.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 public class FriendshipService {
 
     private final FriendshipRepository friendshipRepository;
-    private final UsersRepository usersRepository;
+    private final UserRepository userRepository;
 
     public static final String ACCEPTED = "ACCEPTED";
     public static final String PENDING = "PENDING";
@@ -72,8 +72,8 @@ public class FriendshipService {
         }
 
         friendshipRepository.save(FriendshipEntity.builder()
-                .user(usersRepository.findByUserId(targetUserId))
-                .friend(usersRepository.findByUserId(requesterUserId))
+                .user(userRepository.findByUserId(targetUserId))
+                .friend(userRepository.findByUserId(requesterUserId))
                 .build());
 
         return new ServiceResult().success().message("request done");
@@ -98,7 +98,7 @@ public class FriendshipService {
     public ServiceResult getFriendList(String userId) {
 
         /* 특정 회원의 친구 목록 조회 */
-        var optUser = usersRepository.findByUserId(userId);
+        var optUser = userRepository.findByUserId(userId);
 
         /* FriendId 리턴 */
         if (optUser == null)
@@ -107,7 +107,7 @@ public class FriendshipService {
         var friendshipList = friendshipRepository.findByUserUserId(userId);
 
         /* 친구 객체 리스트로 리턴 */
-        List<UsersEntity> friendList =
+        List<UserEntity> friendList =
                 friendshipList.stream()
                         .map(friendshipEntity -> friendshipEntity.getFriend())
                         .collect(Collectors.toList());
