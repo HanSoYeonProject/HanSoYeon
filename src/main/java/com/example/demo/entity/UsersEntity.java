@@ -14,8 +14,8 @@ import javax.persistence.Table;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity(name = "Users")
-@Table(name = "Users")
+@Entity
+@Table(name = "users")
 public class UsersEntity {
     @Id
     private String userId;

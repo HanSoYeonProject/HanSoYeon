@@ -14,8 +14,8 @@ import javax.persistence.Table;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity(name = "Course")
-@Table(name = "Course")
+@Entity
+@Table(name = "courses")
 public class CourseEntity {
     @Id
     private int cosId;

@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "Announcement")
+@Table(name = "announcements")
 public class AnnouncementEntity {
 
     @Id     //해당 엔티티의 주요 키가 될것을 지정해주는 것
