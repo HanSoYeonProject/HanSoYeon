@@ -4,27 +4,26 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
 
-@Data
-@Builder
+import javax.persistence.*;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "blacklists")
+@Builder
+@Data
+@Table(name = "blacklist")
 public class BlacklistEntity {
-
     @Id
     @Column(name = "blacklist_id")
-    public int blackListId;
+    public int blacklistId;
 
-    @Column(name = "provider_id")
-    public String providerId;
+    @ManyToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
+    UsersEntity user;
 
-    @Column(name = "user_id")
-    public String userId;
+    @ManyToOne
+    @JoinColumn(name = "provider_id", referencedColumnName = "provider_id")
+    ProvidersEntity provider;
 
 }
