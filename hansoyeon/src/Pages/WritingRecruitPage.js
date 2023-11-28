@@ -51,7 +51,6 @@ const WritingRecruitPage = () => {
             providers,
             money,
             image: base64Image, // 이미지를 추가
-
         };
         console.log("Form Data:", {
             title,

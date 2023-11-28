@@ -4,29 +4,26 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 
-@Entity
-@Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-
-@Table(name = "friendships")
-public class FriendshipEntity {
-
+@Entity
+@Builder
+@Data
+@Table(name = "blacklist")
+public class BlacklistEntity {
     @Id
-    @Column(name="friendship_id")
-    int friendshipId;
+    @Column(name = "blacklist_id")
+    public int blacklistId;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "user_id")
     UserEntity user;
 
-    @OneToOne
-    @JoinColumn(name = "friend_id", referencedColumnName = "user_id")
-    UserEntity friend;
+    @ManyToOne
+    @JoinColumn(name = "provider_id", referencedColumnName = "provider_id")
+    ProviderEntity provider;
 
-    @Column(name = "status")
-    String status;
 }

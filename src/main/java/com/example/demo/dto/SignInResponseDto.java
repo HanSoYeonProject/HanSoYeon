@@ -1,6 +1,6 @@
 package com.example.demo.dto;
 
-import com.example.demo.entity.UsersEntity;
+import com.example.demo.entity.UserEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 public class SignInResponseDto {
     private String token;
     private int exprTime;
-    private UsersEntity user;
+    private UserEntity user;
     private String userType;
 }
