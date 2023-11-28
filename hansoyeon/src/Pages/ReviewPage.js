@@ -38,11 +38,15 @@ const ReviewPage = () => {
 
     return (
         <Container>
-            <ReviewPageTitle>
-                <h1>후기 체험담</h1>
-                <Button onClick={handleWriteButtonClick}>글쓰기</Button>
-            </ReviewPageTitle>
-            <ReviewPageContentContainer>
+            <MiddleContainer>
+                <HeaderContainer> {/* 새 컨테이너 추가 */}
+                    <ReviewPageTitle>체험 후기</ReviewPageTitle>
+                    <RightNewsTitle>
+                        <Button onClick={handleWriteButtonClick}>글쓰기</Button>
+                    </RightNewsTitle>
+                </HeaderContainer>
+                <NewsTitle>
+                <ReviewPageContentContainer>
                 {currentItems.map(item => (
                     <ReviewPageContentItem key={item.reviewId} onClick={() => handleReviewClick(item.reviewId)}>
                         <ReviewDetails>
@@ -56,6 +60,7 @@ const ReviewPage = () => {
                     </ReviewPageContentItem>
                 ))}
             </ReviewPageContentContainer>
+                </NewsTitle>
             <Pagination>
                 {Array.from({ length: Math.ceil(reviews.length / ITEMS_PER_PAGE) }, (_, i) => (
                     <PageNumber key={i} onClick={() => paginate(i + 1)}>
@@ -63,22 +68,52 @@ const ReviewPage = () => {
                     </PageNumber>
                 ))}
             </Pagination>
+            </MiddleContainer>
         </Container>
     );
 };
 
 const Container = styled.div`
-  width: 80%;
-  margin: auto;
-  padding: 20px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-`;
+  display: flex;
+  flex: 1;
+  height: 700px;
+  align-items: center;
+  justify-content: center;
+`
 
-const ReviewPageTitle = styled.div`
+const HeaderContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  width: 100%;
+  margin-bottom: 20px; // 여백 추가
+`;
+
+const MiddleContainer = styled.div`
+  display: flex;
+  height: 500px;
+  width: 1000px;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const NewsTitle = styled.div`
+  display: flex;
+  flex: 2;
+  flex-direction: row;
+  align-items: center;
+`
+
+const ReviewPageTitle = styled.div`
+  font-size: 40px;
+  font-weight: 700;
+`;
+
+const RightNewsTitle = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-right: 100px;
 `;
 
 const Button = styled.button`
