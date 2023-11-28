@@ -60,7 +60,7 @@ const WritingRecruitPage = () => {
             money,
             startDate,
             endDate,
-            image: base64Image,
+            image
         });
         // 서버에 전송
         try {
