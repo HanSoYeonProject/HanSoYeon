@@ -95,7 +95,7 @@ const RecruitPage = () => {
         ];
 
         return (
-            <div style={{display:"flex", flexDirection:"row"}}>
+            <div style={{display:"flex", flexDirection:"row",backgroundColor:""}}>
                 {contentTypeOptions.map((option, index) => (
                     <RadioButtonLabel key={index}>
                         <RadioButton
@@ -120,30 +120,45 @@ const RecruitPage = () => {
                 <SmallAlgoContainer>
                     <RadioContainer>
                         {renderRadioButtons()}
+                        <WritingButton onClick={WritingBtn}>글 쓰기</WritingButton>
                     </RadioContainer>
+
                 </SmallAlgoContainer>
             </AlgoContainer>
             <Bottom>
                 {currentItems.map((recruitments) => (
                     <BottomContent key={recruitments.job_id}>
-                        <BottomMain>
+
+                        <BottomMain  style={{cursor: "pointer"}} onClick={() => viewRecruitment(recruitments.job_id)}
+                                     onMouseOver={(e) => (e.target.style.textDecoration="underline")}
+                                     onMouseOut={(e) => (e.target.style.textDecoration="none")}>
+                            <ImgContainer>
                             <img
                                 src={recruitments.image}
                                 alt="Image"
-                                style={{display: "flex",flex:"6",width: '100%',height: "100px",justifyContent: "center", alignItems: "center" }}
-                            />
-                            <h3 style={{flex: '1', marginTop: "1rem", fontSize: '30px', fontWeight: '700', color: "#747474", justifyContent: 'center'}} onClick={() => viewRecruitment(recruitments.job_id)}>{recruitments.title}</h3>
-                            <h3 style={{flex: '1', marginTop: "1rem", fontSize: '20px', fontWeight: '700', color: "#747474", justifyContent: 'center'}}>{recruitments.content}</h3>
-                            <h4 style={{flex: '1', marginTop: "1rem", fontSize: '15px', fontWeight: '700', color: "#747474", justifyContent: 'center'}}>{recruitments.startDate} ~ {recruitments.endDate}</h4>
+                                style={{display: "flex",height: "100%",justifyContent: "center", alignItems: "center",borderRadius:"10px"}}
+                                />
+                            </ImgContainer>
+                            <TitleContainer>
+                                <h3
+                                    style={{ display: "flex",flex: "2",marginTop: "1rem", fontSize: '28px', fontWeight: 'bold', color: "#747474", justifyContent:"center", alignItems: "center"}}>
+                                    {recruitments.title.length > 25
+                                        ? `${recruitments.title.substring(0, 25)}...`
+                                        : recruitments.title}
+                                </h3>
+                                <h3 style={{ display: "flex",flex: "2", fontSize: '24px', fontWeight: '600', color: '#747474', justifyContent: "center", alignItems: "center"}}>{recruitments.region}</h3>
+                                <h4 style={{ display: "flex",flex: "1", fontSize: "18px", fontWeight: "600", color: "#747474", justifyContent: "center", alignItems: "center"}}>
+                                    {recruitments.startDate} ~ {recruitments.endDate}
+                                </h4>
+                            </TitleContainer>
                         </BottomMain>
                     </BottomContent>
                 ))}
             </Bottom>
-            <WritingButton onClick={WritingBtn}>글 쓰기</WritingButton>
-
-        </Container>
+      </Container>
     );
 };
+
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -179,7 +194,6 @@ const MoBottomContainer = styled.div`
 `
 const AlgoContainer = styled.div`
   display: flex;
-  margin-top: 2rem;
   flex-direction: row;
   justify-content: center;
   align-items: center;
@@ -190,24 +204,19 @@ const SmallAlgoContainer = styled.div`
   width: 100%;
   height: 100px;
   align-items: center;
-  padding: 20px;
   border-radius: 10px;
-  background-color: #f5f5f5; // 박스의 배경색
-  box-shadow: 0px 2px 4px rgba(0,0,0,0.1); // 박스에 그림자 효과 추가
 `
 const RadioContainer = styled.div`
   display: flex;
   height: 50px;
   width: 100%;
-
-  font-size: 20px;
+  font-size: 14px;
   flex-direction: row; // 가로로 배치
-  justify-content: flex-start; // 가운데 정렬
+  justify-content: space-between;
   align-items: center; // 세로 중앙 정렬
 `
 const RadioButtonLabel = styled.label`
   display: flex;
-  background-color: #f0f0f0;
   align-items: center;
   justify-content: center;
   width: auto;
@@ -224,6 +233,7 @@ const RadioButtonLabel = styled.label`
     background-color: #e8e8e8;
   }
 `;
+
 const RadioButton = styled.input`
   display: none;
 
@@ -234,12 +244,17 @@ const RadioButton = styled.input`
   }
 `;
 const Bottom = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  background-color: #f5f5f5;
-  margin-top: 1rem;
-  height: auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Adjust the minmax values as needed */
+  gap: 20px; /* Adjust the gap as needed */
+  margin-top: -1rem;
   width: 80%;
+  max-height: 45vh;
+`
+const TitleContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex: 5;
 `;
 
 const BottomContent = styled.div`
@@ -251,19 +266,45 @@ const BottomContent = styled.div`
 
 const BottomMain = styled.div`
   display: flex;
+  flex: 1;
   flex-direction: column;
-  justify-content: flex-start;
   border-radius: 10px;
   border: 2px solid #d6d6d6;
-  width: 100%; /* 내용이 100% 너비를 가지도록 설정 */
-  height: 300px;
+  width: 100%;
+  height: 43vh;
+  padding: 10px;
+  box-sizing: border-box;
+  position: relative; /* Needed for positioning the overlay */
+  overflow: hidden; /* Ensure overflow doesn't affect overlay positioning */
+  transition: background-color 0.1s ease; /* Transition for background color change */
+
+  &:hover {
+    background-color: #eee; /* Change the background color on hover */
+  }
+
+  h3,
   h4 {
     font-size: 10px;
+    transition: background-color 0.3s ease; /* Transition for background color change */
+  }
+  img {
+    width: 100%;
+    height: 50%;
+    border-radius: 10px;
+    transition: transform 1s ease; /* Transition for image scaling */
+  }
+
+  &:hover img {
+    transform: scale(1.05); /* Scale the image on hover */
   }
 `;
 
+const ImgContainer = styled.div`
+  display: flex;
+  flex: 5;
+  height: 100px;
+`
 const WritingButton = styled.button`
-  margin-top: 2rem;
   width: 300px;
   border-radius: 10px;
   font-size: 24px;
