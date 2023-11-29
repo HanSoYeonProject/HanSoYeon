@@ -157,6 +157,21 @@ const FriendListPage = () => {
             });
     };
 
+    const handleDeleteFriend = (friendId) => {
+        axios.delete(`http://localhost:8050/api/friends?userId=${user.userId}&friendId=${friendId}`, {
+            headers: {
+                Authorization: `Bearer ${cookies.token}`
+            }
+        })
+            .then(response => {
+                alert("친구가 삭제되었습니다");
+                setFriends(friends.filter(friend => friend.userId !== friendId));
+            })
+            .catch(error => {
+                console.error("Error deleting friend:", error);
+                alert("친구 삭제 실패");
+            });
+    };
 
 
     return(
@@ -176,6 +191,7 @@ const FriendListPage = () => {
                         }
                         <UserName>{friend.userName}</UserName>
                         <UserId>({friend.userId})</UserId>
+                        <DeleteButton onClick={() => handleDeleteFriend(friend.userId)}>삭제</DeleteButton>
                     </Friend>
                 ))}
             </FriendsContainer>
@@ -412,6 +428,14 @@ const AcceptButton = styled.button`
     margin-left: auto; // 오른쪽에 버튼 위치
 `;
 
-
+const DeleteButton = styled.button`
+    padding: 5px 10px;
+    background-color: #d9534f;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px; // Add margin to separate it from user info
+`;
 
 export default FriendListPage;

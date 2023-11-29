@@ -7,6 +7,7 @@ import com.example.demo.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -87,9 +88,11 @@ public class FriendshipService {
      * @author WoodyK
      * @apiNote 친구 관계를 삭제한다.
      */
+    @Transactional
     public ServiceResult deleteFriendshipByUserIdAndFriendId(String userId, String friendId) {
 
         friendshipRepository.deleteByUserUserIdAndFriendUserId(userId, friendId);
+        friendshipRepository.deleteByUserUserIdAndFriendUserId(friendId, userId);
 
         return new ServiceResult().success().message("delete done");
     }
