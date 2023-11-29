@@ -3,7 +3,7 @@ package com.example.demo.develop;
 import com.example.demo.entity.UserEntity;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.ServiceResult;
-import com.google.api.client.util.Value;
+import com.example.demo.env.SecurityEnvironment;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
@@ -28,9 +28,6 @@ public class DevelopService {
     private final UserRepository userRepository;
 
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-
-    @Value("${env.jwt.secret}")
-    private String jwtSecret;
 
     /**
      * @auhtor WoodyK
@@ -75,7 +72,7 @@ public class DevelopService {
         Date exprTime = Date.from(Instant.now().plus(30, ChronoUnit.DAYS));
 
         String accessToken = Jwts.builder()
-                        .signWith(SignatureAlgorithm.HS512, jwtSecret)
+                        .signWith(SignatureAlgorithm.HS512, SecurityEnvironment.JWT_SECRET)
                         .setSubject(nullableUser.getUserEmail()).setIssuedAt(new Date()).setExpiration(exprTime)
                         .compact();
 
