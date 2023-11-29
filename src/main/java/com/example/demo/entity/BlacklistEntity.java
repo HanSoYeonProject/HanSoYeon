@@ -12,7 +12,7 @@ import javax.persistence.*;
 @Entity
 @Builder
 @Data
-@Table(name = "blacklist")
+@Table(name = "blacklists")
 public class BlacklistEntity {
     @Id
     @Column(name = "blacklist_id")
