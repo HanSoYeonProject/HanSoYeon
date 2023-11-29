@@ -257,4 +257,11 @@ public class AuthController {
         return userService.deleteUser(userId);
     }
 
+    @GetMapping("/users/search")
+    public ResponseEntity<List<UserEntity>> searchUsers(@RequestParam String search) {
+        List<UserEntity> users = userService.searchUsers(search);
+        return ResponseEntity.ok(users);
+    }
+
+
 }
