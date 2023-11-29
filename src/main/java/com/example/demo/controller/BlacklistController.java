@@ -1,10 +1,9 @@
 package com.example.demo.controller;
 
-import com.example.demo.RequestBody.DeleteBlacklistRequestBody;
+import com.example.demo.requestBody.DeleteBlacklistRequestBody;
 import com.example.demo.service.BlacklistService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

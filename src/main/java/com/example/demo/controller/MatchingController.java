@@ -1,6 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.RequestBody.RequestRecruitmentRequestBody;
+import com.example.demo.requestBody.RequestRecruitmentRequestBody;
 import com.example.demo.service.MatchingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
