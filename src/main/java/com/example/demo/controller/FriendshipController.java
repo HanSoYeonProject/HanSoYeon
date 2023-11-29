@@ -1,6 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.RequestBody.RequestFriendshipRequestBody;
+import com.example.demo.requestBody.RequestFriendshipRequestBody;
 import com.example.demo.service.FriendshipService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

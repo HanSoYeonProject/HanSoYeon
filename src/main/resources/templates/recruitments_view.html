@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="kr" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <title>Recruitments View</title>
+  <style>
+    body {
+         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+         background-color: #f5f5f5;
+         padding: 20px;
+    }
+
+    h1 {
+        text-align: center;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: #ffffff;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        margin-top: 20px;
+    }
+
+    th, td {
+        border: 1px solid #bcbcbc;
+        padding: 10px;
+        text-align: left;
+    }
+
+    th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+        text-transform: uppercase;
+        font-size: 12px;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    tr:nth-child(odd) {
+        background-color: #ffffff;
+    }
+  </style>
+</head>
+<body>
+<h1> Recruitments in Database </h1>
+<table>
+  <thead>
+  <tr>
+    <th>Index</th>
+    <th>job_id</th>
+    <th>job_title</th>
+    <th>job_content</th>
+    <th>job_work_schedule</th>
+    <th>job_region</th>
+    <th>job_providers</th>
+    <th>job_start_date</th>
+    <th>job_end_date</th>
+    <th>job_image</th>
+    <th>job_money</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="entity, entityIdx : ${recruitmentEntityList}">
+    <td th:text="${entityIdx.index + 1}"></td>
+    <td th:text="${entity.jobId}"></td>
+    <td th:text="${entity.jobTitle}"></td>
+    <td th:text="${entity.userEmail}"></td>
+    <td th:text="${entity.userGender}"></td>
+    <td th:text="${entity.userProfile}"></td>
+    <td th:text="${entity.userInfo}"></td>
+    <td th:text="${entity.userPrefer}"></td>
+    <td th:text="${entity.userPhone}"></td>
+    <td th:text="${entity.userAddress}"></td>
+  </tr>
+  </tbody>
+</table>
+</body>
+</html>
