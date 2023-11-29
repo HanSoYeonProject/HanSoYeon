@@ -33,7 +33,7 @@ const RecruitViewPage = ( props ) => {
 
     return (
         <Container>
-            <h3></h3>
+
         </Container>
     );
 };

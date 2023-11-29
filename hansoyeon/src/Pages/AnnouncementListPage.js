@@ -2,10 +2,13 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useCookies } from "react-cookie";
 
 const AnnouncementListPage = () => {
     const navigate = useNavigate();
     const [announcements, setAnnouncements] = useState([]);
+    const [isAdmin, setIsAdmin] = useState(false);
+    const [cookies, setCookie, removeCookie] = useCookies(["token"]);
 
     // 페이지 시작 번호
     const [currentPage, setCurrentPage] = useState(1);
@@ -27,6 +30,28 @@ const AnnouncementListPage = () => {
     const WritingNews = () => {
         navigate("/WritingNewsPage");
     }
+
+    //admin구분
+    useEffect(() => {
+        axios.get('http://localhost:8050/api/auth/currentUser', {
+            headers: {
+                Authorization: `Bearer ${cookies.token}`
+            }
+        })
+            .then((response) => {
+                console.log(response.data);
+                const user = response.data;
+                const isAdminUser = user.userId === 'admin';
+                setIsAdmin(isAdminUser);
+            })
+            .catch(error => {
+                console.error('Error fetching user info: ', error);
+                if (error.response) {
+                    console.error('Status Code: ', error.response.status);
+                    console.error('Response Data: ', error.response.data);
+                }
+            })
+    }, [cookies.token]);
 
     // 공지사항 상세 보기
     const viewAnnouncement = async (annoId) => {
@@ -53,10 +78,11 @@ const AnnouncementListPage = () => {
                 <NewsTitle>
                     <SmallNewsTitle>
                         <LeftNewsTitle>한소연 소식</LeftNewsTitle>
+                        {isAdmin && (
                         <RightNewsTitle>
                             <WritingButton onClick={WritingNews}>글 작성</WritingButton>
-
                         </RightNewsTitle>
+                        )}
                     </SmallNewsTitle>
                 </NewsTitle>
                 <MainTitle>
