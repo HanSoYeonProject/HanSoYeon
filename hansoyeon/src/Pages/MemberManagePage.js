@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import {useNavigate} from 'react-router-dom';
 import company from "../imgs/company.png"
 import member from "../imgs/member.png"
+import blacklist from "../imgs/Blacklist_logo.png"
 const SignupPage = (props) => {
     const navigate = useNavigate();
 
@@ -14,6 +15,11 @@ const SignupPage = (props) => {
         navigate("/generalManage")
     };
 
+    const handleBlackListImageClick = () => {
+        navigate("/BlackListManage")
+    };
+
+
     return (
         <StyledContainer>
             <Title>회원 관리</Title>
@@ -23,6 +29,9 @@ const SignupPage = (props) => {
                 </UserImg>
                 <UserImg onClick={handleMemberImageClick}>
                     <SelectImg alt="member" src={member} />
+                </UserImg>
+                <UserImg onClick={handleBlackListImageClick}>
+                    <SelectImg alt="blacklist" src={blacklist} />
                 </UserImg>
             </ImageContainer>
         </StyledContainer>
