@@ -249,6 +249,7 @@ const Bottom = styled.div`
   gap: 20px; /* Adjust the gap as needed */
   margin-top: -1rem;
   width: 80%;
+  margin-bottom: 1rem;
   max-height: 45vh;
 `
 const TitleContainer = styled.div`
