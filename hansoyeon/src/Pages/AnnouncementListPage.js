@@ -55,7 +55,7 @@ const AnnouncementListPage = () => {
                         <LeftNewsTitle>한소연 소식</LeftNewsTitle>
                         <RightNewsTitle>
                             <WritingButton onClick={WritingNews}>글 작성</WritingButton>
-                            <ExitButton>더 보기 ></ExitButton>
+
                         </RightNewsTitle>
                     </SmallNewsTitle>
                 </NewsTitle>
@@ -142,7 +142,7 @@ const RightNewsTitle = styled.div`
   justify-content: right;
 `
 const WritingButton = styled.button`
-  background-color: skyblue;
+  background-color: #FFC107;
   display: flex;
   width: 100px;
   height: 40px;
@@ -156,19 +156,6 @@ const WritingButton = styled.button`
   border: none;
 `
 
-const ExitButton = styled.div`
-  display: flex;
-  width: 100px;
-  height: 40px;
-  text-align: center;
-  color: white;
-  border-radius: 10px;
-  background-color: mediumseagreen;
-  font-size: 20px;
-  float: right;
-  align-items: center;
-  justify-content: center;
-`
 const MainTitle = styled.div`
   display: flex;
   flex: 7;
