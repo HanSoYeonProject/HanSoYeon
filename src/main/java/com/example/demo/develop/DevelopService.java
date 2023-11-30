@@ -7,6 +7,7 @@ import com.example.demo.env.SecurityEnvironment;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -16,12 +17,12 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
-
 /**
  * @auther WoodyK
  * @apiNote This class is for developing. not for production.
  */
 @Service
+@Slf4j
 @RequiredArgsConstructor
 @Transactional
 public class DevelopService {
@@ -39,8 +40,9 @@ public class DevelopService {
                                     String userInfo, String userPhone,
                                     String userPrefer, String userProfile) {
 
-        if (userId == null && userPassword == null || userEmail == null)
+        if (userId == null || userPassword == null || userEmail == null){
             return new ServiceResult().fail().message("Bad Request, required parameter is null");
+        }
 
         var User = UserEntity.builder()
                 .userId(userId)
