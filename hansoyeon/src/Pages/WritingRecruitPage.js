@@ -5,7 +5,9 @@ import { useNavigate } from "react-router-dom";
 const WritingRecruitPage = () => {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
+    const [selectedRegion, setSelectedRegion] = useState('');
     const [region, setRegion] = useState('');
+    const [address, setAddress] = useState('');
     const [providers, setProviders] = useState('');
     const [money, setMoney] = useState('');
     const [image, setImage] = useState(null);
@@ -19,6 +21,9 @@ const WritingRecruitPage = () => {
     const handleInputContent = (e) => {
         setContent(e.target.value);
     };
+    const handleRegionChange = (e) => {
+        setSelectedRegion(e.target.value);
+    };
     const handleImageChange = async (e) => {
         // 이미지 선택 시
         setImage(e.target.files[0]);
@@ -27,64 +32,75 @@ const WritingRecruitPage = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // 이미지를 base64로 인코딩
-        let base64Image = '';
-        if (image) {
-            const reader = new FileReader();
-            reader.readAsDataURL(image);
-
-            // Promise를 사용하기 위해 await를 사용하려면 handleImageChange도 async 함수여야 합니다.
-            base64Image = await new Promise((resolve) => {
-                reader.onloadend = () => {
-                    resolve(reader.result);
-                };
-            });
-        }
-
-        // 이미지를 포함한 recruitnewspost 객체 생성
-        const recruitnewspost = {
-            title,
-            content,
-            startDate,
-            endDate,
-            region,
-            providers,
-            money,
-            image: base64Image, // 이미지를 추가
-        };
-        console.log("Form Data:", {
-            title,
-            content,
-            region,
-            providers,
-            money,
-            startDate,
-            endDate,
-            image
-        });
-        // 서버에 전송
         try {
+            const formData = new FormData();
+            formData.append('profileImage', image);
+
             const response = await axios.post(
-                'http://localhost:8050/api/createRecruitment',
-                recruitnewspost,
+                'http://localhost:8050/api/uploadProfileImage',
+                formData,
                 {
                     headers: {
-                        'Content-Type': 'application/json',
+                        'Content-Type': 'multipart/form-data',
                     },
                 }
             );
 
-            if (response.status === 201) {
-                console.log(response.data);
-                // 글 작성 성공 시, 페이지를 이동
-                navigate('/recruit');
-            } else {
-                console.error(`Http 오류! 상태 코드: ${response.status}`);
+            // 이미지를 포함한 recruitnewspost 객체 생성
+            const recruitnewspost = {
+                title,
+                content,
+                startDate,
+                endDate,
+                region: selectedRegion,
+                address,
+                providers,
+                money,
+                image: response.data.imageUrl, // 이미지를 추가
+            };
+            console.log("Form Data:", {
+                title,
+                content,
+                region: selectedRegion,
+                address,
+                providers,
+                money,
+                startDate,
+                endDate,
+                image: response.data.imageUrl
+            });
+
+            // 서버에 전송
+            try {
+                const response = await axios.post(
+                    'http://localhost:8050/api/createRecruitment',
+                    recruitnewspost,
+                    {
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                    }
+                );
+
+                if (response.status === 201) {
+                    console.log(response.data);
+                    // 글 작성 성공 시, 페이지를 이동
+                    navigate('/recruit');
+                } else {
+                    console.error(`Http 오류! 상태 코드: ${response.status}`);
+                }
+            } catch (error) {
+                console.log('API 요청 중 오류 발생: ', error);
             }
         } catch (error) {
-            console.log('API 요청 중 오류 발생: ', error);
+            console.log('이미지 업로드 중 오류 발생: ', error);
         }
     };
+
+
+    const regions = ["서울특별시", "인천광역시", "대전광역시", "광주광역시",
+        "대구광역시", "부산광역시", "경기도", "강원도", "충청북도",
+        "충청남도", "전라북도", "전라남도", "경상북도", "경상남도", "제주특별자치도"];
 
     return (
         <div>
@@ -139,16 +155,30 @@ const WritingRecruitPage = () => {
 
                 <div style={{ marginBottom: '20px' }}>
                     <label htmlFor="region" style={{ display: 'block', marginBottom: '5px' }}>지역</label>
-                    <input
+                    <select
                         id="region"
+                        value={selectedRegion}
+                        onChange={handleRegionChange}
+                        style={{ width: '50%', padding: '10px' }}
+                    >
+                        <option value="">시/도 선택</option>
+                        {regions.map((region, index) => (
+                            <option key={index} value={region}>{region}</option>
+                        ))}
+                    </select>
+                </div>
+                {/*상세주소 */}
+                <div style={{ marginBottom: '20px' }}>
+                   <label htmlFor="address" style={{ display: 'block', marginBottom: '5px' }}>상세주소</label>
+                    <input
+                        id="address"
                         type="text"
-                        value={region}
-                        onChange={(e) => setRegion(e.target.value)}
-                        placeholder="지역"
+                        value={address}
+                        onChange={(e) => setAddress(e.target.value)}
+                        placeholder="상세주소"
                         style={{ width: '50%', padding: '10px' }}
                     />
                 </div>
-
                 <div style={{ marginBottom: '20px' }}>
                     <label htmlFor="providers" style={{ display: 'block', marginBottom: '5px' }}>제공자</label>
                     <input

@@ -30,7 +30,6 @@ public class RecruitmentController {
     //글 작성
     @PostMapping("/createRecruitment")
     public ResponseEntity<JobProvidersDto> createJobProviders(@RequestBody JobProvidersDto jobProvidersDto) {
-        System.out.printf(jobProvidersDto.toString());
         log.info("Received request to create a new job provider.");
         try {
             JobProvidersDto createdJobProviders = recruitmentService.createJobProviders(jobProvidersDto);
@@ -70,4 +69,5 @@ public class RecruitmentController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 }

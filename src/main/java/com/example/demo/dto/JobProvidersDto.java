@@ -14,6 +14,7 @@ public class JobProvidersDto {
     private String title;
     private String content;
     private String region;
+    private String address;
     private String providers;
     private Date startDate;
     private Date endDate;

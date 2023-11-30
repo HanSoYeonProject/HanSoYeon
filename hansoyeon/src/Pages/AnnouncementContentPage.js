@@ -128,8 +128,6 @@ const AnnouncementContentPage = () => {
         setUpdateFlag((prevFlag) => !prevFlag);
     };
 
-
-
     if (!announcement) {
         return <div>Loading...</div>;
     }

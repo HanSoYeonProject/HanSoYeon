@@ -29,6 +29,7 @@ public class RecruitmentService {
         jobProviders.setJobTitle(jobProvidersDto.getTitle());
         jobProviders.setJobContent(jobProvidersDto.getContent());
         jobProviders.setJobRegion(jobProvidersDto.getRegion());
+        jobProviders.setJobAddress(jobProvidersDto.getAddress());
         jobProviders.setJobProviders(jobProvidersDto.getProviders());
         jobProviders.setJobStartDate(jobProvidersDto.getStartDate());
         jobProviders.setJobEndDate(jobProvidersDto.getEndDate());
@@ -57,6 +58,7 @@ public class RecruitmentService {
         jobProvidersDto.setTitle(jobProviders.getJobTitle());
         jobProvidersDto.setContent(jobProviders.getJobContent());
         jobProvidersDto.setRegion(jobProviders.getJobRegion());
+        jobProvidersDto.setAddress(jobProviders.getJobAddress());
         jobProvidersDto.setProviders(jobProviders.getJobProviders());
         jobProvidersDto.setStartDate(jobProviders.getJobStartDate());
         jobProvidersDto.setEndDate(jobProviders.getJobEndDate());

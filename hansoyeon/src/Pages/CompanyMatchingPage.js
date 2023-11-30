@@ -1,7 +1,10 @@
 import React from "react";
 import styled from "styled-components";
+import {useParams} from "react-router-dom";
 
-const AdminApplyPage = () => {
+const CompanyMatchingPage = () => {
+    const { providerId } = useParams;
+
     return (
         <Container>
             12
@@ -12,4 +15,4 @@ const AdminApplyPage = () => {
 const Container = styled.div`
 background-color: green;
 `
-export default AdminApplyPage;
+export default CompanyMatchingPage;
