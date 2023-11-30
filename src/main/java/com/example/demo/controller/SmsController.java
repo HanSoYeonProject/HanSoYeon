@@ -1,9 +1,7 @@
 package com.example.demo.controller;
 
+import com.example.demo.request.VerificationRequestBody;
 import com.example.demo.service.SmsService;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +15,7 @@ public class SmsController {
     private SmsService smsService;
 
     @PostMapping("/sendVerification")
-    public ResponseEntity<?> sendVerificationCode(@RequestBody VerificationRequest request) {
+    public ResponseEntity<?> sendVerificationCode(@RequestBody VerificationRequestBody request) {
         try {
             String phoneNumber = request.getPhone();
             smsService.sendVerificationCode(phoneNumber);
@@ -29,7 +27,7 @@ public class SmsController {
     }
 
     @PostMapping("/verifyCode")
-    public ResponseEntity<?> verifyCode(@RequestBody VerificationRequest request) {
+    public ResponseEntity<?> verifyCode(@RequestBody VerificationRequestBody request) {
         boolean isValid = smsService.verifyCode(request.getPhone(), request.getCode());
         if (isValid) {
             return ResponseEntity.ok().body("인증번호가 확인되었습니다.");
