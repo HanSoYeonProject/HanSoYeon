@@ -7,16 +7,19 @@ import about2 from "../imgs/about2.png";
 import about3 from "../imgs/about3.png";
 import about4 from "../imgs/about4.jpg";
 import location from "../imgs/location.png";
+import {useUserStore} from "../stores";
+import {useCookies} from "react-cookie";
 
 const RecruitViewPage = ( props ) => {
     const { id } = useParams();
-    const { providerId } = useParams();
     const [isCompanyUser, setIsCompanyUser] = useState(false);
+    const [cookies, setCookie, removeCookie] = useCookies(['token']);
     const navigate = useNavigate(); // navigate 함수 초기화
     const [recruitments, setRecruitments] = useState([]);
-    const [name, setName] = useState('');
-    const [phoneNumber, setPhoneNumber] = useState('');
-
+    const [recruitmentId, setRecruitmentId] = useState('');
+    const [jobId, setJobId] = useState('');
+    const [userId, setUserId] = useState('');
+    const [providerId ,  setProviderId] = useState('');
     //상세 페이지 불러오는 함수
     const fetchAnnouncement = async () => {
         try {
@@ -36,22 +39,25 @@ const RecruitViewPage = ( props ) => {
         fetchAnnouncement();
     }, [id]);
 
-    const applyData = {
-        name,
-        phoneNumber
-    }
-    const applyBtn = async (recruitmentId) => {
+    //공고 지원
+    const applyBtn = async () => {
         try {
             const response = await axios.post(
-                `http://localhost:8050/api/matching`,
-                applyData,
+                `http://localhost:8050/api/matchings`,
                 {
+                    recruitmentId: recruitments.jobId,
+                },
+            {
                     headers: {
+                        Authorization: `Bearer ${cookies.token}`,
                         'Content-Type': 'application/json',
                     },
                 }
             );
 
+            if (response.status === 200) {
+                navigate(`/match/${id}`);
+            }
             // 서버 응답에 대한 처리 (예: 성공 여부에 따라 다른 동작 수행)
             console.log(response.data);
 
