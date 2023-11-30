@@ -32,12 +32,10 @@ import MemberManagePage from "./Pages/MemberManagePage";
 import CompanyManagePage from "./Pages/CompanyManagePage";
 import GeneralManagePage from "./Pages/GeneralManagePage";
 import BlackListPage from "./Pages/BlackListPage";
-import BlackListCompanyPage from "./Pages/BlackListCompanyPage";
 import FriendListPage from "./Pages/FriendListPage";
 import SchedulerPage from "./Pages/SchedulerPage";
 import AdminApply from "./Pages/CompanyMatchingPage";
 import CompanyMatchingPage from "./Pages/CompanyMatchingPage";
-
 
 
 function App() {
@@ -75,7 +73,6 @@ function App() {
                     <Route path="/recruit/:id" element={<RecruitViewPage/>}></Route>
                     <Route path="/recruit/write" element={<WritingRecruitPage/>}/>
                     <Route path="/BlackListManage" element={<BlackListPage/>}></Route>
-                    <Route path="/companyBlackList" element={<BlackListCompanyPage/>}></Route>
                     <Route path="/FriendList" element={<FriendListPage/>}></Route>
                     <Route path="/scheduler" element={<SchedulerPage/>}></Route>
                     <Route path="/match/:providerId" element={<CompanyMatchingPage/>}></Route>
