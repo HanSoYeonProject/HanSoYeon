@@ -7,7 +7,10 @@ import java.util.List;
 
 public interface FriendshipRepository extends JpaRepository<FriendshipEntity, Integer>{
     List<FriendshipEntity> findByUserUserId(String userId);
+    List<FriendshipEntity> findByFriendUserId(String userId);
     FriendshipEntity findByUserUserIdAndFriendUserId(String userId, String friendUserId);
+    boolean existsByUserUserIdAndFriendUserId(String userId, String friendUserId);
+    boolean existsByUserUserIdAndFriendUserIdAndStatus(String userId, String friendUserId, String Status);
     void deleteByUserUserIdAndFriendUserId(String userId, String friendId);
 
 
