@@ -8,16 +8,24 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
+@Transactional
 public class BlacklistService {
 
     private final BlacklistRepository blacklistRepository;
     private final UserRepository userRepository;
     private final ProvidersRepository providersRepository;
+
+
+    public ServiceResult getAllBlacklists() {
+        return new ServiceResult().success().data(blacklistRepository.findAll());
+    }
 
     /**
      * @apiNote 블랙리스트 추가
@@ -28,8 +36,11 @@ public class BlacklistService {
         var provider = providersRepository.findByProviderId(providerId);
         var user = userRepository.findByUserId(userId);
 
-        if (provider == null && user == null)
+        if (provider == null || user == null)
             return new ServiceResult().fail().message("Bad Request, Invalid userId or providerId");
+
+        if(blacklistRepository.existsByProviderProviderIdAndUserUserId(providerId, userId))
+            return new ServiceResult().success().message("Already exist blacklist");
 
         blacklistRepository.save(BlacklistEntity.builder()
                 .user(user)
@@ -41,6 +52,7 @@ public class BlacklistService {
     }
 
     /**
+     * [DELETE] /api/blacklists/{blacklistId}
      * @apiNote 블랙리스트 식별자로 특정 블랙리스트 항목 삭제
      * @param blacklistId 블랙리스트 식별자
      */
@@ -69,27 +81,43 @@ public class BlacklistService {
     /**
      * @apiNote 블랙리스트 식별자로 특정 블랙리스트 조회
      * @param blacklistId 블랙리스트 식별자
+     * @author WoodyK
+     * @see com.example.demo.controller.BlacklistController#getBlacklistByBlacklistId(int)
+     * @return BlacklistEntity
      */
-    public ServiceResult getBlacklist(int blacklistId) {
+    public ServiceResult getBlacklistByBlacklistId(int blacklistId) {
         BlacklistEntity blacklistEntity = blacklistRepository.findById(blacklistId);
+        if (blacklistEntity == null)
+            return new ServiceResult().fail()
+                    .message(String.format("bad request, invalid blacklistId(`%d`)", blacklistId));
 
-        return blacklistEntity == null ?
-                new ServiceResult().success().message("Blacklist not found"):
-                new ServiceResult().success().message("Successfully found blacklist").data(blacklistEntity);
+        return new ServiceResult().success()
+                .message(ServiceResult.DEFUALT_SUCCESS_MESSAGE)
+                .data(blacklistEntity);
     }
 
     /**
-     * @apiNote 기업 회원 식별자로 기업의 블랙리스트 리스트를 조회
+     * @apiNote 기업 회원 식별자로 기업의 블랙리스트 리스트에 등록된 회원 리스트 조회
      * @param providerId 자신이 등록한 블랙리스트 목록을 조회하고자 하는 기업 회원의 식별자
+     * @see com.example.demo.controller.BlacklistController#getBlacklistsByProviderId(String)
+     * @return UserEntity List
      */
-    public ServiceResult getBlacklistsByProviderId(String providerId) {
-        /* TODO : 파라미터 유효성 검사 */
+    public ServiceResult getBlacklistUserListByProviderId(String providerId) {
 
         List<BlacklistEntity> blacklistEntities = blacklistRepository.findByProviderProviderId(providerId);
 
-        return blacklistEntities == null ?
-                new ServiceResult().success().message("Blacklist not exist"):
-                new ServiceResult().success().message("Successfully found blacklist").data(blacklistEntities);
+        if (blacklistEntities == null)
+            return new ServiceResult().fail().message(String.format("bad request, invalid providerId(`%s`)", providerId));
+
+        var UserEntityList =
+                blacklistEntities.stream()
+                        .map(BlacklistEntity::getUser)
+                        .collect(Collectors.toList());
+
+        return new ServiceResult()
+                .success()
+                .message(ServiceResult.DEFUALT_SUCCESS_MESSAGE)
+                .data(UserEntityList);
     }
 
     /**
@@ -98,7 +126,11 @@ public class BlacklistService {
      * @param userId 블랙 당한 대상의 회원 식별자
      */
     public ServiceResult isUserInBlacklistOfProvider(String providerId, String userId){
-        /* TODO : 파라미터 유효성 검사 */
+        var nullabeProvider = providersRepository.findByProviderId(providerId);
+        var nullabeUser = userRepository.findByUserId(userId);
+
+        if (nullabeProvider == null || nullabeUser == null)
+            return new ServiceResult().fail().message("Bad Request, Invalid userId or providerId");
 
         return new ServiceResult()
                 .success()
@@ -112,11 +144,14 @@ public class BlacklistService {
      */
 
     public ServiceResult isUserInBlacklist(String userId){
-        /* TODO : 파라미터 유효성 검사 */
+        var nullabeUser = userRepository.findByUserId(userId);
+
+        if (nullabeUser == null)
+            return new ServiceResult().fail().message("Bad Request, Invalid userId");
 
         return new ServiceResult()
                 .success()
-                .message("Successfully found blacklist")
+                .message(String.format("user(`%s`) is in blacklist", userId))
                 .data(blacklistRepository.existsByUserUserId(userId));
     }
 
