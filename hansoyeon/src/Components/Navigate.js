@@ -86,6 +86,14 @@ const Navigate = () => {
         navigate("/memberManage")
     };
 
+    const handleFriendList = () => {
+        navigate("/FriendList");
+    }
+
+    const handleScheduler = () => {
+        navigate("/scheduler");
+    }
+
     const CoursePageButton = () => {
         navigate("/newcourse");
     }
@@ -176,6 +184,18 @@ const Navigate = () => {
                                             </Dropdown.Toggle>
                                             <Dropdown.Menu>
                                                 <Dropdown.Item onClick={handleMyInfo}>내 정보</Dropdown.Item>
+                                                {userID === 'admin' ?
+                                                
+                                                    <Dropdown.Item onClick={handleMemberManage}>회원관리</Dropdown.Item>
+                                                    
+                                                    :
+                                                    <Dropdown.Item onClick={handleScheduler}>스케줄러</Dropdown.Item>
+                                                }
+                                                {userType !== 'company' && userID !== 'admin' ?
+                                                    <Dropdown.Item onClick={handleFriendList}>친구관리</Dropdown.Item>
+                                                    :
+                                                    null
+                                                }
                                                 {userID === 'admin' ? (
                                                     <>
                                                         <Dropdown.Item onClick={handleMemberManage}>회원관리</Dropdown.Item>
@@ -186,7 +206,14 @@ const Navigate = () => {
                                                         {userType === 'company' && <Dropdown.Item onClick={handleAdminApplyManage}>신청현황</Dropdown.Item>}
                                                     </>
                                                 )}
-                                                <Dropdown.Item href="#action/3.2">스케줄러</Dropdown.Item>
+                                                {userType !== 'company' && userID !== 'admin' ?
+                                                    <>
+                                                        <Dropdown.Item onClick={handleFriendList}>친구관리</Dropdown.Item>
+                                                        <Dropdown.Item onClick={handleScheduler}>스케줄러</Dropdown.Item>
+                                                    </>
+                                                    :
+                                                    null
+                                                }
                                                 <Dropdown.Item onClick={handleLogout}>로그아웃</Dropdown.Item>
                                             </Dropdown.Menu>
 

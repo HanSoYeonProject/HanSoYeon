@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="kr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>Friendships View</title>
+    <style>
+        body {
+             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+             background-color: #f5f5f5;
+             padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #ffffff;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #bcbcbc;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 12px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:nth-child(odd) {
+            background-color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+    <h1> Friendships in Database </h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Index</th>
+                <th>friendship_id</th>
+                <th>user_id</th>
+                <th>friend_id</th>
+                <th>status</th>
+            </tr>
+        </thead>
+            <tbody>
+                <tr th:each="entity, entityIdx : ${friendshipEntityList}">
+                    <td th:text="${entityIdx.index + 1}"></td>
+                    <td th:text="${entity.friendshipId}"></td>
+                    <td th:text="${entity.user.userId}"></td>
+                    <td th:text="${entity.friend.userId}"></td>
+                    <td th:text="${entity.status}"></td>
+                </tr>
+            </tbody>
+        </table>
+    </body>
+</html>
