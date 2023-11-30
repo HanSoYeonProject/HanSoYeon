@@ -72,6 +72,7 @@ function App() {
                     <Route path="/recruit/:id" element={<RecruitViewPage/>}></Route>
                     <Route path="/recruit/write" element={<WritingRecruitPage/>}/>
                     <Route path="/BlackListManage" element={<BlackListPage/>}></Route>
+                    <Route path="/match/:id" element={<CompanyMatchingPage/>}></Route>
                     <Route path="/match/:providerId" element={<CompanyMatchingPage/>}></Route>
                     <Route path="/FriendList" element={<FriendListPage/>}></Route>
                 </Routes>
