@@ -10,7 +10,6 @@ import java.util.List;
 public interface BlacklistRepository extends JpaRepository<BlacklistEntity, Integer> {
     BlacklistEntity findById(int blacklistId);
     List<BlacklistEntity> findByProviderProviderId(String providerId);
-
     boolean existsByProviderProviderIdAndUserUserId(String providerId, String userId);
     void deleteByProviderProviderIdAndUserUserId(String providerId, String userId);
     void deleteById(int blacklistId);

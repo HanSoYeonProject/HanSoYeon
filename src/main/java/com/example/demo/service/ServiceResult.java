@@ -21,13 +21,16 @@ public class ServiceResult {
     static final boolean SUCCESS = true;
     static final boolean FAIL = false;
 
+    public static final String DEFUALT_SUCCESS_MESSAGE = "Successfully done";
+
+
     public ServiceResult success() {
         this.result = SUCCESS;
         return this;
     }
 
     public ServiceResult fail() {
-        this.result = SUCCESS;
+        this.result = FAIL;
         return this;
     }
 

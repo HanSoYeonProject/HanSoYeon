@@ -9,8 +9,10 @@ const WritingReviewPage = () => {
     const { user } = useUserStore(); // 현재 로그인한 사용자 정보 가져오기
     const [reviewTitle, setReviewTitle] = useState('');
     const [reviewContent, setReviewContent] = useState('');
+    const [reviewImage, setReviewImage] = useState(null);
     const writer = user ? user.userName : "익명"; // 현재 로그인한 사용자의 이름이나 "익명" 사용
     const [showPopup, setShowPopup] = useState(false); // 팝업 상태 관리
+
 
     const handleInputTitle = e => {
         setReviewTitle(e.target.value);
@@ -20,17 +22,33 @@ const WritingReviewPage = () => {
         setReviewContent(e.target.value);
     };
 
+    const handleImageChange = async (e) => {
+        setReviewImage(e.target.files[0]);
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const reviewData = {
 
-            jobId: 1, // 임시로 설정된 값, 실제 애플리케이션에서는 사용자가 선택하거나 다른 방법으로 결정해야 합니다.
-            userId: user ? user.userId : 999, // 만약 사용자 정보가 없으면 임시 ID를 사용
-            reviewTitle: reviewTitle, // 사용자가 입력한 리뷰 제목
-            reviewContent: reviewContent, // 사용자가 입력한 리뷰 내용
-            reviewDate: new Date(), // 현재 날짜와 시간
-            reviewRecommend: 0, // 초기 추천 수, 0으로 설정
-            writer: writer // 현재 로그인한 사용자의 이름이나 "익명"
+        let base64Image = '';
+        if (reviewImage) {
+            const reader = new FileReader();
+            reader.readAsDataURL(reviewImage);
+            base64Image = await new Promise((resolve) => {
+                reader.onloadend = () => {
+                    resolve(reader.result);
+                };
+            });
+        }
+
+        const reviewData = {
+            jobId: 1, // 임시로 설정된 값
+            userId: user ? user.userId : 999,
+            reviewTitle: reviewTitle,
+            reviewContent: reviewContent,
+            reviewDate: new Date(),
+            reviewRecommend: 0,
+            writer: writer,
+            image: base64Image
         };
 
         try {
@@ -41,8 +59,8 @@ const WritingReviewPage = () => {
             });
 
             if (response.status === 200) {
-                setShowPopup(true); // 팝업 표시
-                setTimeout(() => setShowPopup(false), 3000); // 3초 후에 팝업 숨김
+                setShowPopup(true);
+                setTimeout(() => setShowPopup(false), 3000);
                 navigate("/review");
             } else {
                 console.error(`HTTP error! Status: ${response.status}`);
@@ -54,9 +72,7 @@ const WritingReviewPage = () => {
 
     return (
         <Container>
-            <TitleContainer>
-                리뷰 작성
-            </TitleContainer>
+            <TitleContainer>리뷰 작성</TitleContainer>
             <Form onSubmit={handleSubmit}>
                 <MiddleContainer>
                     <Title>
@@ -71,6 +87,10 @@ const WritingReviewPage = () => {
                         <Label>리뷰 내용:</Label>
                         <Textarea value={reviewContent} onChange={handleInputContent} />
                     </ContentContainer>
+                    <div>
+                        <Label>사진 첨부:</Label>
+                        <input type="file" onChange={handleImageChange} accept="image/*" />
+                    </div>
                     <ButtonContainer>
                         <SubmitButton type="submit">리뷰 작성</SubmitButton>
                     </ButtonContainer>

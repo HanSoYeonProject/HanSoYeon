@@ -110,22 +110,31 @@ const Navigate = () => {
         navigate("/announcementlist");
     }
 
-    const getProfilePicSrc = () => {
-            if(userType === "company"){
-                if (user.providerProfile === "hansoyeon/src/imgs/default_profile.png" || !user.providerProfile) {
-                    return defaultProfilePic;
-                }
-                return user.providerProfile;
-            }else{
-                if (user.userProfile === "hansoyeon/src/imgs/default_profile.png" || !user.userProfile) {
-                    return defaultProfilePic;
-                }
-                return user.userProfile;
-            }
-        };
+    const handleBlacklist = () => {
+        if (userType === 'company') {
+            navigate("/companyBlackList");
+        }
+    }
 
-        return (
-            <TopNav>
+    const handleAdminApplyManage = () => {
+            navigate("/adminapply");
+    }
+    const getProfilePicSrc = () => {
+        if(userType === "company"){
+            if (user.providerProfile === "hansoyeon/src/imgs/default_profile.png" || !user.providerProfile) {
+                return defaultProfilePic;
+            }
+            return user.providerProfile;
+        }else{
+            if (user.userProfile === "hansoyeon/src/imgs/default_profile.png" || !user.userProfile) {
+                return defaultProfilePic;
+            }
+            return user.userProfile;
+        }
+    };
+
+    return (
+        <TopNav>
             <Navbar style={{
                 display: "flex",
                 flex: "1",
@@ -149,13 +158,13 @@ const Navigate = () => {
                                 <>
                                     <ProfileSection>
                                         {userID === 'admin' ?
-                                                <Badge bg="warning" style={{marginRight: '20px', fontSize: "16px"}}>관리자</Badge>
-                                                :
-                                                (userType === 'company' ?
-                                                        <Badge bg="primary" style={{marginRight: '20px', fontSize: "16px"}}>기업 회원</Badge>
-                                                        :
-                                                        <Badge bg="success" style={{marginRight: '20px', fontSize: "16px"}}>일반 회원</Badge>
-                                                )
+                                            <Badge bg="warning" style={{marginRight: '20px', fontSize: "16px"}}>관리자</Badge>
+                                            :
+                                            (userType === 'company' ?
+                                                    <Badge bg="primary" style={{marginRight: '20px', fontSize: "16px"}}>기업 회원</Badge>
+                                                    :
+                                                    <Badge bg="success" style={{marginRight: '20px', fontSize: "16px"}}>일반 회원</Badge>
+                                            )
                                         }
 
                                         {userType === 'company' ?
@@ -173,11 +182,12 @@ const Navigate = () => {
                                             <Dropdown.Toggle as={CustomToggle}>
                                                 <ProfileImage src={getProfilePicSrc()} alt="Profile"/>
                                             </Dropdown.Toggle>
-
                                             <Dropdown.Menu>
                                                 <Dropdown.Item onClick={handleMyInfo}>내 정보</Dropdown.Item>
                                                 {userID === 'admin' ?
+                                                
                                                     <Dropdown.Item onClick={handleMemberManage}>회원관리</Dropdown.Item>
+                                                    
                                                     :
                                                     <Dropdown.Item onClick={handleScheduler}>스케줄러</Dropdown.Item>
                                                 }
@@ -186,8 +196,27 @@ const Navigate = () => {
                                                     :
                                                     null
                                                 }
+                                                {userID === 'admin' ? (
+                                                    <>
+                                                        <Dropdown.Item onClick={handleMemberManage}>회원관리</Dropdown.Item>
+                                                        <Dropdown.Item onClick={handleAdminApplyManage}>신청현황</Dropdown.Item>
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        {userType === 'company' && <Dropdown.Item onClick={handleAdminApplyManage}>신청현황</Dropdown.Item>}
+                                                    </>
+                                                )}
+                                                {userType !== 'company' && userID !== 'admin' ?
+                                                    <>
+                                                        <Dropdown.Item onClick={handleFriendList}>친구관리</Dropdown.Item>
+                                                        <Dropdown.Item onClick={handleScheduler}>스케줄러</Dropdown.Item>
+                                                    </>
+                                                    :
+                                                    null
+                                                }
                                                 <Dropdown.Item onClick={handleLogout}>로그아웃</Dropdown.Item>
                                             </Dropdown.Menu>
+
                                         </StyledDropdown>
                                     </ProfileSection>
                                 </>
@@ -202,9 +231,9 @@ const Navigate = () => {
                     </Nav_Str>
                 </Navbar.Brand>
             </Navbar>
-            </TopNav>
-        )
-    }
+        </TopNav>
+    )
+}
 
 const TopNav = styled.div`
   height: 100px;
@@ -213,21 +242,21 @@ const TopNav = styled.div`
   border-bottom: 2px solid #dee2e6;
 `
 
-    const NavContainer = styled.div`
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      width: 100%;
-      padding: 0 1rem;
-      height: 10vh;
-    `;
+const NavContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 0 1rem;
+  height: 10vh;
+`;
 
-    const LogoImg = styled.img`
-      height: 10vh;
-      width: auto;
-      margin-right: 60px;
-      cursor: pointer;
-    `;
+const LogoImg = styled.img`
+  height: 10vh;
+  width: auto;
+  margin-right: 60px;
+  cursor: pointer;
+`;
 
 const UserImg = styled.button`
   background: none;
@@ -249,12 +278,12 @@ const Nav_Str = styled.div`
   align-items: center;
 `
 
-    const ProfileImage = styled.img`
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      cursor: pointer;
-    `;
+const ProfileImage = styled.img`
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  cursor: pointer;
+`;
 
 const UserContainer = styled.div`
   display: flex;
@@ -264,31 +293,31 @@ const UserContainer = styled.div`
   justify-content: center;
 `
 
-    const StyledDropdown = styled(Dropdown)`
-      margin-right: 10px;
-      .dropdown-toggle::after {
-        display: none;
-      }
-    `;
+const StyledDropdown = styled(Dropdown)`
+  margin-right: 10px;
+  .dropdown-toggle::after {
+    display: none;
+  }
+`;
 
-    const CustomToggle = React.forwardRef(({children, onClick}, ref) => (
-        <a
-            href=""
-            ref={ref}
-            onClick={(e) => {
-                e.preventDefault();
-                onClick(e);
-            }}
-            style={{marginRight: '30px'}}
-        >
-            {children}
-        </a>
-    ));
+const CustomToggle = React.forwardRef(({children, onClick}, ref) => (
+    <a
+        href=""
+        ref={ref}
+        onClick={(e) => {
+            e.preventDefault();
+            onClick(e);
+        }}
+        style={{marginRight: '30px'}}
+    >
+        {children}
+    </a>
+));
 
-    const ProfileSection = styled.div`
-      display: flex;
-      align-items: center;
-    `;
+const ProfileSection = styled.div`
+  display: flex;
+  align-items: center;
+`;
 
 const PageNav = styled.div`
   display: flex;

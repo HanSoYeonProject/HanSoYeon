@@ -22,6 +22,8 @@ public class RecruitmentEntity {
     @Column(name = "job_region", nullable = false)
     private String jobRegion;
 
+    @Column(name = "job_address", nullable = false)
+    private String jobAddress;
     @Column(name = "job_providers", length = 100)
     private String jobProviders;
 
@@ -69,6 +71,14 @@ public class RecruitmentEntity {
 
     public void setJobRegion(String jobRegion) {
         this.jobRegion = jobRegion;
+    }
+
+    public String getJobAddress() {
+        return jobAddress;
+    }
+
+    public void setJobAddress(String jobAddress) {
+        this.jobAddress = jobAddress;
     }
 
     public String getJobProviders() {

@@ -1,6 +1,7 @@
 package com.example.demo.entity;
 
 import com.example.demo.dto.SignUpDto;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,6 +26,7 @@ public class UserEntity {
     private String userName;
     @Column(name = "user_email")
     private String userEmail;
+    @JsonIgnore
     @Column(name = "user_password")
     private String userPassword;
     @Column(name = "user_gender")
