@@ -6,7 +6,6 @@ import axios from 'axios';
 import { useCookies } from 'react-cookie';
 import { useUserStore } from '../stores';
 
-
 const BlackListCompanyPage = () => {
     const navigate = useNavigate();
     const [blacklist, setBlacklist] = useState([]);
@@ -91,10 +90,12 @@ const BlackListCompanyPage = () => {
                         <UserHeader>
                             <UserAvatar src={black.user.userProfile} alt="User Avatar" />
                             <UserInfo>
-                                <ItemTitle>{black.user.userId}</ItemTitle>
-                                <ItemContent>{black.user.userName}</ItemContent>
+                                <ItemTitle>{black.user.userName}</ItemTitle>
+                                <ItemContent>{black.user.userId}</ItemContent>
                             </UserInfo>
                         </UserHeader>
+                        <ItemTitle>이름</ItemTitle>
+                        <ItemContent>{black.user.userName}</ItemContent>
                     </BlackListItem>
                 ))}
             </ListContainer>
@@ -106,8 +107,8 @@ const StyledContainer = styled.div`
   max-width: 800px;
   margin: auto;
   padding: 20px;
-  background-color: #fafafa;
-  font-family: 'Segoe UI', sans-serif;
+  background-color: #f8f8f8; /* 애플 스타일에 맞게 조정 */
+  font-family: 'Helvetica Neue', sans-serif; /* 애플 기본 글꼴 사용 */
 `;
 
 const Title = styled.h1`
@@ -123,9 +124,9 @@ const ListContainer = styled.div`
 `;
 
 const BlackListItem = styled.div`
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+  border-radius: 12px; /* 애플 스타일에 맞게 둥근 모서리 조정 */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   padding: 20px;
   margin-bottom: 20px;
   transition: transform 0.2s ease-in-out;
@@ -142,8 +143,8 @@ const UserHeader = styled.div`
 `;
 
 const UserAvatar = styled.img`
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   margin-right: 10px;
 `;
