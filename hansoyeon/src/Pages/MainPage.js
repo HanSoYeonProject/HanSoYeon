@@ -8,10 +8,23 @@ import {Autoplay, Pagination} from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import '../App.css';
-import new1 from '../imgs/newcourse-1.png';
-import new2 from '../imgs/newcourse-2.png';
-import new3 from '../imgs/newcourse-3.png';
-import new4 from '../imgs/newcourse-4.png';
+import theme1 from '../imgs/themecourse1.jpg';
+import theme2 from '../imgs/themecourse2.jpg';
+import theme3 from '../imgs/themecourse3.jpg';
+import theme4 from '../imgs/themecourse4.jpg';
+import theme5 from '../imgs/themecourse5.jpg';
+import theme6 from '../imgs/themecourse6.jpg';
+import theme7 from '../imgs/themecourse7.jpg';
+import theme8 from '../imgs/themecourse8.jpg';
+import region1 from '../imgs/regioncourse1.jpg';
+import region2 from '../imgs/regioncourse2.jpg';
+import region3 from '../imgs/regioncourse3.jpg';
+import region4 from '../imgs/regioncourse4.jpg';
+import region5 from '../imgs/regioncourse5.jpg';
+import region6 from '../imgs/regioncourse6.jpg';
+import region7 from '../imgs/regioncourse7.jpg';
+import region8 from '../imgs/regioncourse8.jpg';
+import recruitment1 from '../imgs/recruitment1.png';
 import recommend1 from '../imgs/recommendcourse-1.png';
 import recommend2 from '../imgs/recommendcourse-2.png';
 import Footer from '../Components/Footer';
@@ -50,8 +63,8 @@ const MainPage = () => {
         <div>
             <MainContainer>
                 <NewCourseContainer>
-                    <NewCourseTitle><h1>신규코스</h1></NewCourseTitle>
-                    <NewCourseSubTitle>이달의 추천코스</NewCourseSubTitle>
+                    <NewCourseTitle><h1>테마별 코스</h1></NewCourseTitle>
+                    <NewCourseSubTitle>원하는 테마를 선택하기</NewCourseSubTitle>
                     <NewCourseImage>
                         <>
                             <Swiper
@@ -66,18 +79,23 @@ const MainPage = () => {
                                 speed={1300} // 슬라이드 전환 속도를 1.3초로 설정
                                 // pagination 속성 제거
                             >
-                                <SwiperSlide><img src={new1} style={{width: '340px'}}/></SwiperSlide>
-                                <SwiperSlide><img src={new2} style={{width: '340px'}}/></SwiperSlide>
-                                <SwiperSlide><img src={new3} style={{width: '340px'}}/></SwiperSlide>
-                                <SwiperSlide><img src={new4} style={{width: '340px'}}/></SwiperSlide>
+                                <SwiperSlide><img src={theme1} style={{width: '340px'}}/></SwiperSlide>
+                                <SwiperSlide><img src={theme2} style={{width: '340px'}}/></SwiperSlide>
+                                <SwiperSlide><img src={theme3} style={{width: '340px'}}/></SwiperSlide>
+                                <SwiperSlide><img src={theme4} style={{width: '340px'}}/></SwiperSlide>
+                                <SwiperSlide><img src={theme5} style={{width: '340px'}}/></SwiperSlide>
+                                <SwiperSlide><img src={theme6} style={{width: '340px'}}/></SwiperSlide>
+                                <SwiperSlide><img src={theme7} style={{width: '340px'}}/></SwiperSlide>
+                                <SwiperSlide><img src={theme8} style={{width: '340px'}}/></SwiperSlide>
                             </Swiper>
                         </>
                     </NewCourseImage>
                 </NewCourseContainer>
-                <RecommendCourseContainer>
-                    <RecommendCourseTitle><h1>추천 코스</h1></RecommendCourseTitle>
-                    <RecommendCourseSubTitle>일자리 및 여행 추천</RecommendCourseSubTitle>
-                    <RecommendCourseImage>
+
+                <NewCourseContainer>
+                    <NewCourseTitle><h1>지역별 코스</h1></NewCourseTitle>
+                    <NewCourseSubTitle>지역별로 분류된 코스</NewCourseSubTitle>
+                    <NewCourseImage>
                         <>
                             <Swiper
                                 slidesPerView={3}
@@ -91,18 +109,21 @@ const MainPage = () => {
                                 speed={1300} // 슬라이드 전환 속도를 1.3초로 설정
                                 // pagination 속성 제거
                             >
-                                <SwiperSlide><img src={recommend1} style={{width: '310px'}}/></SwiperSlide>
-                                <SwiperSlide><img src={recommend2} style={{width: '310px'}}/></SwiperSlide>
-                                <SwiperSlide>3</SwiperSlide>
-                                <SwiperSlide>4</SwiperSlide>
-                                <SwiperSlide>5</SwiperSlide>
-
+                                <SwiperSlide><img src={region1} style={{width: '340px'}}/></SwiperSlide>
+                                <SwiperSlide><img src={region2} style={{width: '340px'}}/></SwiperSlide>
+                                <SwiperSlide><img src={region3} style={{width: '340px'}}/></SwiperSlide>
+                                <SwiperSlide><img src={region4} style={{width: '340px'}}/></SwiperSlide>
+                                <SwiperSlide><img src={region5} style={{width: '340px'}}/></SwiperSlide>
+                                <SwiperSlide><img src={region6} style={{width: '340px'}}/></SwiperSlide>
+                                <SwiperSlide><img src={region7} style={{width: '340px'}}/></SwiperSlide>
+                                <SwiperSlide><img src={region8} style={{width: '340px'}}/></SwiperSlide>
                             </Swiper>
                         </>
-                    </RecommendCourseImage>
-                </RecommendCourseContainer>
+                    </NewCourseImage>
+                </NewCourseContainer>
+                
                 <ThemaCourseContainer>
-                    <ThemaCourseTitle><h1>테마별 코스</h1></ThemaCourseTitle>
+                    <ThemaCourseTitle><h1>모집 일정</h1></ThemaCourseTitle>
                     <ThemaCourseSubTitle>원하는 테마별로 분류된 코스</ThemaCourseSubTitle>
                     <ThemaCouseImage>
 
@@ -119,10 +140,10 @@ const MainPage = () => {
                                 speed={1300} // 슬라이드 전환 속도를 1.3초로 설정
                                 // pagination 속성 제거
                             >
-                                <SwiperSlide><img src={new1} style={{width: '340px'}}/></SwiperSlide>
-                                <SwiperSlide><img src={new2} style={{width: '340px'}}/></SwiperSlide>
-                                <SwiperSlide><img src={new3} style={{width: '340px'}}/></SwiperSlide>
-                                <SwiperSlide><img src={new4} style={{width: '340px'}}/></SwiperSlide>
+                                <SwiperSlide><img src={recruitment1} style={{width: '340px'}}/></SwiperSlide>
+                                <SwiperSlide><img src={theme1} style={{width: '340px'}}/></SwiperSlide>
+                                <SwiperSlide><img src={theme1} style={{width: '340px'}}/></SwiperSlide>
+                                <SwiperSlide><img src={theme1} style={{width: '340px'}}/></SwiperSlide>
                             </Swiper>
                         </>
 
@@ -147,16 +168,17 @@ const MainPage = () => {
                                 speed={1300} // 슬라이드 전환 속도를 1.3초로 설정
                                 // pagination 속성 제거
                             >
-                                <SwiperSlide><img src={new1} style={{width: '340px'}}/></SwiperSlide>
-                                <SwiperSlide><img src={new2} style={{width: '340px'}}/></SwiperSlide>
-                                <SwiperSlide><img src={new3} style={{width: '340px'}}/></SwiperSlide>
-                                <SwiperSlide><img src={new4} style={{width: '340px'}}/></SwiperSlide>
+                                <SwiperSlide><img src={theme1} style={{width: '340px'}}/></SwiperSlide>
+                                <SwiperSlide><img src={theme1} style={{width: '340px'}}/></SwiperSlide>
+                                <SwiperSlide><img src={theme1} style={{width: '340px'}}/></SwiperSlide>
+                                <SwiperSlide><img src={theme1} style={{width: '340px'}}/></SwiperSlide>
 
                             </Swiper>
                         </>
 
                     </RegionalCouseImage>
                 </RegionalCourseContainer>
+                
                 <ReviewContainer>
                     <ReviewTitle>체험 후기</ReviewTitle>
                     <ReviewSubTitle>다양한 체험 후기를 들어보세요</ReviewSubTitle>
@@ -249,7 +271,7 @@ const RecommendCourseContainer = styled.div`
   display: flex;
   flex: 1;
   flex-direction: column;
-  height: 300px;
+  height: 340px;
   padding-left: 50px;
 `
 const RecommendCourseTitle = styled.div`
@@ -332,7 +354,7 @@ const ReviewContainer = styled.div`
   display: flex;
   flex: 1;
   flex-direction: column;
-  height: 800px;
+  height: 570px;
   background-color: white;
   border: 1px solid grey;
   padding-left: 50px;
