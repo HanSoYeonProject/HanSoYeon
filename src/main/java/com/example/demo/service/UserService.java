@@ -109,4 +109,8 @@ public class UserService {
         }
         return ResponseEntity.badRequest().body("user not found");
     }
+
+    public List<UserEntity> searchUsers(String search) {
+        return userRepository.findByUserIdContaining(search);
+    }
 }

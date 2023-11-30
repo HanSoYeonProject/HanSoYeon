@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -119,13 +120,10 @@ public class FriendshipService {
                     .message(String.format("bad request, invalid parameter, userId(`%s`), friendId(`%s`)", userId, friendId));
         }
 
-        var friendship = friendshipRepository.findByUserUserIdAndFriendUserId(userId, friendId);
-        var friendshipId = friendship.getFriendshipId();
+        friendshipRepository.deleteByUserUserIdAndFriendUserId(userId, friendId);
+        friendshipRepository.deleteByUserUserIdAndFriendUserId(friendId, userId);
 
-        friendshipRepository.delete(friendship);
-
-        return new ServiceResult().success()
-                .message(String.format("delete done, friendshipId(`%d`)", friendshipId));
+        return new ServiceResult().success().message("delete done");
     }
 
     /**
@@ -190,6 +188,32 @@ public class FriendshipService {
                 .message(ServiceResult.DEFUALT_SUCCESS_MESSAGE)
                 .data(friendshipRepository.existsByUserUserIdAndFriendUserIdAndStatus(userId, targetId, ACCEPTED) ||
                         friendshipRepository.existsByUserUserIdAndFriendUserIdAndStatus(targetId, userId, ACCEPTED));
+    }
+
+    /**
+     * 사용자가 보낸 친구 요청 목록을 조회한다.
+     * @param userId 사용자의 회원 식별자
+     * @return 보낸 친구 요청 목록
+     */
+    public ServiceResult getSentFriendRequests(String userId) {
+        List<FriendshipEntity> sentRequests = friendshipRepository.findByUserUserIdAndStatus(userId, REQUESTED);
+        List<UserEntity> users = sentRequests.stream()
+                .map(FriendshipEntity::getFriend)
+                .collect(Collectors.toList());
+        return new ServiceResult().success().data(users);
+    }
+
+    /**
+     * 사용자가 받은 친구 요청 목록을 조회한다.
+     * @param userId 사용자의 회원 식별자
+     * @return 받은 친구 요청 목록
+     */
+    public ServiceResult getReceivedFriendRequests(String userId) {
+        List<FriendshipEntity> receivedRequests = friendshipRepository.findByFriendUserIdAndStatus(userId, REQUESTED);
+        List<UserEntity> users = receivedRequests.stream()
+                .map(FriendshipEntity::getUser)
+                .collect(Collectors.toList());
+        return new ServiceResult().success().data(users);
     }
 
 }
