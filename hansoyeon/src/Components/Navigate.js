@@ -22,7 +22,7 @@ const Navigate = () => {
 
     useEffect(() => {
         if (cookies.token) {
-            console.log(userType)
+            console.log(cookies.token)
             if(userType === "company"){
                 axios.get('http://localhost:8050/api/auth/currentCompany', {
                     headers: {
@@ -33,7 +33,7 @@ const Navigate = () => {
                     // 토큰이 유효한 경우
                     const fetchedUser = response.data;
                     console.log(fetchedUser)
-                    setUser(fetchedUser);
+
                 }).catch(error => {
                     // 토큰이 유효하지 않은 경우
                     console.error("Token verification failed:", error);
@@ -115,7 +115,6 @@ const Navigate = () => {
             navigate("/companyBlackList");
         }
     }
-
     const handleAdminApplyManage = () => {
             navigate("/adminapply");
     }
@@ -214,6 +213,9 @@ const Navigate = () => {
                                                     :
                                                     null
                                                 }
+                                                {userType === 'company' && (
+                                                    <Dropdown.Item onClick={handleBlacklist}>블랙리스트</Dropdown.Item>
+                                                )}
                                                 <Dropdown.Item onClick={handleLogout}>로그아웃</Dropdown.Item>
                                             </Dropdown.Menu>
 
