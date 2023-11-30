@@ -13,5 +13,10 @@ public interface FriendshipRepository extends JpaRepository<FriendshipEntity, In
     boolean existsByUserUserIdAndFriendUserIdAndStatus(String userId, String friendUserId, String Status);
     void deleteByUserUserIdAndFriendUserId(String userId, String friendId);
 
+    // 사용자가 보낸 친구 요청을 조회
+    List<FriendshipEntity> findByUserUserIdAndStatus(String userId, String status);
+
+    // 사용자가 받은 친구 요청을 조회
+    List<FriendshipEntity> findByFriendUserIdAndStatus(String friendId, String status);
 
 }

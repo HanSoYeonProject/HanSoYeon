@@ -82,6 +82,10 @@ const Navigate = () => {
         navigate("/MyInfo")
     };
 
+    const handleFriendList = () => {
+        navigate("/FriendList");
+    }
+
     const handleMemberManage = () => {
         navigate("/memberManage")
     };
@@ -186,6 +190,11 @@ const Navigate = () => {
                                                         {userType === 'company' && <Dropdown.Item onClick={handleAdminApplyManage}>신청현황</Dropdown.Item>}
                                                     </>
                                                 )}
+                                                {userType !== 'company' && userID !== 'admin' ?
+                                                    <Dropdown.Item onClick={handleFriendList}>친구관리</Dropdown.Item>
+                                                    :
+                                                    null
+                                                }
                                                 <Dropdown.Item href="#action/3.2">스케줄러</Dropdown.Item>
                                                 <Dropdown.Item onClick={handleLogout}>로그아웃</Dropdown.Item>
                                             </Dropdown.Menu>

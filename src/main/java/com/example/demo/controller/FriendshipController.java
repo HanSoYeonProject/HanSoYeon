@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
@@ -110,6 +111,34 @@ public class FriendshipController {
         return new ResponseBuilder()
                 .serviceResult(friendshipService.isFriend(userId, targetId))
                 .build();
+    }
+
+    /**
+     * 사용자가 보낸 친구 요청 목록 조회
+     * @param userId 요청을 보낸 사용자의 회원 아이디
+     * @return 보낸 친구 요청 목록에 따른 ResponseEntity
+     */
+    @GetMapping("/friends/sentRequests/{userId}")
+    public ResponseEntity<?> getSentFriendRequests(@PathVariable("userId") String userId) {
+        var sr = friendshipService.getSentFriendRequests(userId);
+
+        return sr.isSuccess() ?
+                ResponseEntity.ok(sr.data) :
+                ResponseEntity.badRequest().body(sr.message);
+    }
+
+    /**
+     * 사용자가 받은 친구 요청 목록 조회
+     * @param userId 요청을 받은 사용자의 회원 아이디
+     * @return 받은 친구 요청 목록에 따른 ResponseEntity
+     */
+    @GetMapping("/friends/receivedRequests/{userId}")
+    public ResponseEntity<?> getReceivedFriendRequests(@PathVariable("userId") String userId) {
+        var sr = friendshipService.getReceivedFriendRequests(userId);
+
+        return sr.isSuccess() ?
+                ResponseEntity.ok(sr.data) :
+                ResponseEntity.badRequest().body(sr.message);
     }
 
 

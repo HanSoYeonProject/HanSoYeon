@@ -34,6 +34,7 @@ import GeneralManagePage from "./Pages/GeneralManagePage";
 import BlackListPage from "./Pages/BlackListPage";
 import AdminApply from "./Pages/CompanyMatchingPage";
 import CompanyMatchingPage from "./Pages/CompanyMatchingPage";
+import FriendListPage from "./Pages/FriendListPage";
 
 
 function App() {
@@ -72,6 +73,8 @@ function App() {
                     <Route path="/recruit/write" element={<WritingRecruitPage/>}/>
                     <Route path="/BlackListManage" element={<BlackListPage/>}></Route>
                     <Route path="/match/:id" element={<CompanyMatchingPage/>}></Route>
+                    <Route path="/match/:providerId" element={<CompanyMatchingPage/>}></Route>
+                    <Route path="/FriendList" element={<FriendListPage/>}></Route>
                 </Routes>
             </BrowserRouter>
         </div>

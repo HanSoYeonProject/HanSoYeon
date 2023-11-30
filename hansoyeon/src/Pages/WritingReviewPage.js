@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 import { useUserStore } from '../stores'; // useUserStore 훅의 실제 경로
 
+
+
 const WritingReviewPage = () => {
     const navigate = useNavigate();
     const { user } = useUserStore(); // 현재 로그인한 사용자 정보 가져오기
@@ -75,16 +77,16 @@ const WritingReviewPage = () => {
             <TitleContainer>리뷰 작성</TitleContainer>
             <Form onSubmit={handleSubmit}>
                 <MiddleContainer>
-                    <Title>
-                        <Label>리뷰 제목:</Label>
-                        <Input type="text" value={reviewTitle} onChange={handleInputTitle} />
-                    </Title>
                     <WriterContainer>
-                        <Label>작성자:</Label>
+                        <Label>작성자 :</Label>
                         <span>{writer}</span>
                     </WriterContainer>
+                    <Title>
+                        <Label>리뷰 제목</Label>
+                        <Input type="text" value={reviewTitle} onChange={handleInputTitle} />
+                    </Title>
                     <ContentContainer>
-                        <Label>리뷰 내용:</Label>
+                        <Label>리뷰 내용</Label>
                         <Textarea value={reviewContent} onChange={handleInputContent} />
                     </ContentContainer>
                     <div>
@@ -99,6 +101,8 @@ const WritingReviewPage = () => {
         </Container>
     );
 };
+
+
 
 const Container = styled.div`
   display: flex;
@@ -130,8 +134,7 @@ const Title = styled.div`
 `;
 
 const Label = styled.label`
-  display: block;
-  margin-bottom: 5px;
+  margin-right: 10px;
 `;
 
 const Input = styled.input`
@@ -142,6 +145,8 @@ const Input = styled.input`
 `;
 
 const WriterContainer = styled.div`
+  display: flex;
+  align-items: center;
   margin-bottom: 15px;
 `;
 
