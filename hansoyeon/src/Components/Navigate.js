@@ -90,6 +90,10 @@ const Navigate = () => {
         navigate("/FriendList");
     }
 
+    const handleScheduler = () => {
+        navigate("/scheduler");
+    }
+
     const CoursePageButton = () => {
         navigate("/newcourse");
     }
@@ -175,7 +179,7 @@ const Navigate = () => {
                                                 {userID === 'admin' ?
                                                     <Dropdown.Item onClick={handleMemberManage}>회원관리</Dropdown.Item>
                                                     :
-                                                    <Dropdown.Item href="#action/3.2">스케줄러</Dropdown.Item>
+                                                    <Dropdown.Item onClick={handleScheduler}>스케줄러</Dropdown.Item>
                                                 }
                                                 {userType !== 'company' && userID !== 'admin' ?
                                                     <Dropdown.Item onClick={handleFriendList}>친구관리</Dropdown.Item>
