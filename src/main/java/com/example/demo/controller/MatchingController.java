@@ -40,7 +40,6 @@ public class MatchingController {
      */
     @PostMapping("/matchings")
     public ResponseEntity<?> requestMatching(@RequestBody RequestRecruitmentRequestBody reqBody){
-
         return new ResponseBuilder()
                 .serviceResult(matchingService.requestRecruitment(reqBody.getRecruitmentId(), reqBody.getUserId()))
                 .build();

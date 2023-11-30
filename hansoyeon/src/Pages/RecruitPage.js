@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom'; // useNavigate 훅 추가
 
-import {useCookies} from "react-cookie";
+import {Cookies, useCookies} from "react-cookie";
 import axios from "axios";
 import styled from "styled-components";
 
-const RecruitPage = () => {
+const RecruitPage = (props) => {
     const navigate = useNavigate();
-    const [cookies, sestCookie, removeCookie] = useCookies(['token']);
+    const [cookies, setCookie, removeCookie] = useCookies(['token']);
     const [recruitments, setRecruitments] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 20;
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = recruitments.slice(indexOfFirstItem, indexOfLastItem);
-    const [isAdmin, setIsAdmin] = useState(false);
+    const [isCompany, setIsCompany] = useState(false);
     const [detailData, setDetailData] = useState(null);
     //라디오버튼
     const [selectedCategory, setSelectedCategory] = useState("");
@@ -59,8 +59,8 @@ const RecruitPage = () => {
             .then((response) => {
                 console.log(response.data);
                 const user = response.data;
-                const isAdminUser = user.userId === 'admin';
-                setIsAdmin(isAdminUser);
+                const isCompanyUser = user.userType === 'company';
+                setIsCompany(isCompanyUser);
             })
             .catch(error => {
                 console.error('Error fetching user info:', error);
@@ -70,19 +70,12 @@ const RecruitPage = () => {
                 }
             });
     }, []);
-//이미지 가져오기
-    function getImageMimeType(imageData) {
-        if (!imageData) {
-            return '';  // or any default MIME type you want to use when imageData is null
-        }
 
-        const mimeType = imageData.split(';')[0].split(':')[1];
-        return mimeType;
-    }
     //글쓰기 버튼
     const WritingBtn = () => {
         navigate("/recruit/write")
     }
+
 
     // 라디오 버튼 UI
     const renderRadioButtons = () => {
@@ -120,9 +113,8 @@ const RecruitPage = () => {
                 <SmallAlgoContainer>
                     <RadioContainer>
                         {renderRadioButtons()}
-                        <WritingButton onClick={WritingBtn}>글 쓰기</WritingButton>
+                        {isCompany && <WritingButton onClick={WritingBtn}>글 쓰기</WritingButton>}
                     </RadioContainer>
-
                 </SmallAlgoContainer>
             </AlgoContainer>
             <Bottom>
@@ -133,10 +125,10 @@ const RecruitPage = () => {
                                      onMouseOver={(e) => (e.target.style.textDecoration="underline")}
                                      onMouseOut={(e) => (e.target.style.textDecoration="none")}>
                             <ImgContainer>
-                            <img
-                                src={recruitments.image}
-                                alt="Image"
-                                style={{display: "flex",height: "100%",justifyContent: "center", alignItems: "center",borderRadius:"10px"}}
+                                <img
+                                    src={recruitments.image}
+                                    alt="Image"
+                                    style={{display: "flex",height: "100%",justifyContent: "center", alignItems: "center",borderRadius:"10px"}}
                                 />
                             </ImgContainer>
                             <TitleContainer>
@@ -155,7 +147,7 @@ const RecruitPage = () => {
                     </BottomContent>
                 ))}
             </Bottom>
-      </Container>
+        </Container>
     );
 };
 
