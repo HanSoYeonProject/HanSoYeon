@@ -4,6 +4,7 @@ import com.example.demo.develop.requestBody.CreateUserRequestBody;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,8 +17,25 @@ import org.springframework.web.bind.annotation.RestController;
 public class DevelopController {
     private final DevelopService developService;
 
+    /**
+     * [POST] /dev/users
+     * @apiNote This method is for creating user for developing
+     * @author WoodyK
+     * @param reqBody
+     * <br>`reqBody.userId`: user's id
+     * <br>`reqBody.userPassword`: user's password
+     * <br>`reqBody.userName`: user's name
+     * <br>`reqBody.userEmail`: user's email
+     * <br>`reqBody.userAddress`: user's address
+     * <br>`reqBody.getUserGender`: user's gender
+     * <br>`reqBody.getUserInfo`: user's info
+     * <br>`reqBody.getUserPhone`: user's phone
+     * <br>`reqBody.getUserPrefer`: user's prefer
+     * <br>`reqBody.getUserProfile`: user's profile
+     * @return
+     */
     @PostMapping("/dev/users")
-    public ResponseEntity<?> createUser(CreateUserRequestBody reqBody) {
+    public ResponseEntity<?> createUser(@RequestBody CreateUserRequestBody reqBody) {
         var sr =  developService.createUser(
                 reqBody.getUserId(), reqBody.getUserPassword(),
                 reqBody.getUserName(), reqBody.getUserEmail(),

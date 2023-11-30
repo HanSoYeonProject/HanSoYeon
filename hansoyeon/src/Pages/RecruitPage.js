@@ -146,7 +146,7 @@ const RecruitPage = () => {
                                         ? `${recruitments.title.substring(0, 25)}...`
                                         : recruitments.title}
                                 </h3>
-                                <h3 style={{ display: "flex",flex: "2", fontSize: '24px', fontWeight: '600', color: '#747474', justifyContent: "center", alignItems: "center"}}>{recruitments.region}</h3>
+                                <h3 style={{ display: "flex",flex: "2", fontSize: '24px', fontWeight: '600', color: '#747474', justifyContent: "center", alignItems: "center"}}>{recruitments.region} {recruitments.address}</h3>
                                 <h4 style={{ display: "flex",flex: "1", fontSize: "18px", fontWeight: "600", color: "#747474", justifyContent: "center", alignItems: "center"}}>
                                     {recruitments.startDate} ~ {recruitments.endDate}
                                 </h4>
@@ -249,6 +249,7 @@ const Bottom = styled.div`
   gap: 20px; /* Adjust the gap as needed */
   margin-top: -1rem;
   width: 80%;
+  margin-bottom: 1rem;
   max-height: 45vh;
 `
 const TitleContainer = styled.div`

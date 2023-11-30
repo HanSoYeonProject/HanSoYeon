@@ -1,34 +1,50 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useCookies } from "react-cookie";
 
 const AnnouncementListPage = () => {
     const navigate = useNavigate();
     const [announcements, setAnnouncements] = useState([]);
-
-    // 페이지 시작 번호
+    const [isAdmin, setIsAdmin] = useState(false);
+    const [cookies, setCookie, removeCookie] = useCookies(["token"]);
     const [currentPage, setCurrentPage] = useState(1);
-    // 페이지당 표시할 항목 수
     const itemsPerPage = 5;
 
-    // 공지사항 목록 가져오기
     useEffect(() => {
         axios.get('http://localhost:8050/api/announcements')
             .then(response => {
-                // 받아온 목록을 역순으로 정렬
                 const reversedAnnouncements = [...response.data].reverse();
                 setAnnouncements(reversedAnnouncements);
             })
             .catch(error => console.error('Error fetching announcements:', error));
     }, []);
 
-    // 글 작성 페이지로 이동
     const WritingNews = () => {
         navigate("/WritingNewsPage");
     }
 
-    // 공지사항 상세 보기
+    useEffect(() => {
+        axios.get('http://localhost:8050/api/auth/currentUser', {
+            headers: {
+                Authorization: `Bearer ${cookies.token}`
+            }
+        })
+            .then((response) => {
+                const user = response.data;
+                const isAdminUser = user.userId === 'admin';
+                setIsAdmin(isAdminUser);
+            })
+            .catch(error => {
+                console.error('Error fetching user info: ', error);
+                if (error.response) {
+                    console.error('Status Code: ', error.response.status);
+                    console.error('Response Data: ', error.response.data);
+                }
+            })
+    }, [cookies.token]);
+
     const viewAnnouncement = async (annoId) => {
         try {
             await axios.put(`http://localhost:8050/api/announcements/${annoId}/increaseViews`);
@@ -38,12 +54,12 @@ const AnnouncementListPage = () => {
         }
     };
 
-    // 현재 페이지에 표시할 목록 추출
-    const indexOfLastItem = currentPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentItems = announcements.slice(indexOfFirstItem, indexOfLastItem);
+    const currentItems = useMemo(() => {
+        const indexOfLastItem = currentPage * itemsPerPage;
+        const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+        return announcements.slice(indexOfFirstItem, indexOfLastItem);
+    }, [currentPage, announcements]);
 
-    // 페이지 번호 변경
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
     return (
@@ -53,10 +69,11 @@ const AnnouncementListPage = () => {
                 <NewsTitle>
                     <SmallNewsTitle>
                         <LeftNewsTitle>한소연 소식</LeftNewsTitle>
+                        {isAdmin && (
                         <RightNewsTitle>
                             <WritingButton onClick={WritingNews}>글 작성</WritingButton>
-
                         </RightNewsTitle>
+                        )}
                     </SmallNewsTitle>
                 </NewsTitle>
                 <MainTitle>

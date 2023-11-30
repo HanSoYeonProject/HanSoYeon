@@ -86,6 +86,14 @@ const Navigate = () => {
         navigate("/memberManage")
     };
 
+    const handleFriendList = () => {
+        navigate("/FriendList");
+    }
+
+    const handleScheduler = () => {
+        navigate("/scheduler");
+    }
+
     const CoursePageButton = () => {
         navigate("/newcourse");
     }
@@ -107,7 +115,9 @@ const Navigate = () => {
             navigate("/companyBlackList");
         }
     }
-
+    const handleAdminApplyManage = () => {
+            navigate("/adminapply");
+    }
     const getProfilePicSrc = () => {
         if(userType === "company"){
             if (user.providerProfile === "hansoyeon/src/imgs/default_profile.png" || !user.providerProfile) {
@@ -171,19 +181,44 @@ const Navigate = () => {
                                             <Dropdown.Toggle as={CustomToggle}>
                                                 <ProfileImage src={getProfilePicSrc()} alt="Profile"/>
                                             </Dropdown.Toggle>
-
                                             <Dropdown.Menu>
                                                 <Dropdown.Item onClick={handleMyInfo}>내 정보</Dropdown.Item>
                                                 {userID === 'admin' ?
+                                                
                                                     <Dropdown.Item onClick={handleMemberManage}>회원관리</Dropdown.Item>
+                                                    
                                                     :
-                                                    <Dropdown.Item href="#action/3.2">스케줄러</Dropdown.Item>
+                                                    <Dropdown.Item onClick={handleScheduler}>스케줄러</Dropdown.Item>
+                                                }
+                                                {userType !== 'company' && userID !== 'admin' ?
+                                                    <Dropdown.Item onClick={handleFriendList}>친구관리</Dropdown.Item>
+                                                    :
+                                                    null
+                                                }
+                                                {userID === 'admin' ? (
+                                                    <>
+                                                        <Dropdown.Item onClick={handleMemberManage}>회원관리</Dropdown.Item>
+                                                        <Dropdown.Item onClick={handleAdminApplyManage}>신청현황</Dropdown.Item>
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        {userType === 'company' && <Dropdown.Item onClick={handleAdminApplyManage}>신청현황</Dropdown.Item>}
+                                                    </>
+                                                )}
+                                                {userType !== 'company' && userID !== 'admin' ?
+                                                    <>
+                                                        <Dropdown.Item onClick={handleFriendList}>친구관리</Dropdown.Item>
+                                                        <Dropdown.Item onClick={handleScheduler}>스케줄러</Dropdown.Item>
+                                                    </>
+                                                    :
+                                                    null
                                                 }
                                                 {userType === 'company' && (
                                                     <Dropdown.Item onClick={handleBlacklist}>블랙리스트</Dropdown.Item>
                                                 )}
                                                 <Dropdown.Item onClick={handleLogout}>로그아웃</Dropdown.Item>
                                             </Dropdown.Menu>
+
                                         </StyledDropdown>
                                     </ProfileSection>
                                 </>

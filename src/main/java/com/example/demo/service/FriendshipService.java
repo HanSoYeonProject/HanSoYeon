@@ -7,7 +7,9 @@ import com.example.demo.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,6 +49,7 @@ public class FriendshipService {
 
         friendship.setStatus(ACCEPTED);
         friendshipRepository.save(friendship);
+
         return new ServiceResult().success().message("accept done");
     }
 
@@ -74,6 +77,7 @@ public class FriendshipService {
         friendshipRepository.save(FriendshipEntity.builder()
                 .user(userRepository.findByUserId(targetUserId))
                 .friend(userRepository.findByUserId(requesterUserId))
+                .status(PENDING)
                 .build());
 
         return new ServiceResult().success().message("request done");
@@ -84,9 +88,11 @@ public class FriendshipService {
      * @author WoodyK
      * @apiNote 친구 관계를 삭제한다.
      */
+    @Transactional
     public ServiceResult deleteFriendshipByUserIdAndFriendId(String userId, String friendId) {
 
         friendshipRepository.deleteByUserUserIdAndFriendUserId(userId, friendId);
+        friendshipRepository.deleteByUserUserIdAndFriendUserId(friendId, userId);
 
         return new ServiceResult().success().message("delete done");
     }
@@ -101,18 +107,21 @@ public class FriendshipService {
         var optUser = userRepository.findByUserId(userId);
 
         /* FriendId 리턴 */
-        if (optUser == null)
-            return new ServiceResult().fail().message("Bad Request, Invalid userId");
+        var friendshipsAsUser = friendshipRepository.findByUserUserId(userId)
+                .stream()
+                .filter(friendship -> ACCEPTED.equals(friendship.getStatus()))
+                .map(FriendshipEntity::getFriend)
+                .collect(Collectors.toList());
 
-        var friendshipList = friendshipRepository.findByUserUserId(userId);
+        var friendshipsAsFriend = friendshipRepository.findByFriendUserIdAndStatus(userId, ACCEPTED)
+                .stream()
+                .map(FriendshipEntity::getUser)
+                .collect(Collectors.toList());
 
-        /* 친구 객체 리스트로 리턴 */
-        List<UserEntity> friendList =
-                friendshipList.stream()
-                        .map(friendshipEntity -> friendshipEntity.getFriend())
-                        .collect(Collectors.toList());
+        List<UserEntity> combinedFriendList = new ArrayList<>(friendshipsAsUser);
+        combinedFriendList.addAll(friendshipsAsFriend);
 
-        return new ServiceResult().success().data(friendList);
+        return new ServiceResult().success().data(combinedFriendList);
     }
 
     /**
@@ -133,6 +142,32 @@ public class FriendshipService {
 
         return new ServiceResult().success().data(false);
 
+    }
+
+    /**
+     * 사용자가 보낸 친구 요청 목록을 조회한다.
+     * @param userId 사용자의 회원 식별자
+     * @return 보낸 친구 요청 목록
+     */
+    public ServiceResult getSentFriendRequests(String userId) {
+        List<FriendshipEntity> sentRequests = friendshipRepository.findByUserUserIdAndStatus(userId, PENDING);
+        List<UserEntity> users = sentRequests.stream()
+                .map(FriendshipEntity::getFriend)
+                .collect(Collectors.toList());
+        return new ServiceResult().success().data(users);
+    }
+
+    /**
+     * 사용자가 받은 친구 요청 목록을 조회한다.
+     * @param userId 사용자의 회원 식별자
+     * @return 받은 친구 요청 목록
+     */
+    public ServiceResult getReceivedFriendRequests(String userId) {
+        List<FriendshipEntity> receivedRequests = friendshipRepository.findByFriendUserIdAndStatus(userId, PENDING);
+        List<UserEntity> users = receivedRequests.stream()
+                .map(FriendshipEntity::getUser)
+                .collect(Collectors.toList());
+        return new ServiceResult().success().data(users);
     }
 
 }
