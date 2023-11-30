@@ -2,6 +2,8 @@ package com.example.demo.controller;
 
 import com.example.demo.service.SmsService;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,17 +36,5 @@ public class SmsController {
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("인증번호가 일치하지 않습니다.");
         }
-    }
-}
-
-// VerificationRequest 클래스
-@Getter
-class VerificationRequest {
-    private String phone;
-    private String code;
-
-    public VerificationRequest(String phone, String code) {
-        this.phone = phone;
-        this.code = code;
     }
 }
