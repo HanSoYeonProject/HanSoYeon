@@ -10,9 +10,12 @@ import location from "../imgs/location.png";
 
 const RecruitViewPage = ( props ) => {
     const { id } = useParams();
+    const { providerId } = useParams();
     const [isCompanyUser, setIsCompanyUser] = useState(false);
     const navigate = useNavigate(); // navigate 함수 초기화
     const [recruitments, setRecruitments] = useState([]);
+    const [name, setName] = useState('');
+    const [phoneNumber, setPhoneNumber] = useState('');
 
     //상세 페이지 불러오는 함수
     const fetchAnnouncement = async () => {
@@ -33,6 +36,31 @@ const RecruitViewPage = ( props ) => {
         fetchAnnouncement();
     }, [id]);
 
+    const applyData = {
+        name,
+        phoneNumber
+    }
+    const applyBtn = async (recruitmentId) => {
+        try {
+            const response = await axios.post(
+                `http://localhost:8050/api/matching`,
+                applyData,
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
+
+            // 서버 응답에 대한 처리 (예: 성공 여부에 따라 다른 동작 수행)
+            console.log(response.data);
+
+        } catch (error) {
+            // 오류 처리
+            console.error('API 요청 중 오류 발생: ', error);
+        }
+    };
+
     return (
         <Container>
             <ImgContainer>
@@ -44,15 +72,13 @@ const RecruitViewPage = ( props ) => {
                 </ImgSmallContainer>
             </ImgContainer>
             <LocationContainer>
-                <h2><img src = {location}/> {` ${recruitments.region}`}</h2>
+                <h2><img src = {location}/> {` ${recruitments.region}`} {recruitments.address}</h2>
             </LocationContainer>
             <TitleContainer>
                 <h2>{recruitments.title}</h2>
                 {/*<h2>{recruitments.providers}</h2>*/}
             </TitleContainer>
-            <ApplyButton>
-                지원하기
-            </ApplyButton>
+            <ApplyButton onClick={applyBtn}>지원하기</ApplyButton>
         </Container>
     );
 };
