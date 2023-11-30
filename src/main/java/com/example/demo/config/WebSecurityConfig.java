@@ -45,7 +45,9 @@ public class WebSecurityConfig {
                         "/api/reviews/**", "/api/recruits/**",
                         "/api/uploadProfileImage", "/api/cos/**",
                         "/api/sms/**", "/api/schedulers","/api/recruitments",
-                        "/api/createRecruitment","/api/recruitments/**","/dev/**").permitAll()
+                        "/api/createRecruitment","/api/recruitments/**","/dev/**", "/api/blacklists/**",
+                        "/api/blacklists").permitAll()
+
 
                 // 나머지 Request에 대해서는 모두 인증된 사용자만 사용 가능하게 함
                 .anyRequest().authenticated();
