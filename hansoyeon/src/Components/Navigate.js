@@ -113,6 +113,8 @@ const Navigate = () => {
     const handleBlacklist = () => {
         if (userType === 'company') {
             navigate("/companyBlackList");
+        }else{
+            navigate("/BlackListManage");
         }
     }
 
@@ -193,11 +195,15 @@ const Navigate = () => {
                                                     <>
                                                         <Dropdown.Item onClick={handleMemberManage}>회원관리</Dropdown.Item>
                                                         <Dropdown.Item onClick={handleAdminApplyManage}>신청현황</Dropdown.Item>
+                                                        <Dropdown.Item onClick={handleBlacklist}>블랙리스트</Dropdown.Item>
                                                     </>
                                                 ) : (
                                                     <>
                                                         {userType === 'company' && <Dropdown.Item onClick={handleCompanyApplyManage}>공고관리</Dropdown.Item>}
                                                     </>
+                                                )}
+                                                {userType === 'company' && (
+                                                    <Dropdown.Item onClick={handleBlacklist}>블랙리스트</Dropdown.Item>
                                                 )}
                                                 {userType !== 'company' && userID !== 'admin' ?
                                                     <>
