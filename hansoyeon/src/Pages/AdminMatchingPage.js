@@ -24,7 +24,7 @@ const CompanyMatchingPage = () => {
 
     useEffect(() => {
         if (cookies.token) {
-            axios.get('http://localhost:8050/api/auth/currentCompany', {
+            axios.get('http://localhost:8050/api/auth/currentUser', {
                 headers: {
                     Authorization: `Bearer ${cookies.token}`
                 }
@@ -50,13 +50,13 @@ const CompanyMatchingPage = () => {
 
     useEffect(() => {
         if (user && cookies.token) {
-            fetchJobAnnouncements(user.providerId);
+            fetchJobAnnouncements();
         }
     }, [user]);
 
-    const fetchJobAnnouncements = async (jobProviders) => {
+    const fetchJobAnnouncements = async () => {
         try {
-            const response = await axios.get(`http://localhost:8050/api/recruitments/byProvider/${jobProviders}`, {
+            const response = await axios.get(`http://localhost:8050/api/recruitments`, {
                 headers: {
                     Authorization: `Bearer ${cookies.token}`
                 }

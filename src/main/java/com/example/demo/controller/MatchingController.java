@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api")
@@ -110,6 +111,27 @@ public class MatchingController {
                                                          @RequestParam(value = "status", required = false) String status) {
         return new ResponseBuilder()
                 .serviceResult(matchingService.getMatchingsByRecruitmentId(recruitmentId, status))
+                .build();
+    }
+
+    @GetMapping("/matchings/user/{userId}")
+    public ResponseEntity<?> getMatchingsByUserId(@PathVariable("userId") String userId) {
+        return new ResponseBuilder()
+                .serviceResult(matchingService.getMatchingsByUserId(userId))
+                .build();
+    }
+
+    @PutMapping("/matchings/cancelApproval")
+    public ResponseEntity<?> cancelApproval(@RequestBody RequestRecruitmentRequestBody reqBody) {
+        return new ResponseBuilder()
+                .serviceResult(matchingService.cancelApproval(reqBody.getRecruitmentId(), reqBody.getUserId()))
+                .build();
+    }
+
+    @DeleteMapping("/matchings/byRecruitment/{recruitmentId}")
+    public ResponseEntity<?> deleteAllMatchingsByRecruitmentId(@PathVariable int recruitmentId) {
+        return new ResponseBuilder()
+                .serviceResult(matchingService.deleteAllMatchingsByRecruitmentId(recruitmentId))
                 .build();
     }
 

@@ -1,13 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom'; // useNavigate 훅 추가
 
-import {Cookies, useCookies} from "react-cookie";
+import {useCookies} from "react-cookie";
 import axios from "axios";
 import styled from "styled-components";
+import {useUserStore} from "../stores";
 
 const RecruitPage = (props) => {
     const navigate = useNavigate();
     const [cookies, setCookie, removeCookie] = useCookies(['token']);
+    const {user, setUser} = useUserStore();
+    const userType = cookies.userType;
+
     const [recruitments, setRecruitments] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 20;
@@ -26,6 +30,43 @@ const RecruitPage = (props) => {
     const [selectedContentType, setSelectedContentType] = useState("12");
     //글 목록 띄우기
     useEffect(() => {
+        if (cookies.token) {
+            console.log(userType)
+            if(userType === "company"){
+                axios.get('http://localhost:8050/api/auth/currentCompany', {
+                    headers: {
+                        Authorization: `Bearer ${cookies.token}`
+                    }
+                }).then(response => {
+                    console.log(cookies.token)
+                    // 토큰이 유효한 경우
+                    const fetchedUser = response.data;
+                    console.log(fetchedUser)
+                    setUser(fetchedUser);
+                    setIsCompany(true)
+                }).catch(error => {
+                    // 토큰이 유효하지 않은 경우
+                    console.error("Token verification failed:", error);
+                    handleLogout();
+                });
+            }else{
+                axios.get('http://localhost:8050/api/auth/currentUser', {
+                    headers: {
+                        Authorization: `Bearer ${cookies.token}`
+                    }
+                }).then(response => {
+                    console.log(cookies.token)
+                    // 토큰이 유효한 경우
+                    const fetchedUser = response.data;
+                    console.log(fetchedUser)
+                    setUser(fetchedUser);
+                }).catch(error => {
+                    // 토큰이 유효하지 않은 경우
+                    console.error("Token verification failed:", error);
+                    handleLogout();
+                });
+            }
+        }
         axios.get('http://localhost:8050/api/recruitments')
             .then(response => {
                 // 받아온 목록을 오름차순으로 정렬
@@ -36,6 +77,12 @@ const RecruitPage = (props) => {
             })
             .catch(error => console.error('Error fetching recruitments:', error));
     }, []);
+
+    const handleLogout = () => {
+        removeCookie('token');
+        setUser(null);
+        navigate("/");
+    };
 
     // 글 제목 클릭시 상세내용 페이지 이동
     const viewRecruitment = async (Id) => {
@@ -49,31 +96,13 @@ const RecruitPage = (props) => {
         }
     };
 
-    //admin구분
-    useEffect(() => {
-        axios.get('http://localhost:8050/api/auth/currentUser', {
-            headers: {
-                Authorization: `Bearer ${cookies.token}`
-            }
-        })
-            .then((response) => {
-                console.log(response.data);
-                const user = response.data;
-                const isCompanyUser = user.userType === 'company';
-                setIsCompany(isCompanyUser);
-            })
-            .catch(error => {
-                console.error('Error fetching user info:', error);
-                if (error.response) {
-                    console.error('Status Code:', error.response.status);
-                    console.error('Response Data:', error.response.data);
-                }
-            });
-    }, []);
-
     //글쓰기 버튼
     const WritingBtn = () => {
         navigate("/recruit/write")
+    }
+
+    const handleHistoryApplication = () => {
+        navigate("/recruitHistory")
     }
 
 
@@ -113,7 +142,16 @@ const RecruitPage = (props) => {
                 <SmallAlgoContainer>
                     <RadioContainer>
                         {renderRadioButtons()}
-                        {isCompany && <WritingButton onClick={WritingBtn}>글 쓰기</WritingButton>}
+                        {isCompany ?
+                            null
+                            :
+                            <WritingButton onClick={handleHistoryApplication}>신청 내역</WritingButton>
+                        }
+                        {isCompany && user.providerApproval === "true" ?
+                            <WritingButton onClick={WritingBtn}>글 쓰기</WritingButton>
+                            :
+                            null
+                        }
                     </RadioContainer>
                 </SmallAlgoContainer>
             </AlgoContainer>

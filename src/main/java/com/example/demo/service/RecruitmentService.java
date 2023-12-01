@@ -81,4 +81,16 @@ public class RecruitmentService {
                 .map(this::convertToDto)
                 .orElse(null);
     }
+
+    public List<JobProvidersDto> getJobProvidersAnnouncements(String jobProviders) {
+        return recruitmentRepository.findByJobProviders(jobProviders)
+                .stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+
+    public void deleteRecruitmentById(int jobId) {
+        recruitmentRepository.deleteById(jobId);
+    }
+
 }

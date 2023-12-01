@@ -10,4 +10,5 @@ import java.util.List;
 public interface RecruitmentRepository extends JpaRepository<RecruitmentEntity, Integer> {
     // 모든 공지사항 조회
     List<RecruitmentEntity> findAll();
+    List<RecruitmentEntity> findByJobProviders(String jobProviders);
 }

@@ -145,4 +145,30 @@ public class MatchingService {
 
         return new ServiceResult().fail().message(String.format(String.format("invalid recruitmentId(`%s`) or status(`%s`)", status)));
     }
+
+    public ServiceResult getMatchingsByUserId(String userId) {
+        var matchings = matchingRepository.findAllByUserUserId(userId);
+        if (matchings.isEmpty()) {
+            return new ServiceResult().fail().message("No matchings found for user");
+        }
+        return new ServiceResult().success().data(matchings);
+    }
+
+    public ServiceResult cancelApproval(int recruitmentId, String userId) {
+        var matching = matchingRepository.findByRecruitmentJobIdAndUserUserId(recruitmentId, userId);
+        if (matching == null) {
+            return new ServiceResult().fail().message("Matching not found");
+        }
+
+        matching.setStatus("REQUESTED");
+        matchingRepository.save(matching);
+
+        return new ServiceResult().success().message("Approval cancelled successfully");
+    }
+
+    public ServiceResult deleteAllMatchingsByRecruitmentId(int recruitmentId) {
+        matchingRepository.deleteAllByRecruitmentJobId(recruitmentId);
+        return new ServiceResult().success().message("All matchings deleted successfully for recruitment ID " + recruitmentId);
+    }
+
 }

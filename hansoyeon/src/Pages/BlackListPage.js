@@ -50,20 +50,24 @@ const BlackListPage = () => {
                     <Modal.Title>블랙리스트 상세 정보</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    {user.user.userProfile === "hansoyeon/src/imgs/default_profile.png" ?
-                        <UserProfileImage src={defaultProfilePic} alt="User Profile" />
-                        :
-                        <UserProfileImage src={user.user.userProfile} alt="User Profile" />
+                    {user &&
+                        <>
+                            {user.user.userProfile === "hansoyeon/src/imgs/default_profile.png" ?
+                                <UserProfileImage src={defaultProfilePic} alt="User Profile" />
+                                :
+                                <UserProfileImage src={user.user.userProfile} alt="User Profile" />
+                            }
+                            <UserInfo>
+                                <p>이름: {user.user.userName}</p>
+                                <p>아이디: {user.user.userId}</p>
+                                <p>전화번호: {user.user.userPhone}</p>
+                                <p>
+                                    의뢰회원(회사): {user.provider.providerName}({user.provider.companyName})
+                                </p>
+                                {/* 기타 회원 정보 추가 */}
+                            </UserInfo>
+                        </>
                     }
-                    <UserInfo>
-                        <p>이름: {user.user.userName}</p>
-                        <p>아이디: {user.user.userId}</p>
-                        <p>전화번호: {user.user.userPhone}</p>
-                        <p>
-                            의뢰회원(회사): {user.provider.providerName}({user.provider.companyName})
-                        </p>
-                        {/* 기타 회원 정보 추가 */}
-                    </UserInfo>
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={onHide}>

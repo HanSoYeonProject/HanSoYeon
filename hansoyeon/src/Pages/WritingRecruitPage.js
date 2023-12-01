@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
+import {useCookies} from "react-cookie";
+import {useUserStore} from "../stores";
 
 const WritingRecruitPage = () => {
     const [title, setTitle] = useState('');
@@ -14,6 +16,42 @@ const WritingRecruitPage = () => {
     const navigate = useNavigate();
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
+
+    const [cookies, setCookie, removeCookie] = useCookies(['token']);
+    const {user, setUser} = useUserStore();
+
+    useEffect(() => {
+        if (cookies.token) {
+            axios.get('http://localhost:8050/api/auth/currentCompany', {
+                headers: {
+                    Authorization: `Bearer ${cookies.token}`
+                }
+            }).then(response => {
+                console.log(cookies.token)
+                // 토큰이 유효한 경우
+                const fetchedUser = response.data;
+                console.log(fetchedUser)
+                setUser(fetchedUser);
+            }).catch(error => {
+                // 토큰이 유효하지 않은 경우
+                console.error("Token verification failed:", error);
+                handleLogout();
+            });
+        }
+    }, []);
+
+    const handleLogout = () => {
+        removeCookie('token');
+        setUser(null);
+        navigate("/");
+    };
+
+    useEffect(() => {
+        if (user && cookies.token) {
+            setProviders(user.providerId)
+        }
+    }, [user]);
+
 
     const handleInputTitle = (e) => {
         setTitle(e.target.value);
@@ -184,10 +222,10 @@ const WritingRecruitPage = () => {
                     <input
                         id="providers"
                         type="text"
-                        value={providers}
-                        onChange={(e) => setProviders(e.target.value)}
+                        value={user.providerId}
                         placeholder="제공자"
                         style={{ width: '50%', padding: '10px' }}
+                        readOnly={true}
                     />
                 </div>
 

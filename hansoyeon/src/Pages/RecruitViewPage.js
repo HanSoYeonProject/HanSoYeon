@@ -12,7 +12,7 @@ import {useCookies} from "react-cookie";
 
 const RecruitViewPage = ( props ) => {
     const { id } = useParams();
-    const [isCompanyUser, setIsCompanyUser] = useState(false);
+    const [isUser, setIsUser] = useState(false);
     const [cookies, setCookie, removeCookie] = useCookies(['token']);
     const navigate = useNavigate(); // navigate 함수 초기화
     const [recruitments, setRecruitments] = useState([]);
@@ -23,6 +23,7 @@ const RecruitViewPage = ( props ) => {
     const {user, setUser} = useUserStore();
     const userType = cookies.userType;
     const userID = user ? user.userId : '';
+    const [hasApplied, setHasApplied] = useState(false);
 
     //상세 페이지 불러오는 함수
     const fetchAnnouncement = async () => {
@@ -32,8 +33,8 @@ const RecruitViewPage = ( props ) => {
                 throw new Error('Failed to fetch announcement content');
             }
             const data = response.data;
+            console.log(data)
             setRecruitments(data);
-            console.log('Announcement Content: ', data);
         } catch (error) {
             console.error('Error fetching announcement content: ', error);
         }
@@ -55,7 +56,6 @@ const RecruitViewPage = ( props ) => {
                     console.log(cookies.token)
                     // 토큰이 유효한 경우
                     const fetchedUser = response.data;
-                    console.log(fetchedUser)
                     setUser(fetchedUser);
                 }).catch(error => {
                     // 토큰이 유효하지 않은 경우
@@ -71,8 +71,8 @@ const RecruitViewPage = ( props ) => {
                     console.log(cookies.token)
                     // 토큰이 유효한 경우
                     const fetchedUser = response.data;
-                    console.log(fetchedUser)
                     setUser(fetchedUser);
+                    setIsUser(true)
                 }).catch(error => {
                     // 토큰이 유효하지 않은 경우
                     console.error("Token verification failed:", error);
@@ -86,6 +86,29 @@ const RecruitViewPage = ( props ) => {
         removeCookie('token');
         setUser(null);
         navigate("/");
+    };
+
+    useEffect(() => {
+        if (user && cookies.token) {
+            fetchUserApplications(user.userId);
+        }
+    }, [user]);
+
+    const fetchUserApplications = async (userId) => {
+        if (userType !== "company"){
+            try {
+                const response = await axios.get(`http://localhost:8050/api/matchings/user/${userId}`, {
+                    headers: {
+                        Authorization: `Bearer ${cookies.token}`
+                    }
+                });
+                const appliedRecruitments = response.data.data;
+                const appliedToCurrent = appliedRecruitments.some(rec => rec.recruitment.jobId.toString() === id);
+                setHasApplied(appliedToCurrent);
+            } catch (error) {
+                console.error("Error fetching user applications:", error);
+            }
+        }
     };
 
     //공고 지원
@@ -109,7 +132,8 @@ const RecruitViewPage = ( props ) => {
 
             if (response.status === 200) {
                 alert("정상 신청 되었습니다.");
-                navigate(`/recruit`);
+                console.log(recruitments)
+                navigate('/recruitApply', { state: { jobDetails: recruitments } });
             }
             // 서버 응답에 대한 처리 (예: 성공 여부에 따라 다른 동작 수행)
             console.log(response.data);
@@ -137,7 +161,9 @@ const RecruitViewPage = ( props ) => {
                 <h2>{recruitments.title}</h2>
                 {/*<h2>{recruitments.providers}</h2>*/}
             </TitleContainer>
-            <ApplyButton onClick={applyBtn}>지원하기</ApplyButton>
+            {!hasApplied && isUser && (
+                <ApplyButton onClick={applyBtn}>지원하기</ApplyButton>
+            )}
         </Container>
     );
 };
