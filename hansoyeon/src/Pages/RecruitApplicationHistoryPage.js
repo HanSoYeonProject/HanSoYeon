@@ -52,7 +52,12 @@ const RecruitApplicationPage = () => {
                     Authorization: `Bearer ${cookies.token}`
                 }
             });
-            setMatchings(response.data.data);
+            const currentDate = new Date();
+            const validMatchings = response.data.data.filter(matching => {
+                const endDate = new Date(matching.recruitment.jobEndDate);
+                return endDate >= currentDate;
+            });
+            setMatchings(validMatchings);
         } catch (error) {
             console.error("Error fetching matchings:", error);
         }

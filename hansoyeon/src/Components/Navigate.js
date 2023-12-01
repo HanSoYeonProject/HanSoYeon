@@ -86,6 +86,10 @@ const Navigate = () => {
         navigate("/FriendList");
     }
 
+    const handleScheduler = () => {
+        navigate("/scheduler");
+    }
+
     const handleMemberManage = () => {
         navigate("/memberManage")
     };
@@ -113,8 +117,13 @@ const Navigate = () => {
     }
 
     const handleAdminApplyManage = () => {
-            navigate("/matchCompany");
+            navigate("/matchAdmin");
     }
+
+    const handleCompanyApplyManage = () => {
+        navigate("/matchCompany");
+    }
+
     const getProfilePicSrc = () => {
         if(userType === "company"){
             if (user.providerProfile === "hansoyeon/src/imgs/default_profile.png" || !user.providerProfile) {
@@ -187,15 +196,17 @@ const Navigate = () => {
                                                     </>
                                                 ) : (
                                                     <>
-                                                        {userType === 'company' && <Dropdown.Item onClick={handleAdminApplyManage}>신청현황</Dropdown.Item>}
+                                                        {userType === 'company' && <Dropdown.Item onClick={handleCompanyApplyManage}>공고관리</Dropdown.Item>}
                                                     </>
                                                 )}
                                                 {userType !== 'company' && userID !== 'admin' ?
-                                                    <Dropdown.Item onClick={handleFriendList}>친구관리</Dropdown.Item>
+                                                    <>
+                                                        <Dropdown.Item onClick={handleFriendList}>친구관리</Dropdown.Item>
+                                                        <Dropdown.Item onClick={handleScheduler}>스케줄러</Dropdown.Item>
+                                                    </>
                                                     :
                                                     null
                                                 }
-                                                <Dropdown.Item href="#action/3.2">스케줄러</Dropdown.Item>
                                                 <Dropdown.Item onClick={handleLogout}>로그아웃</Dropdown.Item>
                                             </Dropdown.Menu>
 

@@ -143,9 +143,14 @@ const RecruitPage = (props) => {
                     <RadioContainer>
                         {renderRadioButtons()}
                         {isCompany ?
-                            <WritingButton onClick={WritingBtn}>글 쓰기</WritingButton>
+                            null
                             :
                             <WritingButton onClick={handleHistoryApplication}>신청 내역</WritingButton>
+                        }
+                        {isCompany && user.providerApproval === "true" ?
+                            <WritingButton onClick={WritingBtn}>글 쓰기</WritingButton>
+                            :
+                            null
                         }
                     </RadioContainer>
                 </SmallAlgoContainer>
