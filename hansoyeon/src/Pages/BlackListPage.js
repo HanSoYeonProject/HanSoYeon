@@ -1,90 +1,116 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
 import styled from "styled-components";
-import {Table} from "react-bootstrap";
+import { Table, Modal, Button } from "react-bootstrap";
+import defaultProfilePic from '../imgs/default_profile.png';
 
 const BlackListPage = () => {
     const [blacklist, setBlacklist] = useState([]);
-    const [activeTab, setActiveTab] = useState(1); // 탭 상태 관리
+
+    const [selectedUser, setSelectedUser] = useState(null);
+    const [showModal, setShowModal] = useState(false);
+
+    const handleUserClick = (user) => {
+        setSelectedUser(user);
+        setShowModal(true);
+    };
+
 
     useEffect(() => {
         fetchBlacklist();
-    }, [activeTab]); // activeTab 변경 시 fetchBlacklist 호출
+    }, []);
 
     const fetchBlacklist = () => {
         // 탭에 따라 다른 URL에서 데이터를 가져올 수 있음
-        const url = activeTab === 1 ? "http://localhost:8050/api/blacklist/specific" : "http://localhost:8050/api/blacklist/all";
-        axios.get(url)
+        axios.get(`http://localhost:8050/api/blacklists`)
             .then(response => {
-                setBlacklist(response.data);
+                setBlacklist(response.data.data);
             })
             .catch(error => {
                 console.error("Error fetching blacklist: ", error);
             });
     };
 
-    const handleTabClick = (tabNumber) => {
-        setActiveTab(tabNumber);
+    const handleDelete = (blacklistId) => {
+        // 삭제 API 호출
+        axios
+            .delete(`http://localhost:8050/api/blacklists/${blacklistId}`)
+            .then((response) => {
+                fetchBlacklist();
+            })
+            .catch((error) => {
+                console.error("Error deleting blacklist: ", error);
+            });
     };
 
+    const UserDetailModal = ({ show, onHide, user }) => {
+        return (
+            <Modal show={show} onHide={onHide} centered>
+                <Modal.Header closeButton>
+                    <Modal.Title>블랙리스트 상세 정보</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    {user.user.userProfile === "hansoyeon/src/imgs/default_profile.png" ?
+                        <UserProfileImage src={defaultProfilePic} alt="User Profile" />
+                        :
+                        <UserProfileImage src={user.user.userProfile} alt="User Profile" />
+                    }
+                    <UserInfo>
+                        <p>이름: {user.user.userName}</p>
+                        <p>아이디: {user.user.userId}</p>
+                        <p>전화번호: {user.user.userPhone}</p>
+                        <p>
+                            의뢰회원(회사): {user.provider.providerName}({user.provider.companyName})
+                        </p>
+                        {/* 기타 회원 정보 추가 */}
+                    </UserInfo>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={onHide}>
+                        닫기
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+        );
+    };
 
 
     return (
         <Container>
             <Header>블랙리스트 관리</Header>
 
-            <ButtonContainer>
-                <TabButton onClick={() => handleTabClick(1)} className={activeTab === 1 ? 'active' : ''}>특정 공고 사용불가</TabButton>
-                <TabButton onClick={() => handleTabClick(2)} className={activeTab === 2 ? 'active' : ''}>전체 사용불가</TabButton>
-            </ButtonContainer>
-
-            {activeTab === 1&& (
-                <StyledTable striped bordered hover>
-                    <thead>
-                    <tr>
-                        <th>회원명</th>
-                        <th>기업명</th>
-                        <th>아이디</th>
-                        <th>전화번호</th>
-                        <th>삭제</th>
+            <StyledTable striped bordered hover>
+                <thead>
+                <tr>
+                    <th>회원명</th>
+                    <th>아이디</th>
+                    <th>전화번호</th>
+                    <th>의뢰회원</th>
+                    <th>삭제</th>
+                </tr>
+                </thead>
+                <tbody>
+                {blacklist.map((user, index) => (
+                    <tr key={index} onClick={() => handleUserClick(user)}>
+                        <td>{user.user.userName}</td>
+                        <td>{user.user.userId}</td>
+                        <td>{user.user.userPhone}</td>
+                        <td>{user.provider.providerName}({user.provider.companyName})</td>
+                        <td>
+                            <ButtonContainer>
+                                <DeleteButton onClick={() => handleDelete(user.id)}>삭제</DeleteButton>
+                            </ButtonContainer>
+                        </td>
                     </tr>
-                    </thead>
-                    <tbody>
-                    {blacklist.map((user, index) => (
-                        <tr key={index}>
-                            <td>{user.name}</td>
-                            <td>{user.id}</td>
-                            <td>{user.phone}</td>
-                            <td> {/* 삭제 버튼 추가 위치 */}</td>
-                        </tr>
-                    ))}
-                    </tbody>
-                </StyledTable>
-            )}
+                ))}
 
-            {activeTab === 2&& (
-                <StyledTable striped bordered hover>
-                    <thead>
-                    <tr>
-                        <th>회원명</th>
-                        <th>아이디</th>
-                        <th>전화번호</th>
-                        <th>삭제</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {blacklist.map((user, index) => (
-                        <tr key={index}>
-                            <td>{user.name}</td>
-                            <td>{user.id}</td>
-                            <td>{user.phone}</td>
-                            <td> {/* 삭제 버튼 추가 위치 */}</td>
-                        </tr>
-                    ))}
-                    </tbody>
-                </StyledTable>
-            )}
-
+                </tbody>
+            </StyledTable>
+            <UserDetailModal
+                show={showModal}
+                onHide={() => setShowModal(false)}
+                user={selectedUser}
+            />
         </Container>
     );
 };
@@ -140,15 +166,15 @@ const StyledTable = styled(Table)`
   }
 
   th:first-child, td:first-child {
-    width: 250px;
+    width: 180px;
   }
 
   th:nth-child(2), td:nth-child(2) {
-    width: 250px;
+    width: 200px;
   }
 
   th:nth-child(3), td:nth-child(3) {
-    width: 300px;
+    width: 250px;
   }
 
   th:nth-child(4), td:nth-child(4) {
@@ -171,5 +197,33 @@ const StyledTable = styled(Table)`
 const ButtonContainer = styled.div`
 
 `;
+
+const DeleteButton = styled.button`
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #c82333;
+  }
+`;
+
+const UserProfileImage = styled.img`
+  display: block;
+  margin: 0 auto;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  margin-bottom: 10px;
+`;
+
+const UserInfo = styled.div`
+  text-align: center;
+`;
+
+
+
 
 export default BlackListPage;
