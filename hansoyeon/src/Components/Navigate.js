@@ -22,7 +22,7 @@ const Navigate = () => {
 
     useEffect(() => {
         if (cookies.token) {
-            console.log(userType)
+            console.log(cookies.token)
             if(userType === "company"){
                 axios.get('http://localhost:8050/api/auth/currentCompany', {
                     headers: {
@@ -33,7 +33,7 @@ const Navigate = () => {
                     // 토큰이 유효한 경우
                     const fetchedUser = response.data;
                     console.log(fetchedUser)
-                    setUser(fetchedUser);
+
                 }).catch(error => {
                     // 토큰이 유효하지 않은 경우
                     console.error("Token verification failed:", error);
@@ -82,10 +82,6 @@ const Navigate = () => {
         navigate("/MyInfo")
     };
 
-    const handleFriendList = () => {
-        navigate("/FriendList");
-    }
-
     const handleMemberManage = () => {
         navigate("/memberManage")
     };
@@ -109,14 +105,11 @@ const Navigate = () => {
     const handleBlacklist = () => {
         if (userType === 'company') {
             navigate("/companyBlackList");
+        }else{
+            navigate("/BlackListManage");
         }
     }
 
-    const handleAdminApplyManage = () => {
-
-        navigate("/match/:id");
-
-    }
     const getProfilePicSrc = () => {
         if(userType === "company"){
             if (user.providerProfile === "hansoyeon/src/imgs/default_profile.png" || !user.providerProfile) {
@@ -180,27 +173,22 @@ const Navigate = () => {
                                             <Dropdown.Toggle as={CustomToggle}>
                                                 <ProfileImage src={getProfilePicSrc()} alt="Profile"/>
                                             </Dropdown.Toggle>
+
                                             <Dropdown.Menu>
                                                 <Dropdown.Item onClick={handleMyInfo}>내 정보</Dropdown.Item>
-                                                {userID === 'admin' ? (
+                                                {userID === 'admin' ?
                                                     <>
                                                         <Dropdown.Item onClick={handleMemberManage}>회원관리</Dropdown.Item>
-                                                        <Dropdown.Item onClick={handleAdminApplyManage}>신청현황</Dropdown.Item>
+                                                        <Dropdown.Item onClick={handleBlacklist}>블랙리스트</Dropdown.Item>
                                                     </>
-                                                ) : (
-                                                    <>
-                                                        {userType === 'company' && <Dropdown.Item onClick={handleAdminApplyManage}>신청현황</Dropdown.Item>}
-                                                    </>
-                                                )}
-                                                {userType !== 'company' && userID !== 'admin' ?
-                                                    <Dropdown.Item onClick={handleFriendList}>친구관리</Dropdown.Item>
                                                     :
-                                                    null
+                                                    <Dropdown.Item href="#action/3.2">스케줄러</Dropdown.Item>
                                                 }
-                                                <Dropdown.Item href="#action/3.2">스케줄러</Dropdown.Item>
+                                                {userType === 'company' && (
+                                                    <Dropdown.Item onClick={handleBlacklist}>블랙리스트</Dropdown.Item>
+                                                )}
                                                 <Dropdown.Item onClick={handleLogout}>로그아웃</Dropdown.Item>
                                             </Dropdown.Menu>
-
                                         </StyledDropdown>
                                     </ProfileSection>
                                 </>
