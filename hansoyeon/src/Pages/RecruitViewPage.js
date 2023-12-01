@@ -7,15 +7,22 @@ import about2 from "../imgs/about2.png";
 import about3 from "../imgs/about3.png";
 import about4 from "../imgs/about4.jpg";
 import location from "../imgs/location.png";
+import {useUserStore} from "../stores";
+import {useCookies} from "react-cookie";
 
 const RecruitViewPage = ( props ) => {
     const { id } = useParams();
-    const { providerId } = useParams();
     const [isCompanyUser, setIsCompanyUser] = useState(false);
+    const [cookies, setCookie, removeCookie] = useCookies(['token']);
     const navigate = useNavigate(); // navigate 함수 초기화
     const [recruitments, setRecruitments] = useState([]);
-    const [name, setName] = useState('');
-    const [phoneNumber, setPhoneNumber] = useState('');
+    const [recruitmentId, setRecruitmentId] = useState('');
+    const [job_id, setJobId] = useState('');
+    const [userId, setUserId] = useState('');
+    const [providerId ,  setProviderId] = useState('');
+    const {user, setUser} = useUserStore();
+    const userType = cookies.userType;
+    const userID = user ? user.userId : '';
 
     //상세 페이지 불러오는 함수
     const fetchAnnouncement = async () => {
@@ -36,22 +43,74 @@ const RecruitViewPage = ( props ) => {
         fetchAnnouncement();
     }, [id]);
 
-    const applyData = {
-        name,
-        phoneNumber
-    }
-    const applyBtn = async (recruitmentId) => {
+    useEffect(() => {
+        if (cookies.token) {
+            console.log(userType)
+            if(userType === "company"){
+                axios.get('http://localhost:8050/api/auth/currentCompany', {
+                    headers: {
+                        Authorization: `Bearer ${cookies.token}`
+                    }
+                }).then(response => {
+                    console.log(cookies.token)
+                    // 토큰이 유효한 경우
+                    const fetchedUser = response.data;
+                    console.log(fetchedUser)
+                    setUser(fetchedUser);
+                }).catch(error => {
+                    // 토큰이 유효하지 않은 경우
+                    console.error("Token verification failed:", error);
+                    handleLogout();
+                });
+            }else{
+                axios.get('http://localhost:8050/api/auth/currentUser', {
+                    headers: {
+                        Authorization: `Bearer ${cookies.token}`
+                    }
+                }).then(response => {
+                    console.log(cookies.token)
+                    // 토큰이 유효한 경우
+                    const fetchedUser = response.data;
+                    console.log(fetchedUser)
+                    setUser(fetchedUser);
+                }).catch(error => {
+                    // 토큰이 유효하지 않은 경우
+                    console.error("Token verification failed:", error);
+                    handleLogout();
+                });
+            }
+        }
+    }, []);
+
+    const handleLogout = () => {
+        removeCookie('token');
+        setUser(null);
+        navigate("/");
+    };
+
+    //공고 지원
+    const applyBtn = async () => {
+        console.log(recruitments.job_id);
+        console.log(user.userId);
         try {
             const response = await axios.post(
-                `http://localhost:8050/api/matching`,
-                applyData,
+                `http://localhost:8050/api/matchings`,
                 {
+                    recruitmentId: recruitments.job_id,
+                    userId: user.userId
+                },
+            {
                     headers: {
+                        Authorization: `Bearer ${cookies.token}`,
                         'Content-Type': 'application/json',
                     },
                 }
             );
 
+            if (response.status === 200) {
+                alert("정상 신청 되었습니다.");
+                navigate(`/recruit`);
+            }
             // 서버 응답에 대한 처리 (예: 성공 여부에 따라 다른 동작 수행)
             console.log(response.data);
 

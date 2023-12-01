@@ -113,7 +113,9 @@ const Navigate = () => {
     }
 
     const handleAdminApplyManage = () => {
+
         navigate("/match/:id");
+
     }
     const getProfilePicSrc = () => {
         if(userType === "company"){

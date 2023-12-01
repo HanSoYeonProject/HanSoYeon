@@ -23,7 +23,7 @@ function Footer() {
             <div className="d_f m-x_1400px m_auto w_100 h_100 g_60px" style={divStyle}>
                 <img className="logoImage" alt="Logo" src={logo} style={{width: '150px'}}/>
                 <div className="footer-info">
-                    <p className="color2 f-w_600">충청남도 아산시</p>
+                    <p className="color2 f-w_600">서울특별시 강남구</p>
                     <p>한소연</p>
                     <p>Copyright(C) HanSoYeon all rights reserved.</p>
                 </div>
