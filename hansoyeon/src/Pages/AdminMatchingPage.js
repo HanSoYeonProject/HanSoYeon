@@ -244,13 +244,19 @@ const CompanyMatchingPage = () => {
                                             <TableCell>{applicant.user.userPhone}</TableCell>
                                             <TableCell>
                                                 {applicant.status === "REQUESTED" ?
-                                                    <NoApproveButton onClick={() => acceptMatching(applicant.recruitment.jobId, applicant.user.userId)}>
-                                                        비승인
-                                                    </NoApproveButton>
+                                                    (hasDatePassed(selectedAnnouncement.endDate) ?
+                                                            <DisabledButton>비승인</DisabledButton> :
+                                                            <NoApproveButton onClick={() => acceptMatching(applicant.recruitment.jobId, applicant.user.userId)}>
+                                                                비승인
+                                                            </NoApproveButton>
+                                                    )
                                                     :
-                                                    <ApproveButton onClick={() => cancelApproval(applicant.recruitment.jobId, applicant.user.userId)}>
-                                                        승인
-                                                    </ApproveButton>
+                                                    (hasDatePassed(selectedAnnouncement.endDate) ?
+                                                            <DisabledButton>승인</DisabledButton> :
+                                                            <ApproveButton onClick={() => cancelApproval(applicant.recruitment.jobId, applicant.user.userId)}>
+                                                                승인
+                                                            </ApproveButton>
+                                                    )
                                                 }
                                             </TableCell>
                                         </TableRow>
@@ -447,5 +453,15 @@ const ProfileRequestPic = styled.img`
     margin-top: 10px;
     margin-bottom: 20px;
 `;
+
+const DisabledButton = styled.button`
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+  background-color: #cccccc; 
+  color: white;
+  cursor: not-allowed; 
+`;
+
 
 export default CompanyMatchingPage;
