@@ -22,7 +22,7 @@ const Navigate = () => {
 
     useEffect(() => {
         if (cookies.token) {
-            console.log(userType)
+            console.log(cookies.token)
             if(userType === "company"){
                 axios.get('http://localhost:8050/api/auth/currentCompany', {
                     headers: {
@@ -33,7 +33,7 @@ const Navigate = () => {
                     // 토큰이 유효한 경우
                     const fetchedUser = response.data;
                     console.log(fetchedUser)
-                    setUser(fetchedUser);
+
                 }).catch(error => {
                     // 토큰이 유효하지 않은 경우
                     console.error("Token verification failed:", error);
@@ -89,7 +89,6 @@ const Navigate = () => {
     const handleScheduler = () => {
         navigate("/scheduler");
     }
-
     const handleMemberManage = () => {
         navigate("/memberManage")
     };
@@ -125,7 +124,6 @@ const Navigate = () => {
     const handleCompanyApplyManage = () => {
         navigate("/matchCompany");
     }
-
     const getProfilePicSrc = () => {
         if(userType === "company"){
             if (user.providerProfile === "hansoyeon/src/imgs/default_profile.png" || !user.providerProfile) {
@@ -189,6 +187,7 @@ const Navigate = () => {
                                             <Dropdown.Toggle as={CustomToggle}>
                                                 <ProfileImage src={getProfilePicSrc()} alt="Profile"/>
                                             </Dropdown.Toggle>
+
                                             <Dropdown.Menu>
                                                 <Dropdown.Item onClick={handleMyInfo}>내 정보</Dropdown.Item>
                                                 {userID === 'admin' ? (
@@ -215,7 +214,6 @@ const Navigate = () => {
                                                 }
                                                 <Dropdown.Item onClick={handleLogout}>로그아웃</Dropdown.Item>
                                             </Dropdown.Menu>
-
                                         </StyledDropdown>
                                     </ProfileSection>
                                 </>
