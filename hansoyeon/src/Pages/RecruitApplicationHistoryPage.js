@@ -6,6 +6,8 @@ import {Button} from "react-bootstrap";
 import {useNavigate, useLocation} from "react-router-dom";
 import {useCookies} from "react-cookie";
 import {useUserStore} from "../stores";
+import useThrottle from "../Components/useThrottle";
+import usePushNotification from "../Components/usePushNotification";
 
 const RecruitApplicationPage = () => {
     const navigate = useNavigate();
@@ -13,6 +15,9 @@ const RecruitApplicationPage = () => {
     const {user, setUser} = useUserStore();
     const [matchings, setMatchings] = useState([]);
     const [providerPhone, setProviderPhone] = useState('');
+
+    const { fireNotificationWithTimeout } = usePushNotification();
+    const { throttle } = useThrottle();
 
     useEffect(() => {
         if (cookies.token) {
@@ -99,6 +104,10 @@ const RecruitApplicationPage = () => {
                         headers: {
                             Authorization: `Bearer ${cookies.token}`
                         }
+                    });
+
+                    fireNotificationWithTimeout('공고 취소 완료', 5000, {
+                        body: `[${matching.recruitment.jobTitle}] 취소 완료`
                     });
 
                     if (response.status === 200) {

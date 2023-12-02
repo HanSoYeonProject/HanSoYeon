@@ -1,5 +1,6 @@
 import { useRef } from 'react';
 import useThrottle from "./useThrottle";
+import logo from "../imgs/logo2.png"
 
 const usePushNotification = () => {
     const notificationRef = useRef(null);
@@ -47,8 +48,8 @@ const usePushNotification = () => {
         // Notification API는 두 번째 인자로 option 값을 받는데, 뱃지 이미지와 아이콘 등을 설정해 줄 수 있다.
         // 초기 badge, icon을 설정해주었다.
         const newOption = {
-            badge: 'https://babble.gg/img/logos/babble-speech-bubble.png',
-            icon: 'https://babble.gg/img/logos/babble-speech-bubble.png',
+            badge: logo,
+            icon: logo,
             ...options,
         };
 

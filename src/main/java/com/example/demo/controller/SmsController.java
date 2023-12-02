@@ -88,4 +88,69 @@ public class SmsController {
             return ResponseEntity.badRequest().body("신청 취소 알림 전송에 실패했습니다.");
         }
     }
+
+    @PostMapping("/sendApplicationMatchingComplete")
+    public ResponseEntity<?> sendApplicationMatchingComplete(@RequestBody ApplicationNotificationRequest request) {
+        try {
+            String phoneNumber = request.getPhone();
+            String jobTitle = request.getJobTitle();
+            smsService.sendApplicationMatchingCompleteMessage(phoneNumber, jobTitle);
+            return ResponseEntity.ok().body("선정 완료 알림이 전송되었습니다.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body("선정 완료 알림 전송에 실패했습니다.");
+        }
+    }
+
+    @PostMapping("/sendApplicationMatchingCompanyComplete")
+    public ResponseEntity<?> sendApplicationMatchingCompanyComplete(@RequestBody ApplicationNotificationRequest request) {
+        try {
+            String phoneNumber = request.getPhone();
+            String jobTitle = request.getJobTitle();
+            smsService.sendApplicationMatchingCompleteCompanyMessage(phoneNumber, jobTitle);
+            return ResponseEntity.ok().body("선정 완료 알림이 전송되었습니다.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body("선정 완료 알림 전송에 실패했습니다.");
+        }
+    }
+
+    @PostMapping("/sendApplicationMatchingCancel")
+    public ResponseEntity<?> sendApplicationMatchingCancel(@RequestBody ApplicationNotificationRequest request) {
+        try {
+            String phoneNumber = request.getPhone();
+            String jobTitle = request.getJobTitle();
+            smsService.sendApplicationMatchingCancelMessage(phoneNumber, jobTitle);
+            return ResponseEntity.ok().body("선정 취소 알림이 전송되었습니다.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body("선정 취소 알림 전송에 실패했습니다.");
+        }
+    }
+
+    @PostMapping("/sendApplicationMatchingCompanyCancel")
+    public ResponseEntity<?> sendApplicationMatchingCompanyCancel(@RequestBody ApplicationNotificationRequest request) {
+        try {
+            String phoneNumber = request.getPhone();
+            String jobTitle = request.getJobTitle();
+            smsService.sendApplicationMatchingCancelCompanyMessage(phoneNumber, jobTitle);
+            return ResponseEntity.ok().body("선정 취소 알림이 전송되었습니다.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body("선정 취소 알림 전송에 실패했습니다.");
+        }
+    }
+
+    @PostMapping("/sendApplicationMatchingDelete")
+    public ResponseEntity<?> sendApplicationMatchingDelete(@RequestBody ApplicationNotificationRequest request) {
+        try {
+            String phoneNumber = request.getPhone();
+            String jobTitle = request.getJobTitle();
+            smsService.sendApplicationMatchingDeleteMessage(phoneNumber, jobTitle);
+            return ResponseEntity.ok().body("공고 삭제 알림이 전송되었습니다.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body("공고 삭제 알림 전송에 실패했습니다.");
+        }
+    }
 }
