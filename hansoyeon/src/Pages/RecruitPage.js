@@ -5,6 +5,8 @@ import {useCookies} from "react-cookie";
 import axios from "axios";
 import styled from "styled-components";
 import {useUserStore} from "../stores";
+import Pagination from '../Components/Pagination';
+import Footer from "../Components/Footer";
 
 const RecruitPage = (props) => {
     const navigate = useNavigate();
@@ -13,13 +15,21 @@ const RecruitPage = (props) => {
     const userType = cookies.userType;
 
     const [recruitments, setRecruitments] = useState([]);
+    const [isCompany, setIsCompany] = useState(false);
+    const [detailData, setDetailData] = useState(null);
+
+    // 페이지네이션
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 30;
+    const itemsPerPage = 8; // 변경: 페이지당 아이템 개수를 8로 설정
+
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = recruitments.slice(indexOfFirstItem, indexOfLastItem);
-    const [isCompany, setIsCompany] = useState(false);
-    const [detailData, setDetailData] = useState(null);
+
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
+
     //라디오버튼
     const [selectedCategory, setSelectedCategory] = useState("");
 
@@ -185,7 +195,17 @@ const RecruitPage = (props) => {
                     </BottomContent>
                 ))}
             </Bottom>
+            <PaginationContainer>
+                <Pagination
+                    totalPages={Math.ceil(recruitments.length / itemsPerPage)}
+                    currentPage={currentPage}
+                    onPageChange={handlePageChange}
+                />
+            </PaginationContainer>
+
+            <Footer/>
         </Container>
+
     );
 };
 
@@ -275,25 +295,55 @@ const RadioButton = styled.input`
 `;
 const Bottom = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Adjust the minmax values as needed */
-  gap: 20px; /* Adjust the gap as needed */
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
   margin-top: -1rem;
   width: 80%;
   margin-bottom: 1rem;
-  max-height: 45vh;
-`
+  max-height: 70vh; /* Increase the max-height value */
+  background-color: #f0f0f0;
+  padding: 20px;
+`;
+
 const TitleContainer = styled.div`
   display: flex;
   flex-direction: column;
-  flex: 5;
+  flex: 1;
 `;
 
 const BottomContent = styled.div`
-  flex: 1;
-  flex-basis: calc(25% - 10px); /* 25% 너비로 조절, 간격을 제외한 너비 계산 */
-  margin: 5px; /* 각 요소 사이의 간격 조절 */
-  box-sizing: border-box; /* 내부 여백 및 테두리를 요소의 크기에 포함시킵니다. */
+  border-radius: 10px;
+  border: 2px solid #d6d6d6;
+  width: 100%;
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+  transition: background-color 0.1s ease;
+  height: 100%; /* Increase the height to 100% */
+
+  &:hover {
+    background-color: #eee;
+  }
+
+  h3,
+  h4 {
+    font-size: 18px;
+    margin: 0;
+  }
+
+  img {
+    width: 100%;
+    height: 60%;
+    border-radius: 10px;
+    object-fit: cover;
+    transition: transform 1s ease;
+  }
+
+  &:hover img {
+    transform: scale(1.05);
+  }
 `;
+
 
 const BottomMain = styled.div`
   display: flex;
@@ -302,31 +352,31 @@ const BottomMain = styled.div`
   border-radius: 10px;
   border: 2px solid #d6d6d6;
   width: 100%;
-  height: 43vh;
+  height: 100%; /* Increase the height to 100% */
   padding: 10px;
   box-sizing: border-box;
-  position: relative; /* Needed for positioning the overlay */
-  overflow: hidden; /* Ensure overflow doesn't affect overlay positioning */
-  transition: background-color 0.1s ease; /* Transition for background color change */
+  position: relative;
+  overflow: hidden;
+  transition: background-color 0.1s ease;
 
   &:hover {
-    background-color: #eee; /* Change the background color on hover */
+    background-color: #eee;
   }
 
   h3,
   h4 {
     font-size: 10px;
-    transition: background-color 0.3s ease; /* Transition for background color change */
+    transition: background-color 0.3s ease;
   }
   img {
     width: 100%;
     height: 50%;
     border-radius: 10px;
-    transition: transform 1s ease; /* Transition for image scaling */
+    transition: transform 1s ease;
   }
 
   &:hover img {
-    transform: scale(1.05); /* Scale the image on hover */
+    transform: scale(1.05);
   }
 `;
 
@@ -341,4 +391,61 @@ const WritingButton = styled.button`
   font-size: 24px;
   font-weight: 700;
 `;
+
+const PaginationContainer = styled.div`
+`;
+const Upimage = styled.div`
+  display: flex;
+  flex : 1;
+  height: 100px;
+  align-items: center;
+  width: 100%; /* Change to 100% to take the full width */
+  margin-bottom: -25px;
+  object-fit: cover; /* 이미지 비율 유지를 위한 설정 */
+`;
+const Footer1Container = styled.div`
+  display: flex;
+  flex : 3;
+`
+const Footer2Container = styled.div`
+  display: flex;
+  height: 100px;
+  flex : 7;
+  margin-bottom: -50px;
+`
+
+const Footer1Image = styled.div`
+  display: flex;
+  img {
+    width: 50px;
+    height: auto;
+  }
+`;
+
+const Footer2Image = styled.div`
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  img {
+    width: 60px;
+    height: auto; /* 높이 자동 조절 */
+  }
+`;
+const Aa = styled.div`
+  height: 50px;
+  flex: 5;
+  display: flex;
+  justify-content: flex-start;
+  margin-top: -1.3rem;
+`
+const Bb = styled.div`
+  flex: 5;
+  height: 100px;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: -3.5rem;
+`
+
+
+
 export default RecruitPage;
