@@ -5,6 +5,8 @@ import {useCookies} from "react-cookie";
 import {useUserStore} from "../stores";
 import axios from "axios";
 import defaultProfilePic from '../imgs/default_profile.png';
+import useThrottle from "../Components/useThrottle";
+import usePushNotification from "../Components/usePushNotification";
 
 const CompanyMatchingPage = () => {
     const navigate = useNavigate();
@@ -20,6 +22,11 @@ const CompanyMatchingPage = () => {
 
     const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
     const [selectedUser, setSelectedUser] = useState(null);
+
+    const [providerPhone, setProviderPhone] = useState('');
+
+    const { fireNotificationWithTimeout } = usePushNotification();
+    const { throttle } = useThrottle();
 
 
     useEffect(() => {
@@ -105,8 +112,12 @@ const CompanyMatchingPage = () => {
         setIsDetailModalOpen(true);
     };
 
-    const acceptMatching = async (recruitmentId, userId) => {
-        const confirmSelection = window.confirm(`${userId}님을 선발하시겠습니까?`);
+    const acceptMatching = async (recruitment, user) => {
+        const confirmSelection = window.confirm(`${user.userId}님을 선발하시겠습니까?`);
+        const userId = user.userId;
+        const recruitmentId = recruitment.jobId;
+        const userPhone = user.userPhone;
+
         if (confirmSelection) {
             try {
                 const response = await axios.put('http://localhost:8050/api/matchings', {
@@ -120,8 +131,36 @@ const CompanyMatchingPage = () => {
 
                 if (response.status === 200) {
                     alert('선발 처리가 완료되었습니다.');
-                    // Refresh the applicant list or handle the UI update
+
+                    fireNotificationWithTimeout('매칭 완료', 5000, {
+                        body: `[${recruitment.jobTitle}]에 ${user.userName}이 매칭되었습니다. `
+                    });
+
                     fetchApplicants(recruitmentId);
+
+                    const providerResponse = await axios.get(`http://localhost:8050/api/auth/provider/${recruitment.jobProviders}`);
+                    if (providerResponse.status === 200) {
+                        console.log(providerResponse.data);
+                        setProviderPhone(providerResponse.data.companyTel);
+                    }
+
+                    // SMS 전송 로직
+                    try {
+                        const smsResponse = await axios.post("http://localhost:8050/api/sms/sendApplicationMatchingComplete", {
+                            phone: userPhone,
+                            jobTitle: recruitment.jobTitle
+                        });
+                        console.log(smsResponse.data);
+
+                        // Provider에게도 SMS 전송
+                        const sms2Response = await axios.post("http://localhost:8050/api/sms/sendApplicationMatchingCompanyComplete", {
+                            phone: providerPhone,
+                            jobTitle: recruitment.jobTitle
+                        });
+                        console.log(sms2Response.data);
+                    } catch (smsError) {
+                        console.error("SMS 전송 중 오류 발생:", smsError);
+                    }
                 }
             } catch (error) {
                 console.error("Error accepting the matching:", error);
@@ -130,8 +169,12 @@ const CompanyMatchingPage = () => {
         }
     };
 
-    const cancelApproval = async (recruitmentId, userId) => {
-        const confirmCancel = window.confirm(`${userId}님의 선발을 취소하시겠습니까?`);
+    const cancelApproval = async (recruitment, user) => {
+        const confirmCancel = window.confirm(`${user.userId}님의 선발을 취소하시겠습니까?`);
+        const userId = user.userId;
+        const recruitmentId = recruitment.jobId;
+        const userPhone = user.userPhone;
+
         if (confirmCancel) {
             try {
                 const response = await axios.put('http://localhost:8050/api/matchings/cancelApproval', {
@@ -145,7 +188,36 @@ const CompanyMatchingPage = () => {
 
                 if (response.status === 200) {
                     alert('선발 취소 처리가 완료되었습니다.');
+
+                    fireNotificationWithTimeout('매칭 취소 완료', 5000, {
+                        body: `[${recruitment.jobTitle}]에 ${user.userName}의 매칭이 취소되었습니다. `
+                    });
+
                     fetchApplicants(recruitmentId);
+
+                    const providerResponse = await axios.get(`http://localhost:8050/api/auth/provider/${recruitment.jobProviders}`);
+                    if (providerResponse.status === 200) {
+                        console.log(providerResponse.data);
+                        setProviderPhone(providerResponse.data.companyTel);
+                    }
+
+                    // SMS 전송 로직
+                    try {
+                        const smsResponse = await axios.post("http://localhost:8050/api/sms/sendApplicationMatchingCancel", {
+                            phone: userPhone,
+                            jobTitle: recruitment.jobTitle
+                        });
+                        console.log(smsResponse.data);
+
+                        // Provider에게도 SMS 전송
+                        const sms2Response = await axios.post("http://localhost:8050/api/sms/sendApplicationMatchingCompanyCancel", {
+                            phone: providerPhone,
+                            jobTitle: recruitment.jobTitle
+                        });
+                        console.log(sms2Response.data);
+                    } catch (smsError) {
+                        console.error("SMS 전송 중 오류 발생:", smsError);
+                    }
                 }
             } catch (error) {
                 console.error("Error canceling the approval:", error);
@@ -154,16 +226,16 @@ const CompanyMatchingPage = () => {
         }
     };
 
-    const handleDeleteAllMatchings = async (recruitmentId) => {
+    const handleDeleteAllMatchings = async (recruitment) => {
         const confirmDeletion = window.confirm(`공고를 정말 삭제하시겠습니까?`);
         if (confirmDeletion) {
             try {
-                await axios.delete(`http://localhost:8050/api/matchings/byRecruitment/${recruitmentId}`, {
+                await axios.delete(`http://localhost:8050/api/matchings/byRecruitment/${recruitment.job_id}`, {
                     headers: {
                         Authorization: `Bearer ${cookies.token}`
                     }
                 });
-                await axios.delete(`http://localhost:8050/api/recruitments/${recruitmentId}`, {
+                await axios.delete(`http://localhost:8050/api/recruitments/${recruitment.job_id}`, {
                     headers: {
                         Authorization: `Bearer ${cookies.token}`
                     }
@@ -171,6 +243,22 @@ const CompanyMatchingPage = () => {
                 alert('공고가 삭제되었습니다.');
                 if (user && cookies.token) {
                     fetchJobAnnouncements(user.providerId);
+                }
+
+                fireNotificationWithTimeout('매칭 삭제 완료', 5000, {
+                    body: `[${recruitment.jobTitle}] 공고가 삭제되었습니다. `
+                });
+
+                // SMS 전송 로직
+                try {
+                    // Provider에게도 SMS 전송
+                    const smsResponse = await axios.post("http://localhost:8050/api/sms/sendApplicationMatchingDelete", {
+                        phone: user.companyTel,
+                        jobTitle: recruitment.jobTitle
+                    });
+                    console.log(smsResponse.data);
+                } catch (smsError) {
+                    console.error("SMS 전송 중 오류 발생:", smsError);
                 }
             } catch (error) {
                 console.error("Error deleting all matchings:", error);
@@ -200,7 +288,7 @@ const CompanyMatchingPage = () => {
                     </AnnouncementTitle>
                     <div className="buttons">
                         <button onClick={() => handleCheckApplicants(announcement)}>신청자 확인</button>
-                        <button onClick={() => handleDeleteAllMatchings(announcement.job_id)}>공고 삭제</button>
+                        <button onClick={() => handleDeleteAllMatchings(announcement)}>공고 삭제</button>
                     </div>
                 </AnnouncementCard>
             ))}
@@ -214,7 +302,7 @@ const CompanyMatchingPage = () => {
                     </AnnouncementTitle>
                     <div className="buttons">
                         <button onClick={() => handleCheckApplicants(announcement)}>신청자 확인</button>
-                        <button onClick={() => handleDeleteAllMatchings(announcement.job_id)}>공고 삭제</button>
+                        <button onClick={() => handleDeleteAllMatchings(announcement)}>공고 삭제</button>
                     </div>
                 </AnnouncementCard>
             ))}
@@ -246,14 +334,14 @@ const CompanyMatchingPage = () => {
                                                 {applicant.status === "REQUESTED" ?
                                                     (hasDatePassed(selectedAnnouncement.endDate) ?
                                                             <DisabledButton>비승인</DisabledButton> :
-                                                            <NoApproveButton onClick={() => acceptMatching(applicant.recruitment.jobId, applicant.user.userId)}>
+                                                            <NoApproveButton onClick={() => acceptMatching(applicant.recruitment, applicant.user)}>
                                                                 비승인
                                                             </NoApproveButton>
                                                     )
                                                     :
                                                     (hasDatePassed(selectedAnnouncement.endDate) ?
                                                             <DisabledButton>승인</DisabledButton> :
-                                                            <ApproveButton onClick={() => cancelApproval(applicant.recruitment.jobId, applicant.user.userId)}>
+                                                            <ApproveButton onClick={() => cancelApproval(applicant.recruitment, applicant.user)}>
                                                                 승인
                                                             </ApproveButton>
                                                     )

@@ -86,10 +86,13 @@ const SchedulerPage = () => {
                 ...matching,
                 recruitment: {
                     ...matching.recruitment,
+                    startDate: matching.recruitment.jobStartDate,
+                    endDate: matching.recruitment.jobEndDate,
                     jobStartDate: new Date(matching.recruitment.jobStartDate),
                     jobEndDate: new Date(matching.recruitment.jobEndDate)
                 }
             }));
+            console.log(acceptedMatchings)
             setMatchings(acceptedMatchings);
         } catch (error) {
             console.error("Error fetching matchings:", error);
@@ -156,6 +159,8 @@ const SchedulerPage = () => {
                 ...matching,
                 recruitment: {
                     ...matching.recruitment,
+                    startDate: matching.recruitment.jobStartDate,
+                    endDate: matching.recruitment.jobEndDate,
                     jobStartDate: new Date(matching.recruitment.jobStartDate),
                     jobEndDate: new Date(matching.recruitment.jobEndDate)
                 }
@@ -180,6 +185,7 @@ const SchedulerPage = () => {
                                 onClick={() => handleJobView(matching.recruitment.jobId)}
                             >
                                 <JobTitle>{matching.recruitment.jobTitle}</JobTitle>
+                                <JobTitle>{matching.recruitment.startDate} ~ {matching.recruitment.endDate}</JobTitle>
                             </MatchingItem>
                         ))}
                     </MatchingList>
@@ -208,6 +214,7 @@ const SchedulerPage = () => {
                             onClick={() => handleJobView(matching.recruitment.jobId)}
                         >
                             <JobTitle>{matching.recruitment.jobTitle}</JobTitle>
+                            <JobTitle>{matching.recruitment.startDate} ~ {matching.recruitment.endDate}</JobTitle>
                         </MatchingItem>
                     ))}
                 </MatchingList>

@@ -1,7 +1,9 @@
 package com.example.demo.entity;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 
 @Entity
@@ -16,8 +18,33 @@ public class RecruitmentEntity {
     @Column(name = "job_title", nullable = false)
     private String jobTitle;
 
-    @Column(name = "job_content", nullable = false, columnDefinition = "TEXT")
+    @Column(name = "job_content", nullable = false)
     private String jobContent;
+
+    @Column(name = "job_second", nullable = false)
+    private String jobSecond;
+
+    public String getJobSecond() {
+        return jobSecond;
+    }
+
+    public void setJobSecond(String jobSecond) {
+        this.jobSecond = jobSecond;
+    }
+
+    public String getJobThird() {
+        return jobThird;
+    }
+
+    public void setJobThird(String jobThird) {
+        this.jobThird = jobThird;
+    }
+
+    @Column(name = "job_third", nullable = false)
+    private String jobThird;
+
+    @Column(name = "job_schedule", nullable = false)
+    private String jobSchedule;
 
     @Column(name = "job_region", nullable = false)
     private String jobRegion;
@@ -27,6 +54,21 @@ public class RecruitmentEntity {
     @Column(name = "job_providers", length = 100)
     private String jobProviders;
 
+    @Column(name = "job_morning", nullable = false)
+    private String jobMorning;
+
+    @Column(name = "job_lunch", nullable = false)
+    private String jobLunch;
+
+    @Column(name = "job_dinner", nullable = false)
+    private String jobDinner;
+
+    @Column(name = "job_background", nullable = false)
+    private String jobBackground;
+
+    @Column(name = "job_need", nullable = false)
+    private String jobNeed;
+
     @Column(name = "job_start_date", nullable = false)
     @Temporal(TemporalType.DATE)
     private Date jobStartDate;
@@ -35,12 +77,56 @@ public class RecruitmentEntity {
     @Temporal(TemporalType.DATE)
     private Date jobEndDate;
 
-    @Column(name = "job_image", columnDefinition = "TEXT")
-    private String jobImage;  // 이미지를 Base64 인코딩 문자열로 저장
+    @ElementCollection
+    @Column(name = "job_images", columnDefinition = "TEXT")
+    private List<String> jobImages = new ArrayList<>();  // 이미지를 Base64 인코딩 문자열로 저장
 
     @Column(name = "job_money", nullable = false)
     private String jobMoney;
 
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "recruitment_id")
+    private List<ImageEntity> images = new ArrayList<>();
+
+    public String getJobMorning() {
+        return jobMorning;
+    }
+
+    public void setJobMorning(String jobMorning) {
+        this.jobMorning = jobMorning;
+    }
+
+    public String getJobLunch() {
+        return jobLunch;
+    }
+
+    public void setJobLunch(String jobLunch) {
+        this.jobLunch = jobLunch;
+    }
+
+    public String getJobDinner() {
+        return jobDinner;
+    }
+
+    public void setJobDinner(String jobDinner) {
+        this.jobDinner = jobDinner;
+    }
+
+    public String getJobBackground() {
+        return jobBackground;
+    }
+
+    public void setJobBackground(String jobBackground) {
+        this.jobBackground = jobBackground;
+    }
+
+    public String getJobNeed() {
+        return jobNeed;
+    }
+
+    public void setJobNeed(String jobNeed) {
+        this.jobNeed = jobNeed;
+    }
     public int getJobId() {
         return jobId;
     }
@@ -55,14 +141,6 @@ public class RecruitmentEntity {
 
     public void setJobTitle(String jobTitle) {
         this.jobTitle = jobTitle;
-    }
-
-    public String getJobContent() {
-        return jobContent;
-    }
-
-    public void setJobContent(String jobContent) {
-        this.jobContent = jobContent;
     }
 
     public String getJobRegion() {
@@ -105,12 +183,12 @@ public class RecruitmentEntity {
         this.jobEndDate = jobEndDate;
     }
 
-    public String getJobImage() {
-        return jobImage;
+    public List<String> getJobImages() {
+        return jobImages;
     }
 
-    public void setJobImage(String jobImage) {
-        this.jobImage = jobImage;
+    public void setJobImages(List<String> jobImages) {
+        this.jobImages = jobImages;
     }
 
     public String getJobMoney() {
@@ -119,5 +197,21 @@ public class RecruitmentEntity {
 
     public void setJobMoney(String jobMoney) {
         this.jobMoney = jobMoney;
+    }
+
+    public String getJobContent() {
+        return jobContent;
+    }
+
+    public void setJobContent(String jobContent) {
+        this.jobContent = jobContent;
+    }
+
+    public String getJobSchedule() {
+        return jobSchedule;
+    }
+
+    public void setJobSchedule(String jobSchedule) {
+        this.jobSchedule = jobSchedule;
     }
 }

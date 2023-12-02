@@ -21,6 +21,7 @@ const RecruitPage = (props) => {
     // 페이지네이션
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 8; // 변경: 페이지당 아이템 개수를 8로 설정
+
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = recruitments.slice(indexOfFirstItem, indexOfLastItem);
@@ -173,7 +174,7 @@ const RecruitPage = (props) => {
                                      onMouseOut={(e) => (e.target.style.textDecoration="none")}>
                             <ImgContainer>
                                 <img
-                                    src={recruitments.image}
+                                    src={recruitments.image[0]}
                                     alt="Image"
                                     style={{display: "flex",height: "100%",justifyContent: "center", alignItems: "center",borderRadius:"10px"}}
                                 />
