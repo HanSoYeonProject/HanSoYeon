@@ -53,9 +53,9 @@ public class RecruitmentController {
     }
 
     //상세글
+    //상세글
     @GetMapping("/recruitments/{Id}")
     public ResponseEntity<JobProvidersDto> getJobProviderById(@PathVariable int Id) {
-        System.out.println(Id);
 
         try {
             JobProvidersDto jobProviders = recruitmentService.getProvidersById(Id);

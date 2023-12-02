@@ -142,24 +142,24 @@ const CompanyMatchingPage = () => {
                     if (providerResponse.status === 200) {
                         console.log(providerResponse.data);
                         setProviderPhone(providerResponse.data.companyTel);
+                    }
 
-                        // SMS 전송 로직
-                        try {
-                            const smsResponse = await axios.post("http://localhost:8050/api/sms/sendApplicationMatchingComplete", {
-                                phone: userPhone,
-                                jobTitle: recruitment.jobTitle
-                            });
-                            console.log(smsResponse.data);
+                    // SMS 전송 로직
+                    try {
+                        const smsResponse = await axios.post("http://localhost:8050/api/sms/sendApplicationMatchingComplete", {
+                            phone: userPhone,
+                            jobTitle: recruitment.jobTitle
+                        });
+                        console.log(smsResponse.data);
 
-                            // Provider에게도 SMS 전송
-                            const sms2Response = await axios.post("http://localhost:8050/api/sms/sendApplicationMatchingCompanyComplete", {
-                                phone: providerPhone,
-                                jobTitle: recruitment.jobTitle
-                            });
-                            console.log(sms2Response.data);
-                        } catch (smsError) {
-                            console.error("SMS 전송 중 오류 발생:", smsError);
-                        }
+                        // Provider에게도 SMS 전송
+                        const sms2Response = await axios.post("http://localhost:8050/api/sms/sendApplicationMatchingCompanyComplete", {
+                            phone: providerPhone,
+                            jobTitle: recruitment.jobTitle
+                        });
+                        console.log(sms2Response.data);
+                    } catch (smsError) {
+                        console.error("SMS 전송 중 오류 발생:", smsError);
                     }
                 }
             } catch (error) {
@@ -199,24 +199,24 @@ const CompanyMatchingPage = () => {
                     if (providerResponse.status === 200) {
                         console.log(providerResponse.data);
                         setProviderPhone(providerResponse.data.companyTel);
+                    }
 
-                        // SMS 전송 로직
-                        try {
-                            const smsResponse = await axios.post("http://localhost:8050/api/sms/sendApplicationMatchingCancel", {
-                                phone: userPhone,
-                                jobTitle: recruitment.jobTitle
-                            });
-                            console.log(smsResponse.data);
+                    // SMS 전송 로직
+                    try {
+                        const smsResponse = await axios.post("http://localhost:8050/api/sms/sendApplicationMatchingCancel", {
+                            phone: userPhone,
+                            jobTitle: recruitment.jobTitle
+                        });
+                        console.log(smsResponse.data);
 
-                            // Provider에게도 SMS 전송
-                            const sms2Response = await axios.post("http://localhost:8050/api/sms/sendApplicationMatchingCompanyCancel", {
-                                phone: providerPhone,
-                                jobTitle: recruitment.jobTitle
-                            });
-                            console.log(sms2Response.data);
-                        } catch (smsError) {
-                            console.error("SMS 전송 중 오류 발생:", smsError);
-                        }
+                        // Provider에게도 SMS 전송
+                        const sms2Response = await axios.post("http://localhost:8050/api/sms/sendApplicationMatchingCompanyCancel", {
+                            phone: providerPhone,
+                            jobTitle: recruitment.jobTitle
+                        });
+                        console.log(sms2Response.data);
+                    } catch (smsError) {
+                        console.error("SMS 전송 중 오류 발생:", smsError);
                     }
                 }
             } catch (error) {
