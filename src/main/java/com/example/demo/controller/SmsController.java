@@ -62,4 +62,30 @@ public class SmsController {
             return ResponseEntity.badRequest().body("신청 완료 알림 전송에 실패했습니다.");
         }
     }
+
+    @PostMapping("/sendApplicationCancel")
+    public ResponseEntity<?> sendApplicationCancel(@RequestBody ApplicationNotificationRequest request) {
+        try {
+            String phoneNumber = request.getPhone();
+            String jobTitle = request.getJobTitle();
+            smsService.sendApplicationCancelMessage(phoneNumber, jobTitle);
+            return ResponseEntity.ok().body("신청 취소 알림이 전송되었습니다.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body("신청 취소 알림 전송에 실패했습니다.");
+        }
+    }
+
+    @PostMapping("/sendApplicationCompanyCancel")
+    public ResponseEntity<?> sendApplicationCompanyCancel(@RequestBody ApplicationNotificationRequest request) {
+        try {
+            String phoneNumber = request.getPhone();
+            String jobTitle = request.getJobTitle();
+            smsService.sendApplicationCancelCompanyMessage(phoneNumber, jobTitle);
+            return ResponseEntity.ok().body("신청 취소 알림이 전송되었습니다.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body("신청 취소 알림 전송에 실패했습니다.");
+        }
+    }
 }

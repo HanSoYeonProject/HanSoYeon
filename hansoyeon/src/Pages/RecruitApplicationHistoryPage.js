@@ -12,6 +12,7 @@ const RecruitApplicationPage = () => {
     const [cookies, setCookie, removeCookie] = useCookies(['token']);
     const {user, setUser} = useUserStore();
     const [matchings, setMatchings] = useState([]);
+    const [providerPhone, setProviderPhone] = useState('');
 
     useEffect(() => {
         if (cookies.token) {
@@ -57,6 +58,7 @@ const RecruitApplicationPage = () => {
                 const endDate = new Date(matching.recruitment.jobEndDate);
                 return endDate >= currentDate;
             });
+            console.log(validMatchings)
             setMatchings(validMatchings);
         } catch (error) {
             console.error("Error fetching matchings:", error);
@@ -83,18 +85,44 @@ const RecruitApplicationPage = () => {
                     userId: user.userId
                 };
 
-                const response = await axios({
-                    method: 'delete',
-                    url: 'http://localhost:8050/api/matchings',
-                    data: requestBody,
-                    headers: {
-                        Authorization: `Bearer ${cookies.token}`
-                    }
-                });
+                // 공고 올린 사람의 정보를 가져옵니다.
+                const providerResponse = await axios.get(`http://localhost:8050/api/auth/provider/${matching.recruitment.jobProviders}`);
+                if (providerResponse.status === 200) {
+                    console.log(providerResponse.data);
+                    setProviderPhone(providerResponse.data.companyTel);
 
-                if (response.status === 200) {
-                    setMatchings(prevMatchings => prevMatchings.filter(m => m.matchingId !== matching.matchingId));
-                    alert("신청이 취소되었습니다.");
+                    // 신청 취소 요청을 보냅니다.
+                    const response = await axios({
+                        method: 'delete',
+                        url: 'http://localhost:8050/api/matchings',
+                        data: requestBody,
+                        headers: {
+                            Authorization: `Bearer ${cookies.token}`
+                        }
+                    });
+
+                    if (response.status === 200) {
+                        setMatchings(prevMatchings => prevMatchings.filter(m => m.matchingId !== matching.matchingId));
+                        alert("신청이 취소되었습니다.");
+
+                        // SMS 전송 로직
+                        try {
+                            const smsResponse = await axios.post("http://localhost:8050/api/sms/sendApplicationCancel", {
+                                phone: user.userPhone,
+                                jobTitle: matching.recruitment.jobTitle
+                            });
+                            console.log(smsResponse.data);
+
+                            // Provider에게도 SMS 전송
+                            const sms2Response = await axios.post("http://localhost:8050/api/sms/sendApplicationCompanyCancel", {
+                                phone: providerPhone,
+                                jobTitle: matching.recruitment.jobTitle
+                            });
+                            console.log(sms2Response.data);
+                        } catch (smsError) {
+                            console.error("SMS 전송 중 오류 발생:", smsError);
+                        }
+                    }
                 }
             } catch (error) {
                 console.error("Error cancelling application:", error);
