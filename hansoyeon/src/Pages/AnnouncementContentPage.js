@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import {responsivePropType} from "react-bootstrap/createUtilityClasses";
 import axios from "axios";
 import {useCookies} from "react-cookie";
+import Footer from "../Components/Footer";
 
 const AnnouncementContentPage = () => {
     const { anno_id } = useParams();
@@ -172,6 +173,7 @@ const AnnouncementContentPage = () => {
                     </>
                 )}
             </ButtonContainer>
+            <Footer/>
         </Container>
     );
 };

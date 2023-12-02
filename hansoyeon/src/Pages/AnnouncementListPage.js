@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useCookies } from "react-cookie";
+import Footer from "../Components/Footer";
 
 const AnnouncementListPage = () => {
     const navigate = useNavigate();
@@ -101,7 +102,9 @@ const AnnouncementListPage = () => {
                         </PageNumber>
                     ))}
                 </Pagination>
+                <Footer/>
             </MiddleContainer>
+
         </Container>
     );
 };

@@ -1,21 +1,36 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom'; // useNavigate 훅 추가
 
-import {Cookies, useCookies} from "react-cookie";
+import {useCookies} from "react-cookie";
 import axios from "axios";
 import styled from "styled-components";
+import {useUserStore} from "../stores";
+import Pagination from '../Components/Pagenation';
+import Footer from "../Components/Footer";
+import footer1 from "../imgs/footer1.png";
+import footer3 from "../imgs/footer3.png";
 
 const RecruitPage = (props) => {
     const navigate = useNavigate();
     const [cookies, setCookie, removeCookie] = useCookies(['token']);
+    const {user, setUser} = useUserStore();
+    const userType = cookies.userType;
+
     const [recruitments, setRecruitments] = useState([]);
+    const [isCompany, setIsCompany] = useState(false);
+    const [detailData, setDetailData] = useState(null);
+
+    // 페이지네이션
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 20;
+    const itemsPerPage = 8; // 변경: 페이지당 아이템 개수를 8로 설정
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = recruitments.slice(indexOfFirstItem, indexOfLastItem);
-    const [isCompany, setIsCompany] = useState(false);
-    const [detailData, setDetailData] = useState(null);
+
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
+
     //라디오버튼
     const [selectedCategory, setSelectedCategory] = useState("");
 
@@ -26,6 +41,43 @@ const RecruitPage = (props) => {
     const [selectedContentType, setSelectedContentType] = useState("12");
     //글 목록 띄우기
     useEffect(() => {
+        if (cookies.token) {
+            console.log(userType)
+            if(userType === "company"){
+                axios.get('http://localhost:8050/api/auth/currentCompany', {
+                    headers: {
+                        Authorization: `Bearer ${cookies.token}`
+                    }
+                }).then(response => {
+                    console.log(cookies.token)
+                    // 토큰이 유효한 경우
+                    const fetchedUser = response.data;
+                    console.log(fetchedUser)
+                    setUser(fetchedUser);
+                    setIsCompany(true)
+                }).catch(error => {
+                    // 토큰이 유효하지 않은 경우
+                    console.error("Token verification failed:", error);
+                    handleLogout();
+                });
+            }else{
+                axios.get('http://localhost:8050/api/auth/currentUser', {
+                    headers: {
+                        Authorization: `Bearer ${cookies.token}`
+                    }
+                }).then(response => {
+                    console.log(cookies.token)
+                    // 토큰이 유효한 경우
+                    const fetchedUser = response.data;
+                    console.log(fetchedUser)
+                    setUser(fetchedUser);
+                }).catch(error => {
+                    // 토큰이 유효하지 않은 경우
+                    console.error("Token verification failed:", error);
+                    handleLogout();
+                });
+            }
+        }
         axios.get('http://localhost:8050/api/recruitments')
             .then(response => {
                 // 받아온 목록을 오름차순으로 정렬
@@ -36,6 +88,12 @@ const RecruitPage = (props) => {
             })
             .catch(error => console.error('Error fetching recruitments:', error));
     }, []);
+
+    const handleLogout = () => {
+        removeCookie('token');
+        setUser(null);
+        navigate("/");
+    };
 
     // 글 제목 클릭시 상세내용 페이지 이동
     const viewRecruitment = async (Id) => {
@@ -49,31 +107,13 @@ const RecruitPage = (props) => {
         }
     };
 
-    //admin구분
-    useEffect(() => {
-        axios.get('http://localhost:8050/api/auth/currentUser', {
-            headers: {
-                Authorization: `Bearer ${cookies.token}`
-            }
-        })
-            .then((response) => {
-                console.log(response.data);
-                const user = response.data;
-                const isCompanyUser = user.userType === 'company';
-                setIsCompany(isCompanyUser);
-            })
-            .catch(error => {
-                console.error('Error fetching user info:', error);
-                if (error.response) {
-                    console.error('Status Code:', error.response.status);
-                    console.error('Response Data:', error.response.data);
-                }
-            });
-    }, []);
-
     //글쓰기 버튼
     const WritingBtn = () => {
         navigate("/recruit/write")
+    }
+
+    const handleHistoryApplication = () => {
+        navigate("/recruitHistory")
     }
 
 
@@ -113,7 +153,16 @@ const RecruitPage = (props) => {
                 <SmallAlgoContainer>
                     <RadioContainer>
                         {renderRadioButtons()}
-                        {isCompany && <WritingButton onClick={WritingBtn}>글 쓰기</WritingButton>}
+                        {isCompany ?
+                            null
+                            :
+                            <WritingButton onClick={handleHistoryApplication}>신청 내역</WritingButton>
+                        }
+                        {isCompany && user.providerApproval === "true" ?
+                            <WritingButton onClick={WritingBtn}>글 쓰기</WritingButton>
+                            :
+                            null
+                        }
                     </RadioContainer>
                 </SmallAlgoContainer>
             </AlgoContainer>
@@ -147,7 +196,16 @@ const RecruitPage = (props) => {
                     </BottomContent>
                 ))}
             </Bottom>
+            <PaginationContainer style={{ margin: '50px 0' }}>
+                <Pagination
+                    totalPages={Math.ceil(recruitments.length / itemsPerPage)}
+                    currentPage={currentPage}
+                    onPageChange={handlePageChange}
+                />
+            </PaginationContainer>
+            <Footer/>
         </Container>
+
     );
 };
 
@@ -237,25 +295,56 @@ const RadioButton = styled.input`
 `;
 const Bottom = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Adjust the minmax values as needed */
-  gap: 20px; /* Adjust the gap as needed */
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
   margin-top: -1rem;
   width: 80%;
   margin-bottom: 1rem;
-  max-height: 45vh;
-`
+  max-height: 70vh; /* Increase the max-height value */
+  background-color: #f0f0f0;
+  padding: 20px;
+`;
+
+
 const TitleContainer = styled.div`
   display: flex;
   flex-direction: column;
-  flex: 5;
+  flex: 1;
 `;
 
 const BottomContent = styled.div`
-  flex: 1;
-  flex-basis: calc(25% - 10px); /* 25% 너비로 조절, 간격을 제외한 너비 계산 */
-  margin: 5px; /* 각 요소 사이의 간격 조절 */
-  box-sizing: border-box; /* 내부 여백 및 테두리를 요소의 크기에 포함시킵니다. */
+  border-radius: 10px;
+  border: 2px solid #d6d6d6;
+  width: 100%;
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+  transition: background-color 0.1s ease;
+  height: 100%; /* Increase the height to 100% */
+
+  &:hover {
+    background-color: #eee;
+  }
+
+  h3,
+  h4 {
+    font-size: 18px;
+    margin: 0;
+  }
+
+  img {
+    width: 100%;
+    height: 60%;
+    border-radius: 10px;
+    object-fit: cover;
+    transition: transform 1s ease;
+  }
+
+  &:hover img {
+    transform: scale(1.05);
+  }
 `;
+
 
 const BottomMain = styled.div`
   display: flex;
@@ -264,31 +353,31 @@ const BottomMain = styled.div`
   border-radius: 10px;
   border: 2px solid #d6d6d6;
   width: 100%;
-  height: 43vh;
+  height: 100%; /* Increase the height to 100% */
   padding: 10px;
   box-sizing: border-box;
-  position: relative; /* Needed for positioning the overlay */
-  overflow: hidden; /* Ensure overflow doesn't affect overlay positioning */
-  transition: background-color 0.1s ease; /* Transition for background color change */
+  position: relative;
+  overflow: hidden;
+  transition: background-color 0.1s ease;
 
   &:hover {
-    background-color: #eee; /* Change the background color on hover */
+    background-color: #eee;
   }
 
   h3,
   h4 {
     font-size: 10px;
-    transition: background-color 0.3s ease; /* Transition for background color change */
+    transition: background-color 0.3s ease;
   }
   img {
     width: 100%;
     height: 50%;
     border-radius: 10px;
-    transition: transform 1s ease; /* Transition for image scaling */
+    transition: transform 1s ease;
   }
 
   &:hover img {
-    transform: scale(1.05); /* Scale the image on hover */
+    transform: scale(1.05);
   }
 `;
 
@@ -303,4 +392,10 @@ const WritingButton = styled.button`
   font-size: 24px;
   font-weight: 700;
 `;
+
+const PaginationContainer = styled.div`
+`;
+
+
+
 export default RecruitPage;

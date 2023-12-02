@@ -1,6 +1,9 @@
 import React from "react";
 import styled from "styled-components";
 import aboutPolicy from "../imgs/aboutPolicy.jpg";
+import footer1 from "../imgs/footer1.png";
+import footer3 from "../imgs/footer3.png";
+import Footer from "../Components/Footer";
 
 const AboutPolicyPage = () => {
     return (
@@ -8,7 +11,7 @@ const AboutPolicyPage = () => {
             <CenterContainer>
                 <TopContainer>
                     <TopImgContainer>
-                        <img src={aboutPolicy} alt="About Image" />
+                        <img src={aboutPolicy} alt="About Image"/>
                         <OverlayTextContainer>
                             <OverlayTextTop>
                                 <h2>우리의 생각</h2>
@@ -35,8 +38,11 @@ const AboutPolicyPage = () => {
                         </TextContainer>
                     </BottomContentContainer>
                 </BottomContainer>
+
+                <Footer/>
             </CenterContainer>
         </Container>
+
     )
 }
 
@@ -65,6 +71,7 @@ const TopImgContainer = styled.div`
   min-height: 80%;
   justify-content: center;
   align-items: center;
+
   img {
     width: 75%; /* 이미지 크기를 부모 컨테이너에 맞게 설정 */
     height: auto; /* 가로 비율에 맞추어 세로 비율을 자동으로 조정 */
@@ -91,7 +98,7 @@ const OverlayTextTop = styled.div`
   }
 `;
 const BottomContainer = styled.div`
-    display: flex;
+  display: flex;
   flex: 6;
   flex-direction: column;
   align-items: center;
@@ -104,10 +111,12 @@ const BottomContentContainer = styled.div`
   height: auto;
   margin-top: 1rem;
   border-radius: 3rem;
+
   h2 {
     color: orange;
     font-weight: 700;
   }
+
   h4 {
     font-size: 20px;
   }
@@ -117,11 +126,13 @@ const TextContainer = styled.div`
   display: flex;
   width: 100%;
   justify-content: flex-end;
-  
+
   h3 {
     font-size: 36px;
     font-weight: 700;
     margin-right: 7rem;
   }
 `
+
+
 export default AboutPolicyPage;

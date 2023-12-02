@@ -29,6 +29,8 @@ import recommend1 from '../imgs/recommendcourse-1.png';
 import recommend2 from '../imgs/recommendcourse-2.png';
 import Footer from '../Components/Footer';
 import logo from "../imgs/logo-removebg.png";
+import footer1 from "../imgs/footer1.png";
+import footer3 from "../imgs/footer3.png";
 //리뷰 Test 데이터
 const dummyReviews = [
     {
@@ -79,7 +81,7 @@ const MainPage = () => {
                                 speed={1300} // 슬라이드 전환 속도를 1.3초로 설정
                                 // pagination 속성 제거
                             >
-                                <SwiperSlide><img src={theme1} style={{width: '340px'}}/></SwiperSlide>
+                                <SwiperSlide><img src={theme1} style={{width: '340px'}}/>ㅈ</SwiperSlide>
                                 <SwiperSlide><img src={theme2} style={{width: '340px'}}/></SwiperSlide>
                                 <SwiperSlide><img src={theme3} style={{width: '340px'}}/></SwiperSlide>
                                 <SwiperSlide><img src={theme4} style={{width: '340px'}}/></SwiperSlide>
@@ -198,6 +200,7 @@ const MainPage = () => {
                 </ReviewContainer>
                 <Footer/>
             </MainContainer>
+
         </div>
     );
 };
@@ -391,6 +394,5 @@ const Review = ({ title, content, author, date }) => {
 }
 
 
-//==============================================
 
 export default MainPage;

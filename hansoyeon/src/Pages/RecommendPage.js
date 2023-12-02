@@ -3,6 +3,9 @@ import axios from 'axios';
 import { XMLParser } from 'fast-xml-parser';
 import styled from "styled-components";
 import noImage from "../imgs/noImage.png"
+import Footer from "../Components/Footer";
+import footer1 from "../imgs/footer1.png";
+import footer3 from "../imgs/footer3.png";
 
 const RecommendPage = () => {
     const [touristSpots, setTouristSpots] = useState([]);
@@ -68,6 +71,23 @@ const RecommendPage = () => {
             </GridContainer>
             <button onClick={() => setPageNo(prev => Math.max(prev - 1, 1))}>이전</button>
             <button onClick={() => setPageNo(prev => prev + 1)}>다음</button>
+
+            <Upimage>
+                <Footer1Container>
+                    <Footer1Image/>
+                </Footer1Container>
+                <Footer2Container>
+                    <Footer2Image>
+                        <Aa>
+                            <img src={footer1} alt="footer1 Image"/>
+                        </Aa>
+                        <Bb>
+                            <img src={footer3} alt="footer2 Image"/>
+                        </Bb>
+                    </Footer2Image>
+                </Footer2Container>
+            </Upimage>
+            <Footer/>
         </div>
     );
 };
@@ -89,5 +109,58 @@ const StyledImage = styled.img`
     height: 200px;
     object-fit: cover;
 `;
+
+const Upimage = styled.div`
+  display: flex;
+  flex : 1;
+  height: 100px;
+  align-items: center;
+  width: 100%; /* Change to 100% to take the full width */
+  margin-bottom: -25px;
+  object-fit: cover; /* 이미지 비율 유지를 위한 설정 */
+`;
+const Footer1Container = styled.div`
+  display: flex;
+  flex : 3;
+`
+const Footer2Container = styled.div`
+  display: flex;
+  height: 100px;
+  flex : 7;
+  margin-bottom: -50px;
+`
+
+const Footer1Image = styled.div`
+  display: flex;
+  img {
+    width: 50px;
+    height: auto;
+  }
+`;
+
+const Footer2Image = styled.div`
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  img {
+    width: 60px;
+    height: auto; /* 높이 자동 조절 */
+  }
+`;
+const Aa = styled.div`
+  height: 50px;
+  flex: 5;
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 0.23rem;
+`
+const Bb = styled.div`
+flex: 5;
+  height: 100px;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: -1.9rem;
+`
+
 
 export default RecommendPage;
