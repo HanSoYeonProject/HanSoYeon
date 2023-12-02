@@ -263,4 +263,14 @@ public class AuthController {
         return ResponseEntity.ok(users);
     }
 
+    @GetMapping("/provider/{providerId}")
+    public ResponseEntity<?> getProviderById(@PathVariable String providerId) {
+        ProviderEntity provider = providersService.getUserById(providerId);
+        if (provider != null) {
+            return ResponseEntity.ok(provider);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Provider not found");
+        }
+    }
+
 }

@@ -48,6 +48,28 @@ public class SmsService {
         String correctCode = verificationCodes.get(phoneNumber);
         return correctCode != null && correctCode.equals(inputCode);
     }
+
+    public SingleMessageSentResponse sendApplicationCompleteMessage(String toPhoneNumber, String jobTitle) {
+        String messageContent = "[HanSoYeon] 귀하가 신청한 [" + jobTitle + "] 공고가 성공적으로 처리되었습니다. 감사합니다!";
+
+        Message message = new Message();
+        message.setFrom("01091753460");
+        message.setTo(toPhoneNumber);
+        message.setText(messageContent);
+
+        return this.messageService.sendOne(new SingleMessageSendingRequest(message));
+    }
+
+    public SingleMessageSentResponse sendApplicationCompleteCompanyMessage(String toPhoneNumber, String jobTitle) {
+        String messageContent = "[HanSoYeon] [" + jobTitle + "] 공고에 1명이 신청하였습니다.";
+
+        Message message = new Message();
+        message.setFrom("01091753460");
+        message.setTo(toPhoneNumber);
+        message.setText(messageContent);
+
+        return this.messageService.sendOne(new SingleMessageSendingRequest(message));
+    }
 }
 
 

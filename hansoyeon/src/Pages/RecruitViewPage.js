@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {useNavigate, useParams} from 'react-router-dom'; // useNavigate 훅 추가
+import {useNavigate, useParams} from 'react-router-dom';
 import axios from "axios";
 import styled from "styled-components";
 import about1 from "../imgs/about1.png";
@@ -9,6 +9,8 @@ import about4 from "../imgs/about4.jpg";
 import location from "../imgs/location.png";
 import {useUserStore} from "../stores";
 import {useCookies} from "react-cookie";
+import useThrottle from "../Components/useThrottle";
+import usePushNotification from "../Components/usePushNotification";
 
 const RecruitViewPage = ( props ) => {
     const { id } = useParams();
@@ -24,6 +26,10 @@ const RecruitViewPage = ( props ) => {
     const userType = cookies.userType;
     const userID = user ? user.userId : '';
     const [hasApplied, setHasApplied] = useState(false);
+    const [providerPhone, setProviderPhone] = useState('');
+
+    const { fireNotificationWithTimeout } = usePushNotification();
+    const { throttle } = useThrottle();
 
     //상세 페이지 불러오는 함수
     const fetchAnnouncement = async () => {
@@ -33,8 +39,12 @@ const RecruitViewPage = ( props ) => {
                 throw new Error('Failed to fetch announcement content');
             }
             const data = response.data;
-            console.log(data)
             setRecruitments(data);
+
+            const providerResponse = await axios.get(`http://localhost:8050/api/auth/provider/${data.providers}`);
+            if (providerResponse.status === 200) {
+                setProviderPhone(providerResponse.data.companyTel);
+            }
         } catch (error) {
             console.error('Error fetching announcement content: ', error);
         }
@@ -132,6 +142,24 @@ const RecruitViewPage = ( props ) => {
 
             if (response.status === 200) {
                 alert("정상 신청 되었습니다.");
+                fireNotificationWithTimeout('신청 완료', 5000, {
+                    body: `${recruitments.title} 신청 완료`
+                });
+                try {
+                    const smsResponse = await axios.post("http://localhost:8050/api/sms/sendApplicationComplete", {
+                        phone: user.userPhone,
+                        jobTitle: recruitments.title
+                    });
+                    console.log(smsResponse.data);
+                    const sms2Response = await axios.post("http://localhost:8050/api/sms/sendApplicationCompanyComplete", {
+                        phone: providerPhone,
+                        jobTitle: recruitments.title
+                    });
+                    console.log(smsResponse.data);
+                    console.log(sms2Response.data);
+                } catch (smsError) {
+                    console.error("SMS 전송 중 오류 발생:", smsError);
+                }
                 console.log(recruitments)
                 navigate('/recruitApply', { state: { jobDetails: recruitments } });
             }
