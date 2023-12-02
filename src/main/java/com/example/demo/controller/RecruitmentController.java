@@ -49,13 +49,14 @@ public class RecruitmentController {
     //글 목록 불러오기
     @GetMapping("/recruitments")
     public List<JobProvidersDto> getAllJobProviders() {
+        List<JobProvidersDto> king = recruitmentService.getAlljobProviders();
+        System.out.println(king);
         return recruitmentService.getAlljobProviders();
     }
 
     //상세글
     @GetMapping("/recruitments/{Id}")
     public ResponseEntity<JobProvidersDto> getJobProviderById(@PathVariable int Id) {
-        System.out.println(Id);
 
         try {
             JobProvidersDto jobProviders = recruitmentService.getProvidersById(Id);

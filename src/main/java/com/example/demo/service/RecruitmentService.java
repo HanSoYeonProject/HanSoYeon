@@ -28,13 +28,21 @@ public class RecruitmentService {
         RecruitmentEntity jobProviders = new RecruitmentEntity();
         jobProviders.setJobTitle(jobProvidersDto.getTitle());
         jobProviders.setJobContent(jobProvidersDto.getContent());
+        jobProviders.setJobSecond(jobProvidersDto.getSecond());
+        jobProviders.setJobThird(jobProvidersDto.getThird());
+        jobProviders.setJobSchedule(jobProvidersDto.getSchedule());
         jobProviders.setJobRegion(jobProvidersDto.getRegion());
         jobProviders.setJobAddress(jobProvidersDto.getAddress());
         jobProviders.setJobProviders(jobProvidersDto.getProviders());
         jobProviders.setJobStartDate(jobProvidersDto.getStartDate());
         jobProviders.setJobEndDate(jobProvidersDto.getEndDate());
-        jobProviders.setJobImage(jobProvidersDto.getImage());
+        jobProviders.setJobImages(jobProvidersDto.getImage());
         jobProviders.setJobMoney(jobProvidersDto.getMoney());
+        jobProviders.setJobMorning(jobProvidersDto.getMorning());
+        jobProviders.setJobLunch(jobProvidersDto.getLunch());
+        jobProviders.setJobDinner(jobProvidersDto.getDinner());
+        jobProviders.setJobBackground(jobProvidersDto.getBackground());
+        jobProviders.setJobNeed(jobProvidersDto.getNeed());
 
         try {
             RecruitmentEntity savedJobProviders = recruitmentRepository.save(jobProviders);
@@ -57,14 +65,21 @@ public class RecruitmentService {
         jobProvidersDto.setJob_id(jobProviders.getJobId());
         jobProvidersDto.setTitle(jobProviders.getJobTitle());
         jobProvidersDto.setContent(jobProviders.getJobContent());
+        jobProvidersDto.setSecond(jobProviders.getJobSecond());
+        jobProvidersDto.setThird(jobProviders.getJobThird());
+        jobProvidersDto.setSchedule(jobProviders.getJobSchedule());
         jobProvidersDto.setRegion(jobProviders.getJobRegion());
         jobProvidersDto.setAddress(jobProviders.getJobAddress());
         jobProvidersDto.setProviders(jobProviders.getJobProviders());
         jobProvidersDto.setStartDate(jobProviders.getJobStartDate());
         jobProvidersDto.setEndDate(jobProviders.getJobEndDate());
-        jobProvidersDto.setImage(jobProviders.getJobImage());
+        jobProvidersDto.setImage(jobProviders.getJobImages());
         jobProvidersDto.setMoney(jobProviders.getJobMoney());
-
+        jobProvidersDto.setNeed(jobProviders.getJobNeed());
+        jobProvidersDto.setBackground(jobProviders.getJobBackground());
+        jobProvidersDto.setMorning(jobProviders.getJobMorning());
+        jobProvidersDto.setLunch(jobProviders.getJobLunch());
+        jobProvidersDto.setDinner(jobProviders.getJobDinner());
         return jobProvidersDto;
     }
 

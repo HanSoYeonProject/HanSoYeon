@@ -10,7 +10,7 @@ const RecruitPage = (props) => {
     const [cookies, setCookie, removeCookie] = useCookies(['token']);
     const [recruitments, setRecruitments] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 20;
+    const itemsPerPage = 30;
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = recruitments.slice(indexOfFirstItem, indexOfLastItem);
@@ -126,7 +126,7 @@ const RecruitPage = (props) => {
                                      onMouseOut={(e) => (e.target.style.textDecoration="none")}>
                             <ImgContainer>
                                 <img
-                                    src={recruitments.image}
+                                    src={recruitments.image[0]}
                                     alt="Image"
                                     style={{display: "flex",height: "100%",justifyContent: "center", alignItems: "center",borderRadius:"10px"}}
                                 />

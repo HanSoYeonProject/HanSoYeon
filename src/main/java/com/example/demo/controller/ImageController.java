@@ -9,6 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @RestController
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:3000")
@@ -34,19 +37,61 @@ public class ImageController {
         }
         return ResponseEntity.badRequest().build();
     }
-}
 
+    @PostMapping("/uploadProfileImages")
+    public ResponseEntity<?> uploadProfileImages(@RequestParam("profileImages") MultipartFile[] files) {
+        try {
+            if (files == null || files.length == 0) {
+                return ResponseEntity.badRequest().body("Files cannot be empty");
+            }
 
-@Getter
-class ImageResponse {
-    private String imageUrl;
+            List<String> imageUrls = new ArrayList<>();
+            for (MultipartFile file : files) {
+                if (!file.isEmpty()) {
+                    String imageUrl = imageService.uploadImage(file);
+                    if (imageUrl != null) {
+                        imageUrls.add(imageUrl);
+                    } else {
+                        System.out.println("Failed to upload image: " + file.getOriginalFilename());
+                    }
+                }
+            }
 
-    public ImageResponse(String imageUrl) {
-        this.imageUrl = imageUrl;
+            if (!imageUrls.isEmpty()) {
+                System.out.println("Image upload successful. URLs: " + imageUrls);
+                return ResponseEntity.ok(new MultipleImageResponse(imageUrls));
+            } else {
+                System.out.println("No valid images uploaded.");
+            }
+        } catch (Exception e) {
+            logger.error("Error while processing image upload", e);
+        }
+        return ResponseEntity.badRequest().build();
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    @Getter
+    class ImageResponse {
+        private String imageUrl;
+
+        public ImageResponse(String imageUrl) {
+            this.imageUrl = imageUrl;
+        }
+
+        public void setImageUrl(String imageUrl) {
+            this.imageUrl = imageUrl;
+        }
+    }
+
+    @Getter
+    class MultipleImageResponse {
+        private List<String> imageUrls;
+
+        public MultipleImageResponse(List<String> imageUrls) {
+            this.imageUrls = imageUrls;
+        }
+
+        public void setImageUrls(List<String> imageUrls) {
+            this.imageUrls = imageUrls;
+        }
     }
 }
-
