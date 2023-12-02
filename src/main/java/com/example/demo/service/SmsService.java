@@ -48,6 +48,104 @@ public class SmsService {
         String correctCode = verificationCodes.get(phoneNumber);
         return correctCode != null && correctCode.equals(inputCode);
     }
+
+    public SingleMessageSentResponse sendApplicationCompleteMessage(String toPhoneNumber, String jobTitle) {
+        String messageContent = "[HanSoYeon] 귀하가 신청한 [" + jobTitle + "] 공고가 성공적으로 처리되었습니다. 감사합니다!";
+
+        Message message = new Message();
+        message.setFrom("01091753460");
+        message.setTo(toPhoneNumber);
+        message.setText(messageContent);
+
+        return this.messageService.sendOne(new SingleMessageSendingRequest(message));
+    }
+
+    public SingleMessageSentResponse sendApplicationCompleteCompanyMessage(String toPhoneNumber, String jobTitle) {
+        String messageContent = "[HanSoYeon] [" + jobTitle + "] 공고에 1명이 신청하였습니다.";
+
+        Message message = new Message();
+        message.setFrom("01091753460");
+        message.setTo(toPhoneNumber);
+        message.setText(messageContent);
+
+        return this.messageService.sendOne(new SingleMessageSendingRequest(message));
+    }
+    public SingleMessageSentResponse sendApplicationCancelMessage(String toPhoneNumber, String jobTitle) {
+        String messageContent = "[HanSoYeon] 귀하가 신청한 [" + jobTitle + "] 공고가 성공적으로 취소되었습니다. 감사합니다!";
+
+        Message message = new Message();
+        message.setFrom("01091753460");
+        message.setTo(toPhoneNumber);
+        message.setText(messageContent);
+
+        return this.messageService.sendOne(new SingleMessageSendingRequest(message));
+    }
+
+    public SingleMessageSentResponse sendApplicationCancelCompanyMessage(String toPhoneNumber, String jobTitle) {
+        String messageContent = "[HanSoYeon] [" + jobTitle + "] 공고에 1명이 신청을 취소하였습니다.";
+
+        Message message = new Message();
+        message.setFrom("01091753460");
+        message.setTo(toPhoneNumber);
+        message.setText(messageContent);
+
+        return this.messageService.sendOne(new SingleMessageSendingRequest(message));
+    }
+
+    public SingleMessageSentResponse sendApplicationMatchingCompleteMessage(String toPhoneNumber, String jobTitle) {
+        String messageContent = "[HanSoYeon] 귀하가 신청한 [" + jobTitle + "] 공고에 선정되었습니다. 축하드립니다! 자세한 내용은 신청한 공고 페이지 참고 부탁드립니다. ";
+
+        Message message = new Message();
+        message.setFrom("01091753460");
+        message.setTo(toPhoneNumber);
+        message.setText(messageContent);
+
+        return this.messageService.sendOne(new SingleMessageSendingRequest(message));
+    }
+
+    public SingleMessageSentResponse sendApplicationMatchingCompleteCompanyMessage(String toPhoneNumber, String jobTitle) {
+        String messageContent = "[HanSoYeon] [" + jobTitle + "] 공고에 1명이 승인되었습니다.";
+
+        Message message = new Message();
+        message.setFrom("01091753460");
+        message.setTo(toPhoneNumber);
+        message.setText(messageContent);
+
+        return this.messageService.sendOne(new SingleMessageSendingRequest(message));
+    }
+
+    public SingleMessageSentResponse sendApplicationMatchingCancelMessage(String toPhoneNumber, String jobTitle) {
+        String messageContent = "[HanSoYeon] 귀하가 신청한 [" + jobTitle + "] 공고의 선정이 취소되었습니다. 아쉽지만 다음 기회를 노려보세요!. ";
+
+        Message message = new Message();
+        message.setFrom("01091753460");
+        message.setTo(toPhoneNumber);
+        message.setText(messageContent);
+
+        return this.messageService.sendOne(new SingleMessageSendingRequest(message));
+    }
+
+    public SingleMessageSentResponse sendApplicationMatchingCancelCompanyMessage(String toPhoneNumber, String jobTitle) {
+        String messageContent = "[HanSoYeon] [" + jobTitle + "] 공고에 1명의 승인을 취소하였습니다.";
+
+        Message message = new Message();
+        message.setFrom("01091753460");
+        message.setTo(toPhoneNumber);
+        message.setText(messageContent);
+
+        return this.messageService.sendOne(new SingleMessageSendingRequest(message));
+    }
+
+    public SingleMessageSentResponse sendApplicationMatchingDeleteMessage(String toPhoneNumber, String jobTitle) {
+        String messageContent = "[HanSoYeon] [" + jobTitle + "] 공고가 정상적으로 삭제되었습니다.";
+
+        Message message = new Message();
+        message.setFrom("01091753460");
+        message.setTo(toPhoneNumber);
+        message.setText(messageContent);
+
+        return this.messageService.sendOne(new SingleMessageSendingRequest(message));
+    }
 }
 
 

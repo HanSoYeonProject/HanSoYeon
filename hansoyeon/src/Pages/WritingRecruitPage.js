@@ -6,13 +6,21 @@ import {useUserStore} from "../stores";
 
 const WritingRecruitPage = () => {
     const [title, setTitle] = useState('');
-    const [content, setContent] = useState('');
+    const [schedule, setSchedule] = useState('');
     const [selectedRegion, setSelectedRegion] = useState('');
+    const [background, setBackground] = useState('');
+    const [morning, setMorning] = useState('');
+    const [lunch, setLunch] = useState('');
+    const [dinner, setDinner] = useState('');
+    const [need, setNeed] = useState('');
     const [region, setRegion] = useState('');
+    const [content, setContent] = useState('');
+    const [second, setSecond] = useState('');
+    const [third, setThird] = useState('');
     const [address, setAddress] = useState('');
     const [providers, setProviders] = useState('');
     const [money, setMoney] = useState('');
-    const [image, setImage] = useState(null);
+    const [image, setImage] = useState([]);
     const navigate = useNavigate();
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
@@ -72,10 +80,13 @@ const WritingRecruitPage = () => {
 
         try {
             const formData = new FormData();
-            formData.append('profileImage', image);
+
+            for (let i = 0; i< image.length; i++) {
+                formData.append('profileImages', image[i]);
+            }
 
             const response = await axios.post(
-                'http://localhost:8050/api/uploadProfileImage',
+                'http://localhost:8050/api/uploadProfileImages',
                 formData,
                 {
                     headers: {
@@ -87,25 +98,41 @@ const WritingRecruitPage = () => {
             // 이미지를 포함한 recruitnewspost 객체 생성
             const recruitnewspost = {
                 title,
+                schedule,
                 content,
+                second,
+                third,
+                background,
+                morning,
+                lunch,
+                dinner,
+                need,
                 startDate,
                 endDate,
                 region: selectedRegion,
                 address,
                 providers,
                 money,
-                image: response.data.imageUrl, // 이미지를 추가
+                image: response.data.imageUrls, // 이미지를 추가
             };
             console.log("Form Data:", {
                 title,
+                schedule,
                 content,
+                second,
+                third,
+                background,
+                morning,
+                lunch,
+                dinner,
+                need,
                 region: selectedRegion,
                 address,
                 providers,
                 money,
                 startDate,
                 endDate,
-                image: response.data.imageUrl
+                image: response.data.imageUrls
             });
 
             // 서버에 전송
@@ -113,10 +140,13 @@ const WritingRecruitPage = () => {
                 const response = await axios.post(
                     'http://localhost:8050/api/createRecruitment',
                     recruitnewspost,
+
                     {
                         headers: {
                             'Content-Type': 'application/json',
+
                         },
+
                     }
                 );
 
@@ -142,7 +172,7 @@ const WritingRecruitPage = () => {
 
     return (
         <div>
-            <h2 style={{ marginLeft: '-10px', marginTop: '120px', fontWeight: 'bold' }}>글쓰기</h2>
+            <h2 style={{marginTop: '120px', fontWeight: 'bold' }}>글쓰기</h2>
             <form onSubmit={handleSubmit}>
                 <div style={{ marginBottom: '20px' }}>
                     <label htmlFor="title" style={{ display: 'block', marginBottom: '5px' }}>제목</label>
@@ -153,17 +183,6 @@ const WritingRecruitPage = () => {
                         onChange={(e) => setTitle(e.target.value)}
                         placeholder="제목"
                         style={{ width: '50%', padding: '10px' }}
-                    />
-                </div>
-
-                <div style={{ marginBottom: '20px' }}>
-                    <label htmlFor="description" style={{ display: 'block', marginBottom: '5px' }}>내용</label>
-                    <textarea
-                        id="content"
-                        value={content}
-                        onChange={(e) => setContent(e.target.value)}
-                        placeholder="내용"
-                        style={{ width: '50%', height: '200px', padding: '10px' }}
                     />
                 </div>
 
@@ -192,6 +211,85 @@ const WritingRecruitPage = () => {
                 </div>
 
                 <div style={{ marginBottom: '20px' }}>
+                    <label htmlFor="content" style={{ display: 'block', marginBottom: '5px' }}>첫 날</label>
+                    <textarea
+                        id="content"
+                        value={content}
+                        onChange={(e) => setContent(e.target.value)}
+                        style={{ width: '50%', height: '100px', padding: '10px'}}
+                    />
+                </div>
+                <div style={{ marginBottom: '20px' }}>
+                    <label htmlFor="second" style={{ display: 'block', marginBottom: '5px' }}>잠시 동안</label>
+                    <textarea
+                        id="second"
+                        value={second}
+                        onChange={(e) => setSecond(e.target.value)}
+                        style={{ width: '50%', height: '150px', padding: '10px'}}
+                    />
+                </div>
+                <div style={{ marginBottom: '20px' }}>
+                    <label htmlFor="third" style={{ display: 'block', marginBottom: '5px' }}>마지막 날</label>
+                    <textarea
+                        id="third"
+                        value={third}
+                        onChange={(e) => setThird(e.target.value)}
+                        style={{ width: '50%', height: '100px', padding: '10px'}}
+                    />
+                </div>
+                {/* 한소연 모집배경 */}
+                <div style={{marginBottom: '20px'}}>
+                    <label htmlFor="background" style={{display: 'block', marginBottom: '5px' }}>한소연 모집배경</label>
+                    <textarea
+                        id="background"
+                        value={background}
+                        onChange={(e) => setBackground(e.target.value)}
+                        style={{ width: '50%', padding: '10px' }}
+                    />
+                </div>
+
+                {/* 한소연 모집 일정 */}
+                <div style={{marginBottom: '20px'}}>
+                    <label htmlFor="schedule" style={{display: 'block', marginBottom: '5px' }}>도움 내용</label>
+                    <textarea
+                        id="schedule"
+                        value={schedule}
+                        onChange={(e) => setSchedule(e.target.value)}
+                        style={{ width: '50%', padding: '10px' }}
+                    />
+                </div>
+
+                {/*조식*/}
+                <div style={{marginBottom: '20px'}}>
+                    <label htmlFor="morning" style={{ display: 'block', marginBottom: '5px' }}>식사제공(조식)</label>
+                    <textarea
+                        id="morning"
+                        value={morning}
+                        onChange={(e) => setMorning(e.target.value)}
+                        style={{ width: '50%',padding: '10px'}}
+                    />
+                </div>
+                {/*점심*/}
+                <div style={{marginBottom: '20px'}}>
+                    <label htmlFor="lunch" style={{ display: 'block', marginBottom: '5px' }}>식사제공(점심)</label>
+                    <textarea
+                        id="lunch"
+                        value={lunch}
+                        onChange={(e) => setLunch(e.target.value)}
+                        style={{ width: '50%',padding: '10px'}}
+                    />
+                </div>
+                {/*저녁*/}
+                <div style={{marginBottom: '20px'}}>
+                    <label htmlFor="dinner" style={{ display: 'block', marginBottom: '5px' }}>식사제공(저녁)</label>
+                    <textarea
+                        id="dinner"
+                        value={dinner}
+                        onChange={(e) => setDinner(e.target.value)}
+                        style={{ width: '50%',padding: '10px'}}
+                    />
+                </div>
+                <div style={{ marginBottom: '20px' }}>
                     <label htmlFor="region" style={{ display: 'block', marginBottom: '5px' }}>지역</label>
                     <select
                         id="region"
@@ -207,7 +305,7 @@ const WritingRecruitPage = () => {
                 </div>
                 {/*상세주소 */}
                 <div style={{ marginBottom: '20px' }}>
-                   <label htmlFor="address" style={{ display: 'block', marginBottom: '5px' }}>상세주소</label>
+                    <label htmlFor="address" style={{ display: 'block', marginBottom: '5px' }}>상세주소</label>
                     <input
                         id="address"
                         type="text"
@@ -218,14 +316,25 @@ const WritingRecruitPage = () => {
                     />
                 </div>
                 <div style={{ marginBottom: '20px' }}>
+                    <label htmlFor="need" style={{ display: 'block', marginBottom: '5px' }}>소지품, 복장</label>
+                    <input
+                        id="need"
+                        type="text"
+                        value={need}
+                        onChange={(e) => setNeed(e.target.value)}
+                        placeholder="소지품, 복장"
+                        style={{ width: '50%', padding: '10px' }}
+                    />
+                </div>
+                <div style={{ marginBottom: '20px' }}>
                     <label htmlFor="providers" style={{ display: 'block', marginBottom: '5px' }}>제공자</label>
                     <input
                         id="providers"
                         type="text"
-                        value={user.providerId}
-                        placeholder="제공자"
+                        value={providers}
+                        onChange={(e) => setProviders(e.target.value)}
+                        placeholder="King"
                         style={{ width: '50%', padding: '10px' }}
-                        readOnly={true}
                     />
                 </div>
 
@@ -248,6 +357,7 @@ const WritingRecruitPage = () => {
                         type="file"
                         onChange={handleImageChange}
                         accept="image/*"
+                        multiple
                     />
                 </div>
                 <button type="submit" style={{ padding: '10px 20px' }}>글 올리기</button>
