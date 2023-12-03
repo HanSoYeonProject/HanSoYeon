@@ -33,7 +33,7 @@ const Navigate = () => {
                     // 토큰이 유효한 경우
                     const fetchedUser = response.data;
                     console.log(fetchedUser)
-
+                    setUser(fetchedUser)
                 }).catch(error => {
                     // 토큰이 유효하지 않은 경우
                     console.error("Token verification failed:", error);
