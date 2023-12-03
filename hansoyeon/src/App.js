@@ -66,8 +66,6 @@ function App() {
                     <Route path="/newcourse" element={<NewPage/>}></Route>
                     <Route path="/writingNewsPage" element={<WritingNewsPage/>}></Route>
                     <Route path="/recommendcourse" element={<RecommendPage/>}></Route>
-                    <Route path="/themecourse" element={<ThemePage/>}></Route>
-                    <Route path="/regioncourse" element={<RegionPage/>}></Route>
                     <Route path="/review" element={<ReviewPage/>}></Route>
                     <Route path="/recruit" element={<RecruitPage/>}></Route>
                     <Route path="/writeReview" element={<WritingReviewPage/>}></Route>
