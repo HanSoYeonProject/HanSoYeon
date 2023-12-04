@@ -82,7 +82,6 @@ const RecruitPage = (props) => {
                 const reversedRecruitments = [...response.data].reverse();
                 setRecruitments(reversedRecruitments);
                 console.log(reversedRecruitments);
-
             })
             .catch(error => console.error('Error fetching recruitments:', error));
     }, []);

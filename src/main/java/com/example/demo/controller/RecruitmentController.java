@@ -38,7 +38,6 @@ public class RecruitmentController {
         } catch (ValidationException e) {
             logger.error("Validation error while creating announcement", e);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-
         } catch (Exception e) {
             logger.error("Error creating announcement", e);
             e.printStackTrace();
@@ -48,7 +47,8 @@ public class RecruitmentController {
 
     //글 목록 불러오기
     @GetMapping("/recruitments")
-    public List<JobProvidersDto> getAllJobProviders() {
+    public List<JobProvidersDto> getAllJobProviders()
+    {
         return recruitmentService.getAlljobProviders();
     }
 

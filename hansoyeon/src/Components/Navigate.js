@@ -2,15 +2,20 @@ import React, { useState, useEffect } from 'react';
 import {Navbar, Nav, Container, Button, Badge, Dropdown } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import styled from "styled-components";
-import {useNavigate} from 'react-router-dom';
+import {useLocation, useNavigate} from 'react-router-dom';
 import logo from '../imgs/logo.png';
 import { useCookies } from 'react-cookie';
 import { useUserStore } from '../stores';
 import defaultProfilePic from '../imgs/default_profile.png';
 import axios from "axios";
+import Payment from "../Pages/Payment";
 
 const Navigate = () => {
+    const { state } = useLocation();
+    const [paymentData, setPaymentData] = useState(null);
+    const [IMP, setIMP] = useState(null);
     const navigate = useNavigate();
+    const [data, setData] = useState([]);
     const [cookies, setCookie, removeCookie] = useCookies(['token']);
     const {user, setUser} = useUserStore();
     const [fetchedUser, setFetchedUser] = useState();
@@ -57,6 +62,74 @@ const Navigate = () => {
             }
         }
     }, []);
+
+    const handlePayment = () => {
+        // 가맹점 식별
+        const { IMP } = window;
+
+        const data = {
+            pg: "html5_inicis",
+            pay_method: "card",
+            merchant_uid: `mid_${new Date().getTime()}`, // 주문번호
+            amount: 100, // 결제 금액
+            name: "한소연 매칭서비스 금액",
+            buyer_name: fetchedUser.companyName,
+            buyer_email: fetchedUser.providerEmail,
+        };
+
+        IMP.request_pay(data, (response) => callback(response, data));
+    };
+    // 결제창 띄우는 기능
+    useEffect(() => {
+        const script = document.createElement("script");
+        script.src = "https://cdn.iamport.kr/js/iamport.payment-1.1.8.js";
+        script.async = true;
+
+        script.onload = () => {
+            setIMP(window.IMP);
+            window.IMP.init("imp64486410");
+        };
+
+        document.body.appendChild(script);
+
+        return () => {
+            document.body.removeChild(script);
+        };
+    }, []);
+    // 결제 성공 여부
+    const callback = async (response, paymentData) => {
+        const { success, error_msg } = response;
+        if (success) {
+            alert("결제 성공");
+            if (paymentData) {
+                try {
+                    await axios.get(`http://localhost:8050/api/saveClass`, {
+                        params: {
+                            email: String(paymentData.buyer_email),
+                            company: String(paymentData.buyer_name),
+                            amount: String(paymentData.amount),
+                            merchant_uid: String(paymentData.merchant_uid), //주문번호
+                            apply_num: String(response.apply_num), //
+                        },
+                    }).then((res) => {
+                        console.log("서버로 부터 받는 데이터: ", res.data);
+                        if (res.data !== "400") {
+                            navigate("/");
+                        } else {
+                            alert("해당 URI는 사용자 정보와 맞지 않습니다. ");
+                        }
+                    });
+                } catch (error) {
+                    console.error("서버에 요청하는 동안 오류 발생, error");
+                }
+            } else {
+                console.error("결제 정보가 부족합니다.");
+            }
+        } else {
+            alert(`결제 실패: ${error_msg}`);
+        }
+        console.log(response);
+    };
 
     const handleLogout = () => {
         removeCookie('token');
@@ -123,8 +196,7 @@ const Navigate = () => {
         navigate("/matchCompany");
     }
     const PaymentButton = () => {
-        navigate("/payment",{state: {fetchedUser}});
-
+        handlePayment();
     }
     const getProfilePicSrc = () => {
         if(userType === "company"){
@@ -159,7 +231,6 @@ const Navigate = () => {
                             <RecruitPageInfo onClick={RecruitPageButton}>모집 일정</RecruitPageInfo>
                             <ReviewButton onClick={ReviewPageButton}>체험 후기</ReviewButton>
                             <AnnouncementPageInfo onClick={AnnouncementListPageButton}>공지 사항</AnnouncementPageInfo>
-                            <PayButton onClick={PaymentButton}>결제</PayButton>
                         </PageNav>
                         <div>
                             {isLoggedIn ? (
@@ -205,16 +276,17 @@ const Navigate = () => {
                                                     </>
                                                 )}
                                                 {userType === 'company' && (
-                                                    <Dropdown.Item onClick={handleBlacklist}>블랙리스트</Dropdown.Item>
+                                                    <>
+                                                        <Dropdown.Item onClick={handleBlacklist}>블랙리스트</Dropdown.Item>
+                                                        <Dropdown.Item onClick={PaymentButton}>결제</Dropdown.Item>
+                                                    </>
                                                 )}
-                                                {userType !== 'company' && userID !== 'admin' ?
+                                                {userType !== 'company' && userID !== 'admin' ? (
                                                     <>
                                                         <Dropdown.Item onClick={handleFriendList}>친구관리</Dropdown.Item>
                                                         <Dropdown.Item onClick={handleScheduler}>스케줄러</Dropdown.Item>
                                                     </>
-                                                    :
-                                                    null
-                                                }
+                                                ) : null}
                                                 <Dropdown.Item onClick={handleLogout}>로그아웃</Dropdown.Item>
                                             </Dropdown.Menu>
                                         </StyledDropdown>
