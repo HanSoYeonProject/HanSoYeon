@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import styled from 'styled-components';
-import { Modal } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
+import {Modal} from 'react-bootstrap';
+import {useNavigate} from 'react-router-dom';
 import axios from 'axios';
 import noImage from '../imgs/noImage.png'
-import { useCookies } from 'react-cookie';
-import { useUserStore } from '../stores';
+import {useCookies} from 'react-cookie';
+import {useUserStore} from '../stores';
 import defaultProfilePic from '../imgs/default_profile.png';
 import useThrottle from "../Components/useThrottle";
 import usePushNotification from "../Components/usePushNotification";
@@ -94,6 +94,7 @@ const ReviewPage = () => {
             try {
                 // 리뷰 데이터 가져오기
                 const reviewResponse = await axios.get('http://localhost:8050/api/reviews');
+                console.log(reviewResponse.data)
                 const reviewsWithCommentCount = await Promise.all(reviewResponse.data.map(async review => {
                     // 각 리뷰에 대해 댓글 수 가져오기
                     const commentResponse = await axios.get(`http://localhost:8050/api/comments/${review.reviewId}`);
@@ -738,3 +739,13 @@ const ApproveButton = styled.button`
 `;
 
 export default ReviewPage;
+
+export const fetchReviewsData = async () => {
+    try {
+        // 리뷰 데이터 가져오기
+        const reviewResponse = await axios.get('http://localhost:8050/api/reviews');
+        return reviewResponse.data.sort((a, b) => b.reviewLikeCount - a.reviewLikeCount);
+    } catch (error) {
+        console.error('Error fetching reviews and comment counts:', error);
+    }
+};
