@@ -29,6 +29,7 @@ import recommend2 from '../imgs/recommendcourse-2.png';
 import Footer from '../Components/Footer';
 import logo from '../imgs/logo-removebg.png';
 import { getRecruitmentsData } from './RecruitPage';
+import { fetchReviewsData } from './ReviewPage';
 
 const dummyReviews = [
     {
@@ -145,6 +146,7 @@ const recruitmentSchedule = [
 const MainPage = () => {
     const [recruitments, setRecruitments] = useState([]);
     const [themeCourses, setThemeCourses] = useState([]); // 추가된 부분
+    const [reviews, setReviews] = useState([]);
 
 
     useEffect(() => {
@@ -155,6 +157,12 @@ const MainPage = () => {
                 console.log(reversedRecruitments);
             })
             .catch((error) => console.error('Error fetching recruitments:', error));
+
+        fetchReviewsData()
+            .then((response) => {
+                setReviews(response.slice(0, 3)); // 상위 3개의 리뷰만 저장
+            })
+            .catch((error) => console.error('Error fetching reviews:', error));
 
         // 추가된 부분: 테마별 코스 데이터 가져오기
         fetchThemeCourses();
@@ -213,11 +221,11 @@ const MainPage = () => {
                 <ReviewContainer>
                     <TitleStyle>체험 후기</TitleStyle>
                     <SubTitleStyle>다양한 체험 후기를 들어보세요</SubTitleStyle>
-                    {dummyReviews.map((review) => (
-                        <ReviewItem key={review.id}>
-                            <h3>{review.title}</h3>
-                            <p>{review.content}</p>
-                            <ReviewInfo>작성자: {review.author} | 작성일: {review.date}</ReviewInfo>
+                    {reviews.map((review) => (
+                        <ReviewItem key={review.reviewId}>
+                            <h3>{review.reviewTitle}</h3>
+                            <p>{review.reviewContent}</p>
+                            <ReviewInfo>작성자: {review.userId} | 작성일: {review.reviewWriteDate}</ReviewInfo>
                         </ReviewItem>
                     ))}
                 </ReviewContainer>

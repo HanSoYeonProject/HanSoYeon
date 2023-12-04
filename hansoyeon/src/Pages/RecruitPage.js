@@ -508,8 +508,13 @@ export default RecruitPage;
 //====================
 export const getRecruitmentsData = async () => {
     try {
+        const currentDate = new Date();
         const response = await axios.get('http://localhost:8050/api/recruitments');
-        return response.data;
+        return response.data.filter(recruitment => {
+            const startDate = new Date(recruitment.startDate);
+            return startDate >= currentDate;
+        }).reverse();
+
     } catch (error) {
         console.error('Error fetching recruitments:', error);
         throw error; // 예외를 호출자에게 전파
