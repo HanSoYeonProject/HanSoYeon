@@ -13,7 +13,7 @@ const Navigate = () => {
     const navigate = useNavigate();
     const [cookies, setCookie, removeCookie] = useCookies(['token']);
     const {user, setUser} = useUserStore();
-
+    const [fetchedUser, setFetchedUser] = useState();
     const isLoggedIn = cookies.token && user;
     const userType = cookies.userType;
     const userID = user ? user.userId : '';
@@ -32,8 +32,8 @@ const Navigate = () => {
                     console.log(cookies.token)
                     // 토큰이 유효한 경우
                     const fetchedUser = response.data;
-                    console.log(fetchedUser)
-
+                    setFetchedUser(fetchedUser);
+                    console.log(fetchedUser);
                 }).catch(error => {
                     // 토큰이 유효하지 않은 경우
                     console.error("Token verification failed:", error);
@@ -48,7 +48,6 @@ const Navigate = () => {
                     console.log(cookies.token)
                     // 토큰이 유효한 경우
                     const fetchedUser = response.data;
-                    console.log(fetchedUser)
                     setUser(fetchedUser);
                 }).catch(error => {
                     // 토큰이 유효하지 않은 경우
@@ -58,7 +57,6 @@ const Navigate = () => {
             }
         }
     }, []);
-
 
     const handleLogout = () => {
         removeCookie('token');
@@ -124,6 +122,10 @@ const Navigate = () => {
     const handleCompanyApplyManage = () => {
         navigate("/matchCompany");
     }
+    const PaymentButton = () => {
+        navigate("/payment",{state: {fetchedUser}});
+
+    }
     const getProfilePicSrc = () => {
         if(userType === "company"){
             if (user.providerProfile === "hansoyeon/src/imgs/default_profile.png" || !user.providerProfile) {
@@ -136,7 +138,7 @@ const Navigate = () => {
             }
             return user.userProfile;
         }
-    };
+    }
 
     return (
         <TopNav>
@@ -157,6 +159,7 @@ const Navigate = () => {
                             <RecruitPageInfo onClick={RecruitPageButton}>모집 일정</RecruitPageInfo>
                             <ReviewButton onClick={ReviewPageButton}>체험 후기</ReviewButton>
                             <AnnouncementPageInfo onClick={AnnouncementListPageButton}>공지 사항</AnnouncementPageInfo>
+                            <PayButton onClick={PaymentButton}>결제</PayButton>
                         </PageNav>
                         <div>
                             {isLoggedIn ? (
@@ -367,5 +370,11 @@ const AnnouncementPageInfo = styled.button`
   font-size: 24px;
   color: #D1774C;
 `
-
+const PayButton = styled.div`
+  border: none;
+  background-color: white;
+  font-weight: 600;
+  font-size: 24px;
+  color: #D1774C;
+`
 export default Navigate;
