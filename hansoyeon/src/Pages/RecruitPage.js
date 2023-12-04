@@ -8,6 +8,8 @@ import {useUserStore} from "../stores";
 import Pagination from '../Components/Pagination';
 import Footer from "../Components/Footer";
 
+
+
 const RecruitPage = (props) => {
     const navigate = useNavigate();
     const [cookies, setCookie, removeCookie] = useCookies(['token']);
@@ -502,3 +504,16 @@ const Bb = styled.div`
 
 
 export default RecruitPage;
+
+//====================
+export const getRecruitmentsData = async () => {
+    try {
+        const response = await axios.get('http://localhost:8050/api/recruitments');
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching recruitments:', error);
+        throw error; // 예외를 호출자에게 전파
+    }
+};
+
+//====================

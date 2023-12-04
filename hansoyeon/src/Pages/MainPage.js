@@ -1,13 +1,12 @@
-import React, {useState, useCallback, useEffect} from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-
-//swiper App.css에 추가한후 import
-import {Swiper, SwiperSlide} from 'swiper/react';     //swiper 사용할 import
-import {Autoplay, Pagination} from 'swiper/modules';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Autoplay, Pagination } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
-import '../App.css';
+import axios from 'axios';
+import SwiperCore from 'swiper';
 import theme1 from '../imgs/themecourse1.jpg';
 import theme2 from '../imgs/themecourse2.jpg';
 import theme3 from '../imgs/themecourse3.jpg';
@@ -28,372 +27,262 @@ import recruitment1 from '../imgs/recruitment1.png';
 import recommend1 from '../imgs/recommendcourse-1.png';
 import recommend2 from '../imgs/recommendcourse-2.png';
 import Footer from '../Components/Footer';
-import logo from "../imgs/logo-removebg.png";
-import navigate from "../Components/Navigate";
-//리뷰 Test 데이터
+import logo from '../imgs/logo-removebg.png';
+import { getRecruitmentsData } from './RecruitPage';
+
 const dummyReviews = [
     {
         id: 1,
-        title: "멋진 경험이었습니다!",
-        content: "가이드분이 너무 친절하셨고, 경치도 환상적이었어요. 다음에 또 방문하고 싶습니다.",
-        author: "홍길동",
-        date: "2023-01-01"
+        title: '멋진 경험이었습니다!',
+        content: '가이드분이 너무 친절하셨고, 경치도 환상적이었어요. 다음에 또 방문하고 싶습니다.',
+        author: '홍길동',
+        date: '2023-01-01',
     },
     {
         id: 2,
-        title: "가족과 함께한 최고의 여행",
-        content: "아이들과 함께 갔는데 모두가 즐거워했습니다. 추천해요!",
-        author: "김철수",
-        date: "2023-02-15"
+        title: '가족과 함께한 최고의 여행',
+        content: '아이들과 함께 갔는데 모두가 즐거워했습니다. 추천해요!',
+        author: '김철수',
+        date: '2023-02-15',
     },
     {
         id: 3,
-        title: "다시 오고 싶은 곳",
-        content: "서비스도 좋았고, 특히 음식이 맛있었습니다. 여행의 즐거움을 더해주는 곳이었어요.",
-        author: "이영희",
-        date: "2023-03-20"
-    }
+        title: '다시 오고 싶은 곳',
+        content: '서비스도 좋았고, 특히 음식이 맛있었습니다. 여행의 즐거움을 더해주는 곳이었어요.',
+        author: '이영희',
+        date: '2023-03-20',
+    },
 ];
 
+SwiperCore.use([Autoplay, Pagination]);
 
-//===============================페이지 UI========================================
+const MainContainer = styled.div`
+  font-family: 'Apple SD Gothic Neo', 'Arial', sans-serif;
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f8f8f8;
+`;
 
-const MainPage = ({responseData}) => {
+const SectionContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: auto;
+  border: 1px solid #e1e1e1;
+  margin-bottom: 40px;
+  background-color: #ffffff;
+  overflow: hidden;
+  border-radius: 12px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+`;
 
-    const CompanyData = responseData;
+const TitleStyle = styled.h1`
+  color: #000000;
+  margin: 20px 0;
+`;
+
+const SubTitleStyle = styled.div`
+  font-weight: bolder;
+  margin: 0 0 20px;
+  color: #555555;
+`;
+
+const SwiperContainer = styled.div`
+  padding: 20px;
+`;
+
+const SlideImage = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 12px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+`;
+
+const ReviewContainer = styled.div`
+  border: 1px solid #e1e1e1;
+  border-radius: 12px;
+  overflow: hidden;
+  padding: 20px;
+  margin-bottom: 40px;
+  background-color: #ffffff;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+`;
+
+const ReviewItem = styled.div`
+  margin-bottom: 20px;
+`;
+
+const ReviewInfo = styled.p`
+  margin-top: 10px;
+  font-size: 14px;
+  color: #777777;
+`;
+
+const recruitmentSchedule = [
+    {
+        id: 1,
+        title: '모집 시작',
+        date: '2023-05-01',
+    },
+    {
+        id: 2,
+        title: '서류 제출 마감',
+        date: '2023-05-15',
+    },
+    {
+        id: 3,
+        title: '면접 일정 안내',
+        date: '2023-05-20',
+    },
+    {
+        id: 4,
+        title: '최종 합격자 발표',
+        date: '2023-06-01',
+    },
+];
+
+const MainPage = () => {
+    const [recruitments, setRecruitments] = useState([]);
+    const [themeCourses, setThemeCourses] = useState([]); // 추가된 부분
+
+
+    useEffect(() => {
+        getRecruitmentsData()
+            .then((response) => {
+                const reversedRecruitments = [...response];
+                setRecruitments(reversedRecruitments);
+                console.log(reversedRecruitments);
+            })
+            .catch((error) => console.error('Error fetching recruitments:', error));
+
+        // 추가된 부분: 테마별 코스 데이터 가져오기
+        fetchThemeCourses();
+    }, []);
+
+    // 추가된 함수: 테마별 코스 데이터 가져오기
+
+    const fetchThemeCourses = async () => {
+        try {
+            // 테마별 코스를 불러오는 API 요청 수행
+            const themeCoursesUrl = 'your-theme-courses-api-url';
+            const themeCoursesResponse = await axios.get(themeCoursesUrl);
+            const themeCoursesData = themeCoursesResponse.data;
+
+            // 받아온 데이터를 상태에 업데이트
+            setThemeCourses(themeCoursesData);
+        } catch (error) {
+            console.error('Error fetching theme courses:', error);
+        }
+    };
+
 
     return (
         <div>
             <MainContainer>
-                <NewCourseContainer>
-                    <NewCourseTitle><h1>테마별 코스</h1></NewCourseTitle>
-                    <NewCourseSubTitle>원하는 테마를 선택하기</NewCourseSubTitle>
-                    <NewCourseImage>
-                        <>
-                            <Swiper
-                                slidesPerView={3}
-                                spaceBetween={30}
-                                modules={[Pagination, Autoplay]} // Autoplay 모듈 추가
-                                className="mySwiper"
-                                autoplay={{
-                                    delay: 2000, // 2초마다 슬라이드
-                                    disableOnInteraction: false // 사용자가 슬라이더를 조작한 후에도 자동 재생 계속
-                                }}
-                                speed={1300} // 슬라이드 전환 속도를 1.3초로 설정
-                                // pagination 속성 제거
-                            >
-                                <SwiperSlide><img src={theme1} style={{width: '340px'}}/></SwiperSlide>
-                                <SwiperSlide><img src={theme2} style={{width: '340px'}}/></SwiperSlide>
-                                <SwiperSlide><img src={theme3} style={{width: '340px'}}/></SwiperSlide>
-                                <SwiperSlide><img src={theme4} style={{width: '340px'}}/></SwiperSlide>
-                                <SwiperSlide><img src={theme5} style={{width: '340px'}}/></SwiperSlide>
-                                <SwiperSlide><img src={theme6} style={{width: '340px'}}/></SwiperSlide>
-                                <SwiperSlide><img src={theme7} style={{width: '340px'}}/></SwiperSlide>
-                                <SwiperSlide><img src={theme8} style={{width: '340px'}}/></SwiperSlide>
-                            </Swiper>
-                        </>
-                    </NewCourseImage>
-                </NewCourseContainer>
+                <SectionContainer>
+                    <TitleStyle>테마별 코스</TitleStyle>
+                    <SubTitleStyle>원하는 테마를 선택하세요</SubTitleStyle>
+                    <Link to={`/newcourse`}>
+                    <SwiperSection
+                        images={[theme1, theme2, theme3, theme4, theme5, theme6, theme7, theme8]} />
+                    </Link>
+                </SectionContainer>
 
-                <NewCourseContainer>
-                    <NewCourseTitle><h1>지역별 코스</h1></NewCourseTitle>
-                    <NewCourseSubTitle>지역별로 분류된 코스</NewCourseSubTitle>
-                    <NewCourseImage>
-                        <>
-                            <Swiper
-                                slidesPerView={3}
-                                spaceBetween={30}
-                                modules={[Pagination, Autoplay]} // Autoplay 모듈 추가
-                                className="mySwiper"
-                                autoplay={{
-                                    delay: 2000, // 2초마다 슬라이드
-                                    disableOnInteraction: false // 사용자가 슬라이더를 조작한 후에도 자동 재생 계속
-                                }}
-                                speed={1300} // 슬라이드 전환 속도를 1.3초로 설정
-                                // pagination 속성 제거
-                            >
-                                <SwiperSlide><img src={region1} style={{width: '340px'}}/></SwiperSlide>
-                                <SwiperSlide><img src={region2} style={{width: '340px'}}/></SwiperSlide>
-                                <SwiperSlide><img src={region3} style={{width: '340px'}}/></SwiperSlide>
-                                <SwiperSlide><img src={region4} style={{width: '340px'}}/></SwiperSlide>
-                                <SwiperSlide><img src={region5} style={{width: '340px'}}/></SwiperSlide>
-                                <SwiperSlide><img src={region6} style={{width: '340px'}}/></SwiperSlide>
-                                <SwiperSlide><img src={region7} style={{width: '340px'}}/></SwiperSlide>
-                                <SwiperSlide><img src={region8} style={{width: '340px'}}/></SwiperSlide>
-                            </Swiper>
-                        </>
-                    </NewCourseImage>
-                </NewCourseContainer>
-                
-                <ThemaCourseContainer>
-                    <ThemaCourseTitle><h1>모집 일정</h1></ThemaCourseTitle>
-                    <ThemaCourseSubTitle>원하는 테마별로 분류된 코스</ThemaCourseSubTitle>
-                    <ThemaCouseImage>
+                <SectionContainer>
+                    <TitleStyle>지역별 코스</TitleStyle>
+                    <SubTitleStyle>지역별로 분류된 코스</SubTitleStyle>
+                    <Link to={`/newcourse`}>
+                    <SwiperSection images={[region1, region2, region3, region4, region5, region6, region7, region8]} />
+                    </Link>
+                </SectionContainer>
 
-                        <>
-                            <Swiper
-                                slidesPerView={3}
-                                spaceBetween={30}
-                                modules={[Pagination, Autoplay]} // Autoplay 모듈 추가
-                                className="mySwiper"
-                                autoplay={{
-                                    delay: 2000, // 2초마다 슬라이드
-                                    disableOnInteraction: false // 사용자가 슬라이더를 조작한 후에도 자동 재생 계속
-                                }}
-                                speed={1300} // 슬라이드 전환 속도를 1.3초로 설정
-                                // pagination 속성 제거
-                            >
-                                <SwiperSlide><img src={recruitment1} style={{width: '340px'}}/></SwiperSlide>
-                                <SwiperSlide><img src={theme1} style={{width: '340px'}}/></SwiperSlide>
-                                <SwiperSlide><img src={theme1} style={{width: '340px'}}/></SwiperSlide>
-                                <SwiperSlide><img src={theme1} style={{width: '340px'}}/></SwiperSlide>
-                            </Swiper>
-                        </>
+                <SectionContainer>
+                    <TitleStyle>모집일정</TitleStyle>
+                    <RecruitmentSchedule
+                        schedule={recruitments
+                            .slice(0, 5)
+                            .map((recruitment) => ({
+                                id: recruitment.job_id,
+                                title: recruitment.title,
+                                date: recruitment.startDate,
+                            }))}
+                    />
+                </SectionContainer>
 
-                    </ThemaCouseImage>
-                </ThemaCourseContainer>
-
-                <RegionalCourseContainer>
-                    <RegionalCourseTitle><h1>지역별 코스</h1></RegionalCourseTitle>
-                    <RegionalCourseSubTitle>원하는 테마별로 분류된 코스</RegionalCourseSubTitle>
-                    <RegionalCouseImage>
-
-                        <>
-                            <Swiper
-                                slidesPerView={3}
-                                spaceBetween={30}
-                                modules={[Pagination, Autoplay]} // Autoplay 모듈 추가
-                                className="mySwiper"
-                                autoplay={{
-                                    delay: 2000, // 2초마다 슬라이드
-                                    disableOnInteraction: false // 사용자가 슬라이더를 조작한 후에도 자동 재생 계속
-                                }}
-                                speed={1300} // 슬라이드 전환 속도를 1.3초로 설정
-                                // pagination 속성 제거
-                            >
-                                <SwiperSlide><img src={theme1} style={{width: '340px'}}/></SwiperSlide>
-                                <SwiperSlide><img src={theme1} style={{width: '340px'}}/></SwiperSlide>
-                                <SwiperSlide><img src={theme1} style={{width: '340px'}}/></SwiperSlide>
-                                <SwiperSlide><img src={theme1} style={{width: '340px'}}/></SwiperSlide>
-
-                            </Swiper>
-                        </>
-
-                    </RegionalCouseImage>
-                </RegionalCourseContainer>
-                
                 <ReviewContainer>
-                    <ReviewTitle>체험 후기</ReviewTitle>
-                    <ReviewSubTitle>다양한 체험 후기를 들어보세요</ReviewSubTitle>
-                    <ReviewContext>
-
-                        {dummyReviews.map(review => (
-                            <Review
-                                key={review.id}
-                                title={review.title}
-                                content={review.content}
-                                author={review.author}
-                                date={review.date}
-                            />
-                        ))}
-
-                    </ReviewContext>
+                    <TitleStyle>체험 후기</TitleStyle>
+                    <SubTitleStyle>다양한 체험 후기를 들어보세요</SubTitleStyle>
+                    {dummyReviews.map((review) => (
+                        <ReviewItem key={review.id}>
+                            <h3>{review.title}</h3>
+                            <p>{review.content}</p>
+                            <ReviewInfo>작성자: {review.author} | 작성일: {review.date}</ReviewInfo>
+                        </ReviewItem>
+                    ))}
                 </ReviewContainer>
-                <Footer/>
             </MainContainer>
+            <Footer />
         </div>
     );
 };
 
-//==============================================페이지 CSS===================================================
-//=================페이지전체 컨테이너==============
-const MainContainer = styled.div`
-  font-family: 'Arial', sans-serif;
-`
-
-//==================구글맵 css===================
-const containerStyle = {    //지도크기 css
-    width: '100%',
-    // height: '400px',
-    flex:1
-};
-
-const GoogleMapContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 800px;
-`
-// 제목 스타일 공통으로 적용
-const TitleStyle = styled.div`
-  font-size: 24px;       // 통일된 글씨 크기
-  margin-left: 20px;     // 왼쪽 마진 추가
-  background-color: white;
-`;
-
-const SubTitleStyle = styled.div`
-  font-size: 18px;       // 부제목 글씨 크기
-  background-color: white;
-  margin-top: -10px;     // 제목과의 간격 조정
-`;
-// =============================================
-//==================신규코스 css==================
-const NewCourseContainer = styled.div`
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  height: 500px;
-  border-bottom: 1px solid gray;
-  padding-left: 50px;
-`
-
-const NewCourseTitle = styled.div`
-  display: flex;
-  flex: 2;
-  background-color: white;
-  margin-top: 30px;
-  margin-bottom: -40px;
-  color: #D1774C;
-`
-const NewCourseSubTitle = styled.div`
-  display: flex;
-  flex: 1;
-  background-color: white;
-  padding-top: 0;
-  font-weight: bolder;
-`
-
-const NewCourseImage = styled.div`
-  display: flex;
-  flex: 7;
-  background-color: white;
-`
-//==============================================
-//==================추천코스 css===================
-const RecommendCourseContainer = styled.div`
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  height: 340px;
-  padding-left: 50px;
-`
-const RecommendCourseTitle = styled.div`
-  display: flex;
-  flex: 2;
-  background-color: white;
-  margin-top: 30px;
-  margin-bottom: -40px;
-  color: #D1774C;
-`
-const RecommendCourseSubTitle = styled.div`
-  display: flex;
-  flex: 1;
-  background-color: white;
-  font-weight: bolder;
-`
-const RecommendCourseImage = styled.div`
-  display: flex;
-  flex: 4;
-`
-//==============================================
-//==============테마별코스=========================
-const ThemaCourseContainer = styled.div`
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  height: 500px;
-  border: 1px solid gray;
-  padding-left: 50px;
-`
-const ThemaCourseTitle = styled.div`
-  display: flex;
-  flex: 2;
-  background-color: white;
-  margin-top: 30px;
-  margin-bottom: -40px;
-  color: #D1774C;
-`
-const ThemaCourseSubTitle = styled.div`
-  display: flex;
-  flex: 1;
-  background-color: white;
-  font-weight: bolder;
-`
-const ThemaCouseImage = styled.div`
-  display: flex;
-  flex: 7;
-`
-//==============================================
-//==================지역별 코스 css=================
-const RegionalCourseContainer = styled.div`
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  height: 500px;
-  border: 1px solid gray;
-  padding-left: 50px;
-`
-const RegionalCourseTitle = styled.div`
-  display: flex;
-  flex: 2;
-  background-color: white;
-  margin-top: 30px;
-  margin-bottom: -40px;
-  color: #D1774C;
-`
-const RegionalCourseSubTitle = styled.div`
-  display: flex;
-  flex: 1;
-  background-color: white;
-  font-weight: bolder;
-`
-const RegionalCouseImage = styled.div`
-  display: flex;
-  flex: 7;
-`
-//==============================================
-//====================체험후기====================
-const ReviewContainer = styled.div`
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  height: 570px;
-  background-color: white;
-  border: 1px solid grey;
-  padding-left: 50px;
-`
-const ReviewTitle = styled.div`
-  display: flex;
-  flex: 2;
-  background-color: white;
-  margin-top: 30px;
-  margin-bottom: -40px;
-  font-size: 40px;
-  color: #D1774C;
-`
-const ReviewSubTitle = styled.div`
-  display: flex;
-  flex: 1;
-  background-color: white;
-  font-weight: bolder;
-`
-const ReviewContext = styled.div`
-  display: flex;
-  flex-direction: column;
-  flex: 7;
-  background-color: white;
-`
-const Review = ({ title, content, author, date }) => {
+const SwiperSection = ({ images }) => {
     return (
-        <div style={{marginBottom: '20px'}}>
-            <h3>{title}</h3>
-            <p>{content}</p>
-            <p>작성자: {author} | 작성일: {date}</p>
+        <SwiperContainer>
+            <Swiper
+                slidesPerView={3}
+                spaceBetween={30}
+                modules={[Pagination, Autoplay]}
+                className="mySwiper"
+                autoplay={{
+                    delay: 2000,
+                    disableOnInteraction: false,
+                }}
+                speed={1300}
+            >
+                {images.map((image, index) => (
+                    <SwiperSlide key={index}>
+                        <SlideImage src={image} alt={`slide-${index}`} />
+                    </SwiperSlide>
+                ))}
+            </Swiper>
+        </SwiperContainer>
+    );
+};
+
+const RecruitmentSchedule = ({ schedule }) => {
+    return (
+        <div>
+            {schedule.map((item) => (
+                <RecruitmentItem key={item.id}>
+                    <Link to={`/recruit/${item.id}`}>
+                        <RecruitmentTitle>{item.title}</RecruitmentTitle>
+                    </Link>
+                    <Link to={`/recruit/${item.id}`}>
+                        <RecruitmentDate>{item.date}</RecruitmentDate>
+                    </Link>
+                </RecruitmentItem>
+            ))}
         </div>
     );
-}
+};
 
+const RecruitmentItem = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #e1e1e1;
+`;
 
-//==============================================
+const RecruitmentTitle = styled.div`
+  font-weight: bold;
+  color: #000000;
+`;
+
+const RecruitmentDate = styled.div`
+  color: #666666;
+`;
 
 export default MainPage;
