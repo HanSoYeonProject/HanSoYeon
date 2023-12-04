@@ -318,7 +318,7 @@ const BottomContent = styled.div`
   position: relative;
   overflow: hidden;
   transition: background-color 0.1s ease;
-  height: 100%; /* Increase the height to 100% */
+  height: 100%;
 
   &:hover {
     background-color: #eee;
@@ -328,6 +328,9 @@ const BottomContent = styled.div`
   h4 {
     font-size: 18px;
     margin: 0;
+    white-space: nowrap; /* 변경: 텍스트가 다음 줄로 넘어가지 않도록 설정 */
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   img {
@@ -343,7 +346,6 @@ const BottomContent = styled.div`
   }
 `;
 
-
 const BottomMain = styled.div`
   display: flex;
   flex: 1;
@@ -351,7 +353,7 @@ const BottomMain = styled.div`
   border-radius: 10px;
   border: 2px solid #d6d6d6;
   width: 100%;
-  height: 100%; /* Increase the height to 100% */
+  height: 100%;
   padding: 10px;
   box-sizing: border-box;
   position: relative;
@@ -365,8 +367,12 @@ const BottomMain = styled.div`
   h3,
   h4 {
     font-size: 10px;
+    white-space: nowrap; /* 변경: 텍스트가 다음 줄로 넘어가지 않도록 설정 */
+    overflow: hidden;
+    text-overflow: ellipsis;
     transition: background-color 0.3s ease;
   }
+
   img {
     width: 100%;
     height: 50%;
@@ -382,7 +388,7 @@ const BottomMain = styled.div`
 const ImgContainer = styled.div`
   display: flex;
   flex: 5;
-  height: 100px;
+  height: 200px;
 `
 const WritingButton = styled.button`
   width: 300px;
@@ -393,57 +399,6 @@ const WritingButton = styled.button`
 
 const PaginationContainer = styled.div`
 `;
-const Upimage = styled.div`
-  display: flex;
-  flex : 1;
-  height: 100px;
-  align-items: center;
-  width: 100%; /* Change to 100% to take the full width */
-  margin-bottom: -25px;
-  object-fit: cover; /* 이미지 비율 유지를 위한 설정 */
-`;
-const Footer1Container = styled.div`
-  display: flex;
-  flex : 3;
-`
-const Footer2Container = styled.div`
-  display: flex;
-  height: 100px;
-  flex : 7;
-  margin-bottom: -50px;
-`
-
-const Footer1Image = styled.div`
-  display: flex;
-  img {
-    width: 50px;
-    height: auto;
-  }
-`;
-
-const Footer2Image = styled.div`
-  display: flex;
-  flex-direction: row;
-  flex: 1;
-  img {
-    width: 60px;
-    height: auto; /* 높이 자동 조절 */
-  }
-`;
-const Aa = styled.div`
-  height: 50px;
-  flex: 5;
-  display: flex;
-  justify-content: flex-start;
-  margin-top: -1.3rem;
-`
-const Bb = styled.div`
-  flex: 5;
-  height: 100px;
-  display: flex;
-  justify-content: flex-end;
-  margin-top: -3.5rem;
-`
 
 
 

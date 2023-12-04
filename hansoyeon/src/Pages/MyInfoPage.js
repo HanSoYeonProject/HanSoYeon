@@ -8,6 +8,7 @@ import axios from "axios";
 import {Badge} from "react-bootstrap";
 import logo from "../imgs/seungjun.jpg";
 import iu from "../imgs/iu2.jpeg"
+import Footer from "../Components/Footer";
 
 const MyInfoPage = (props) => {
     const navigate = useNavigate();
@@ -133,15 +134,19 @@ const MyInfoPage = (props) => {
                     <LargeImage src={logo} alt="logo" />
                 </ImageBox>
             </BoxContainer>
+            <StyledFooter>
+            <Footer />
+            </StyledFooter>
         </StyledContainer>
     );
 };
 
 const StyledContainer = styled.div`
   display: flex;
+  flex-direction: column; /* 수직 방향으로 컨테이너 아이템 정렬 */
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  height: 90vh;
 `;
 
 const BoxContainer = styled.div`
@@ -149,7 +154,7 @@ const BoxContainer = styled.div`
   justify-content: space-around;
   align-items: center;
   width: 100%;
-  max-width: 1000px; 
+  max-width: 1000px;
   margin: 0 auto;
 `;
 
@@ -282,6 +287,13 @@ const SelfIntroductionTextarea = styled.textarea`
     outline: none; 
     border-color: #F7E600; 
   }
+`;
+
+const StyledFooter = styled.footer`
+  padding: 10px;
+  text-align: center;
+  width: 100%;
+  margin-top: auto; /* 다른 요소 아래에 위치하도록 설정 */
 `;
 
 

@@ -1,20 +1,21 @@
-import React, {useEffect, useState} from 'react';
-import {Form, Button, InputGroup} from 'react-bootstrap';
+import React, { useEffect, useState } from 'react';
+import { Form, Button, InputGroup } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import styled from 'styled-components';
-import {useNavigate} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import logo from "../imgs/logo2.png";
-import kakao from "../imgs/kakao.png"
-import google from "../imgs/google.png"
-import company from "../imgs/company.png"
-import member from "../imgs/member.png"
+import kakao from "../imgs/kakao.png";
+import google from "../imgs/google.png";
+import company from "../imgs/company.png";
+import member from "../imgs/member.png";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {faArrowLeft, faEye, faEyeSlash} from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import axios from "axios";
-import {useCookies} from "react-cookie";
-import {useUserStore} from "../stores";
+import { useCookies } from "react-cookie";
+import { useUserStore } from "../stores";
+import Footer from "../Components/Footer";
 
-const SigninPage = (props) => {
+const SigninPage = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [showMemberForm, setShowMemberForm] = useState(false);
     const [showCompanyForm, setShowCompanyForm] = useState(false);
@@ -26,7 +27,7 @@ const SigninPage = (props) => {
     const [providerPassword, setProviderPassword] = useState('');
 
     const [cookies, setCookies] = useCookies();
-    const {user, setUser} = useUserStore();
+    const { user, setUser } = useUserStore();
 
     const [isKakaoSdkLoaded, setIsKakaoSdkLoaded] = useState(false);
     const [userEmail, setUserEmail] = useState('');
@@ -52,13 +53,12 @@ const SigninPage = (props) => {
     }, []);
 
     const handleKakaoLoginImageClick = () => {
-
-        if (window.Kakao && window.Kakao.isInitialized()) { // Kakao SDK 초기화 확인
+        if (window.Kakao && window.Kakao.isInitialized()) {
             window.Kakao.Auth.login({
-                success: function(authObj) {
+                success: function (authObj) {
                     window.Kakao.API.request({
                         url: '/v2/user/me',
-                        success: function(response) {
+                        success: function (response) {
                             const userEmail = response.kakao_account?.email;
                             if (userEmail) {
                                 setUserEmail("(kakao)" + userEmail);
@@ -67,12 +67,12 @@ const SigninPage = (props) => {
                                 console.log("이메일 정보를 가져올 수 없습니다.");
                             }
                         },
-                        fail: function(error) {
+                        fail: function (error) {
                             console.log(error);
                         },
                     });
                 },
-                fail: function(err) {
+                fail: function (err) {
                     console.log(err);
                 },
             });
@@ -82,7 +82,7 @@ const SigninPage = (props) => {
     };
 
     const handleLogin = () => {
-        if(userId.length === 0 || userPassword.length === 0){
+        if (userId.length === 0 || userPassword.length === 0) {
             alert('아이디와 비밀번호를 입력하세요');
             return;
         }
@@ -90,11 +90,11 @@ const SigninPage = (props) => {
         const data = {
             userId,
             userPassword
-        }
+        };
         axios.post("http://localhost:8050/api/auth/signIn", data).then((response) => {
             const responseData = response.data;
             console.log(responseData);
-            if(!responseData.result){
+            if (!responseData.result) {
                 alert('아이디 또는 비밀번호가 일치하지 않습니다. ');
                 return;
             }
@@ -102,17 +102,17 @@ const SigninPage = (props) => {
             const expires = new Date();
             expires.setMilliseconds(expires.getMilliseconds() + exprTime);
 
-            setCookies('token', token, {expires});
-            setCookies('userType', userType, {expires});
+            setCookies('token', token, { expires });
+            setCookies('userType', userType, { expires });
             setUser(user);
             navigate("/");
         }).catch((error) => {
-            alert('로그인에 실패했습니다. ')
-        })
+            alert('로그인에 실패했습니다. ');
+        });
     };
 
     const handleCompanyLogin = () => {
-        if(providerId.length === 0 || providerPassword.length === 0){
+        if (providerId.length === 0 || providerPassword.length === 0) {
             alert('아이디와 비밀번호를 입력하세요');
             return;
         }
@@ -120,11 +120,11 @@ const SigninPage = (props) => {
         const data = {
             providerId,
             providerPassword
-        }
+        };
         axios.post("http://localhost:8050/api/auth/signIn/company", data).then((response) => {
             const responseData = response.data;
             console.log(responseData);
-            if(!responseData.result){
+            if (!responseData.result) {
                 alert('아이디 또는 비밀번호가 일치하지 않습니다. ');
                 return;
             }
@@ -132,13 +132,13 @@ const SigninPage = (props) => {
             const expires = new Date();
             expires.setMilliseconds(expires.getMilliseconds() + exprTime);
 
-            setCookies('token', token, {expires});
-            setCookies('userType', userType, {expires});
+            setCookies('token', token, { expires });
+            setCookies('userType', userType, { expires });
             setUser(user);
-            navigate("/")
+            navigate("/");
         }).catch((error) => {
-            alert('로그인에 실패했습니다. ')
-        })
+            alert('로그인에 실패했습니다. ');
+        });
     };
 
     const handleKakaoLogin = (userEmail) => {
@@ -163,9 +163,8 @@ const SigninPage = (props) => {
             });
     };
 
-
     const handleSignUp = () => {
-        navigate("/register")
+        navigate("/register");
     };
 
     const togglePasswordVisibility = () => {
@@ -185,122 +184,148 @@ const SigninPage = (props) => {
         setShowMemberForm(false);
     };
 
+    return (
+        <PageContainer>
+            <ContentContainer>
+                {(!showMemberForm && !showCompanyForm) && (
+                    <>
+                        <Title>로그인</Title>
+                        <ImageContainer>
+                            <UserImg onClick={handleCompanyImageClick}>
+                                <SelectImg alt="company" src={company} />
+                            </UserImg>
+                            <UserImg onClick={handleMemberImageClick}>
+                                <SelectImg alt="member" src={member} />
+                            </UserImg>
+                        </ImageContainer>
+                    </>
+                )}
+                {(showMemberForm && !showCompanyForm) && (
+                    <>
+                        <FormBox>
+                            <BackButton onClick={handleBack}>
+                                <FontAwesomeIcon icon={faArrowLeft} />
+                            </BackButton>
+                            <LogoImg src={logo} alt="Logo" />
+                            <Form>
+                                <StyledFormGroup controlId="formBasicId">
+                                    <StyledFormControl
+                                        type="text"
+                                        placeholder="아이디 입력"
+                                        onChange={(e) => setUserId(e.target.value)}
+                                    />
+                                </StyledFormGroup>
 
-    if (!showMemberForm && !showCompanyForm) {
-        return (
-            <StyledContainer>
-                <Title>로그인</Title>
-                <ImageContainer>
-                    <UserImg onClick={handleCompanyImageClick}>
-                        <SelectImg alt="company" src={company} />
-                    </UserImg>
-                    <UserImg onClick={handleMemberImageClick}>
-                        <SelectImg alt="member" src={member} />
-                    </UserImg>
-                </ImageContainer>
-            </StyledContainer>
-        );
-    }else if(showMemberForm && !showCompanyForm){
-        return (
-            <StyledContainer>
-                <FormBox>
-                    <BackButton onClick={handleBack}>
-                        <FontAwesomeIcon icon={faArrowLeft} />
-                    </BackButton>
-                    <LogoImg src={logo} alt="Logo" />
-                    <Form>
-                        <StyledFormGroup controlId="formBasicId">
-                            <StyledFormControl
-                                type="text"
-                                placeholder="아이디 입력"
-                                onChange={(e) => setUserId(e.target.value)}
-                            />
-                        </StyledFormGroup>
+                                <StyledFormGroup controlId="formBasicPassword">
+                                    <InputGroup>
+                                        <StyledFormControl
+                                            type={showPassword ? "text" : "password"}
+                                            placeholder="비밀번호 입력"
+                                            onChange={(e) => setUserPassword(e.target.value)}
+                                        />
+                                        <InputGroup.Text onClick={togglePasswordVisibility} style={{ borderLeft: 'none', cursor: 'pointer' }}>
+                                            <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
+                                        </InputGroup.Text>
+                                    </InputGroup>
+                                </StyledFormGroup>
 
-                        <StyledFormGroup controlId="formBasicPassword">
-                            <InputGroup>
-                                <StyledFormControl
-                                    type={showPassword ? "text" : "password"}
-                                    placeholder="비밀번호 입력"
-                                    onChange={(e) => setUserPassword(e.target.value)}
-                                />
-                                <InputGroup.Text onClick={togglePasswordVisibility} style={{ borderLeft: 'none', cursor: 'pointer' }}>
-                                    <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
-                                </InputGroup.Text>
-                            </InputGroup>
-                        </StyledFormGroup>
+                                <StyledButton variant="primary" type="button" onClick={handleLogin}>
+                                    로그인
+                                </StyledButton>
 
-                        <StyledButton variant="primary" type="button" onClick={handleLogin}>
-                            로그인
-                        </StyledButton>
+                                <Divider>또는</Divider>
+                                <UserImg type="button" onClick={handleKakaoLoginImageClick}>
+                                    <KakaoImg alt="kakao" src={kakao} />
+                                </UserImg>
+                                <UserImg >
+                                    <GoogleImg alt="google" src={google} />
+                                </UserImg>
+                            </Form>
+                            <NavigationLinks>
+                                <NavLink>아이디 찾기</NavLink>
+                                <NavLinkDivider>•</NavLinkDivider>
+                                <NavLink href="#find-password">비밀번호 찾기</NavLink>
+                                <NavLinkDivider>•</NavLinkDivider>
+                                <NavLink onClick={handleSignUp}>회원가입</NavLink>
+                            </NavigationLinks>
+                        </FormBox>
+                    </>
+                )}
+                {(!showMemberForm && showCompanyForm) && (
+                    <>
+                        <FormBox>
+                            <BackButton onClick={handleBack}>
+                                <FontAwesomeIcon icon={faArrowLeft} />
+                            </BackButton>
+                            <LogoImg src={logo} alt="Logo" />
+                            <Form>
+                                <StyledFormGroup controlId="formBasicId">
+                                    <StyledFormControl
+                                        type="text"
+                                        placeholder="기업 아이디 입력"
+                                        onChange={(e) => setProviderId(e.target.value)}
+                                    />
+                                </StyledFormGroup>
 
-                        <Divider>또는</Divider>
-                        <UserImg type="button" onClick={handleKakaoLoginImageClick}>
-                            <KakaoImg alt="kakao" src={kakao} />
-                        </UserImg>
-                        <UserImg >
-                            <GoogleImg alt="google" src={google} />
-                        </UserImg>
-                    </Form>
-                    <NavigationLinks>
-                        <NavLink>아이디 찾기</NavLink>
-                        <NavLinkDivider>•</NavLinkDivider>
-                        <NavLink href="#find-password">비밀번호 찾기</NavLink>
-                        <NavLinkDivider>•</NavLinkDivider>
-                        <NavLink onClick={handleSignUp}>회원가입</NavLink>
-                    </NavigationLinks>
-                </FormBox>
-            </StyledContainer>
-        )
-    }else if(!showMemberForm && showCompanyForm){
-        return (
-            <StyledContainer>
-                <FormBox>
-                    <BackButton onClick={handleBack}>
-                        <FontAwesomeIcon icon={faArrowLeft} />
-                    </BackButton>
-                    <LogoImg src={logo} alt="Logo" />
-                    <Form>
-                        <StyledFormGroup controlId="formBasicId">
-                            <StyledFormControl
-                                type="text"
-                                placeholder="기업 아이디 입력"
-                                onChange={(e) => setProviderId(e.target.value)}
-                            />
-                        </StyledFormGroup>
+                                <StyledFormGroup controlId="formBasicPassword">
+                                    <InputGroup>
+                                        <StyledFormControl
+                                            type={showPassword ? "text" : "password"}
+                                            placeholder="비밀번호 입력"
+                                            onChange={(e) => setProviderPassword(e.target.value)}
+                                        />
+                                        <InputGroup.Text onClick={togglePasswordVisibility} style={{ borderLeft: 'none', cursor: 'pointer' }}>
+                                            <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
+                                        </InputGroup.Text>
+                                    </InputGroup>
+                                </StyledFormGroup>
 
-                        <StyledFormGroup controlId="formBasicPassword">
-                            <InputGroup>
-                                <StyledFormControl
-                                    type={showPassword ? "text" : "password"}
-                                    placeholder="비밀번호 입력"
-                                    onChange={(e) => setProviderPassword(e.target.value)}
-                                />
-                                <InputGroup.Text onClick={togglePasswordVisibility} style={{ borderLeft: 'none', cursor: 'pointer' }}>
-                                    <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
-                                </InputGroup.Text>
-                            </InputGroup>
-                        </StyledFormGroup>
+                                <StyledButton variant="primary" type="button" onClick={handleCompanyLogin}>
+                                    로그인
+                                </StyledButton>
+                            </Form>
+                            <NavigationLinks>
+                                <NavLink href="#find-id">아이디 찾기</NavLink>
+                                <NavLinkDivider>•</NavLinkDivider>
+                                <NavLink href="#find-password">비밀번호 찾기</NavLink>
+                                <NavLinkDivider>•</NavLinkDivider>
+                                <NavLink onClick={handleSignUp}>회원가입</NavLink>
+                            </NavigationLinks>
+                        </FormBox>
+                    </>
+                )}
+            </ContentContainer>
 
-                        <StyledButton variant="primary" type="button" onClick={handleCompanyLogin}>
-                            로그인
-                        </StyledButton>
-                    </Form>
-                    <NavigationLinks>
-                        <NavLink href="#find-id">아이디 찾기</NavLink>
-                        <NavLinkDivider>•</NavLinkDivider>
-                        <NavLink href="#find-password">비밀번호 찾기</NavLink>
-                        <NavLinkDivider>•</NavLinkDivider>
-                        <NavLink onClick={handleSignUp}>회원가입</NavLink>
-                    </NavigationLinks>
-                </FormBox>
-            </StyledContainer>
-
-        )
-
-    }
+            <FooterContainer>
+                <Footer/>
+            </FooterContainer>
+        </PageContainer>
+    );
 };
 
+const FooterContainer = styled.footer`
+  /* Footer 컨테이너 스타일 */
+  margin-top: auto; /* 화면 하단으로 이동 */
+  padding: 20px;
+  background-color: #f8f9fa; /* 배경색 설정 */
+`;
+
+const PageContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+`;
+
+const ContentContainer = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 60px; /* 푸터 높이만큼 여백 추가 */
+`;
+
+// 나머지 스타일 및 컴포넌트 정의
 const StyledContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -316,21 +341,21 @@ const FormBox = styled.div`
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   width: 100%;
-  max-width: 450px; 
+  max-width: 450px;
   margin-top: 20px;
   position: relative;
 `;
 
 const StyledFormGroup = styled(Form.Group)`
-  margin-bottom: 20px; 
+  margin-bottom: 20px;
 `;
 
 const StyledFormControl = styled(Form.Control)`
-  font-size: 16px; 
-  padding: 10px; 
-  
+  font-size: 16px;
+  padding: 10px;
+
   ::placeholder {
-    color: #666; 
+    color: #666;
   }
 `;
 
@@ -402,7 +427,7 @@ const NavigationLinks = styled.div`
 
 const NavLink = styled.a`
   text-decoration: none;
-  color: #000; 
+  color: #000;
   margin: 0 10px;
   &:hover {
     text-decoration: underline;
@@ -410,7 +435,7 @@ const NavLink = styled.a`
 `;
 
 const NavLinkDivider = styled.span`
-  color: #000; 
+  color: #000;
 `;
 
 const BackButton = styled.button`
@@ -437,7 +462,6 @@ const ImageContainer = styled.div`
   justify-content: center;
   align-items: center;
 `;
-
 
 
 export default SigninPage;

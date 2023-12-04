@@ -19,6 +19,7 @@ import together from "../imgs/together.png";
 import work from "../imgs/work.png";
 
 const RecruitViewPage = ( props ) => {
+    const {isUser, setIsUser} = useState(false);
     const { id } = useParams();
     const [isCompanyUser, setIsCompanyUser] = useState(false);
     const [cookies, setCookie, removeCookie] = useCookies(['token']);
