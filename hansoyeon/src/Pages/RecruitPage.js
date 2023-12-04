@@ -88,25 +88,32 @@ const RecruitPage = (props) => {
                 .then(() => {
                     axios.get('http://localhost:8050/api/recruitments')
                         .then(response => {
-                            // 받아온 공고 목록에서 블랙리스트에 있는 기업의 공고 제외
-                            const filteredRecruitments = response.data.filter(recruitment =>
-                                !blacklistedProviders.includes(recruitment.providers)
-                            ).reverse();
+                            const currentDate = new Date();
+                            const filteredRecruitments = response.data.filter(recruitment => {
+                                const startDate = new Date(recruitment.startDate);
+                                return startDate >= currentDate && !blacklistedProviders.includes(recruitment.providers);
+                            }).reverse();
+                            console.log(filteredRecruitments)
                             setRecruitments(filteredRecruitments);
                         })
                         .catch(error => console.error('Error fetching recruitments:', error));
                 })
                 .catch(error => console.error('Error fetching blacklisted providers:', error));
-        }else {
+        } else {
             // 회사 사용자의 경우 블랙리스트 필터링 없이 모든 공고 표시
             axios.get('http://localhost:8050/api/recruitments')
                 .then(response => {
-                    const reversedRecruitments = [...response.data].reverse();
-                    setRecruitments(reversedRecruitments);
+                    const currentDate = new Date();
+                    const validRecruits = response.data.filter(recruitment => {
+                        const startDate = new Date(recruitment.startDate);
+                        return startDate >= currentDate;
+                    }).reverse();
+                    setRecruitments(validRecruits);
                 })
                 .catch(error => console.error('Error fetching recruitments:', error));
         }
     }, [user]);
+
 
 
     const handleLogout = () => {
