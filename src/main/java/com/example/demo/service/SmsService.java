@@ -146,6 +146,50 @@ public class SmsService {
 
         return this.messageService.sendOne(new SingleMessageSendingRequest(message));
     }
+
+    public SingleMessageSentResponse sendApplicationMatchingWriteBoardCompanyMessage(String toPhoneNumber, String jobTitle) {
+        String messageContent = "[HanSoYeon] [" + jobTitle + "] 공고에 1명의 리뷰 권한을 승인하였습니다.";
+
+        Message message = new Message();
+        message.setFrom("01091753460");
+        message.setTo(toPhoneNumber);
+        message.setText(messageContent);
+
+        return this.messageService.sendOne(new SingleMessageSendingRequest(message));
+    }
+
+    public SingleMessageSentResponse sendApplicationMatchingWriteBoardMessage(String toPhoneNumber, String jobTitle) {
+        String messageContent = "[HanSoYeon] 일 하느라 수고하셨습니다 [" + jobTitle + "] 공고에 리뷰를 작성해주세요 !";
+
+        Message message = new Message();
+        message.setFrom("01091753460");
+        message.setTo(toPhoneNumber);
+        message.setText(messageContent);
+
+        return this.messageService.sendOne(new SingleMessageSendingRequest(message));
+    }
+
+    public SingleMessageSentResponse sendApplicationMatchingWriteBoardCancelCompanyMessage(String toPhoneNumber, String jobTitle) {
+        String messageContent = "[HanSoYeon] [" + jobTitle + "] 공고에 1명의 리뷰 권한을 취소하였습니다.";
+
+        Message message = new Message();
+        message.setFrom("01091753460");
+        message.setTo(toPhoneNumber);
+        message.setText(messageContent);
+
+        return this.messageService.sendOne(new SingleMessageSendingRequest(message));
+    }
+
+    public SingleMessageSentResponse sendApplicationMatchingWriteBoardCancelMessage(String toPhoneNumber, String jobTitle) {
+        String messageContent = "[HanSoYeon] [" + jobTitle + "] 공고 리뷰 권한이 취소되었습니다";
+
+        Message message = new Message();
+        message.setFrom("01091753460");
+        message.setTo(toPhoneNumber);
+        message.setText(messageContent);
+
+        return this.messageService.sendOne(new SingleMessageSendingRequest(message));
+    }
 }
 
 

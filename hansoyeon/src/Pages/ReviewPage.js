@@ -7,6 +7,8 @@ import noImage from '../imgs/noImage.png'
 import { useCookies } from 'react-cookie';
 import { useUserStore } from '../stores';
 import defaultProfilePic from '../imgs/default_profile.png';
+import useThrottle from "../Components/useThrottle";
+import usePushNotification from "../Components/usePushNotification";
 
 const ReviewPage = () => {
     const navigate = useNavigate();
@@ -14,6 +16,7 @@ const ReviewPage = () => {
     const {user, setUser} = useUserStore();
     const userType = cookies.userType;
     const [isUser, setIsUser] = useState(false)
+    const [isCompanyUser, setIsCompanyUser] = useState(false)
     const [reviews, setReviews] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const ITEMS_PER_PAGE = 8;
@@ -21,12 +24,32 @@ const ReviewPage = () => {
     const [matchings, setMatchings] = useState([]);
     const [showModal, setShowModal] = useState(false);
 
+    const [showCompanyModal, setShowCompanyModal] = useState(false);
+    const [announcements, setAnnouncements] = useState([]);
+    const [applicants, setApplicants] = useState([]);
+    const [selectedAnnouncement, setSelectedAnnouncement] = useState(null);
+    const [selectedJobId, setSelectedJobId] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+    const [selectedUser, setSelectedUser] = useState(null);
+
+    const [providerPhone, setProviderPhone] = useState('')
+
+    const { fireNotificationWithTimeout } = usePushNotification();
+    const { throttle } = useThrottle();
+
     const handleOpenModal = () => {
         setShowModal(true);
         fetchMatchings(user.userId);
     };
 
     const handleCloseModal = () => setShowModal(false);
+
+    const handleOpenCompanyModal = () => {
+        setShowCompanyModal(true);
+    };
+
+    const handleCloseCompanyModal = () => setShowCompanyModal(false);
 
     useEffect(() => {
         if (cookies.token) {
@@ -40,7 +63,8 @@ const ReviewPage = () => {
                     // 토큰이 유효한 경우
                     const fetchedUser = response.data;
                     console.log(fetchedUser)
-
+                    setUser(fetchedUser)
+                    setIsCompanyUser(true)
                 }).catch(error => {
                     // 토큰이 유효하지 않은 경우
                     console.error("Token verification failed:", error);
@@ -93,6 +117,27 @@ const ReviewPage = () => {
         navigate("/");
     };
 
+    useEffect(() => {
+        if (user && cookies.token && userType === "company") {
+            setProviderPhone(user.companyTel);
+            fetchJobAnnouncements(user.providerId);
+        }
+    }, [user]);
+
+    const fetchJobAnnouncements = async (jobProviders) => {
+        try {
+            const response = await axios.get(`http://localhost:8050/api/recruitments/byProvider/${jobProviders}`, {
+                headers: {
+                    Authorization: `Bearer ${cookies.token}`
+                }
+            });
+            console.log(response.data)
+            setAnnouncements(response.data);
+        } catch (error) {
+            console.error("Error fetching job announcements:", error);
+        }
+    };
+
     const handleWriteButtonClick = () => {
         navigate('/writeReview');
     };
@@ -128,7 +173,7 @@ const ReviewPage = () => {
             });
             const validWritingMatchings = validMatchings.filter(matching => {
                 const status = matching.status;
-               return status === "ACCEPTED"
+               return status === "COMPLETED"
             });
             console.log(validMatchings)
             setMatchings(validWritingMatchings);
@@ -137,9 +182,157 @@ const ReviewPage = () => {
         }
     };
 
+    const fetchApplicants = async (jobId) => {
+        try {
+            const response = await axios.get(`http://localhost:8050/api/matchings/recruitments/${jobId}`, {
+                headers: {
+                    Authorization: `Bearer ${cookies.token}`
+                }
+            });
+            if (response.data && response.data.data) {
+                const validWritingMatchings = response.data.data.filter(matching => {
+                    const status = matching.status;
+                    return status === "ACCEPTED" || status === "COMPLETED";
+                });
+                console.log(validWritingMatchings)
+                setApplicants(validWritingMatchings);
+            }
+        } catch (error) {
+            console.error("Error fetching applicants:", error);
+            setApplicants([]);
+        }
+    };
+
     const handleSelectMatching = (selectedMatching) => {
         // 선택된 matching 정보를 가지고 글 쓰기 페이지로 이동
         navigate('/writeReview', { state: { selectedMatching } });
+    };
+
+    const handleCheckApplicants = async (announcement) => {
+        setSelectedAnnouncement(announcement);
+        setSelectedJobId(announcement.job_id);
+        fetchApplicants(announcement.job_id);
+        setIsModalOpen(true);
+    };
+
+    const handleModalClose = () => {
+        setIsModalOpen(false);
+    };
+
+    const handleDetailModalClose = () => {
+        setIsDetailModalOpen(false);
+    };
+
+    const handleUserClick = (user) => {
+        setSelectedUser(user);
+        setIsDetailModalOpen(true);
+    };
+
+    const hasDatePassed = (endDate) => {
+        const today = new Date();
+        const end = new Date(endDate);
+        return end < today;
+    };
+
+    const pastAnnouncements = announcements.filter(announcement => hasDatePassed(announcement.endDate));
+
+    const acceptMatching = async (recruitment, user) => {
+        const confirmSelection = window.confirm(`${user.userId}님의 리뷰 권한을 허용하시겠습니까?`);
+        const userId = user.userId;
+        const recruitmentId = recruitment.jobId;
+        const userPhone = user.userPhone;
+
+        if (confirmSelection) {
+            try {
+                const response = await axios.put('http://localhost:8050/api/matchings/completed', {
+                    recruitmentId,
+                    userId
+                }, {
+                    headers: {
+                        Authorization: `Bearer ${cookies.token}`
+                    }
+                });
+
+                if (response.status === 200) {
+                    alert('권한 허용 처리가 완료되었습니다.');
+                    fetchApplicants(recruitmentId);
+
+                    fireNotificationWithTimeout('권한 허용 완료', 5000, {
+                        body: `[${recruitment.jobTitle}]에 ${user.userName}의 리뷰 권한이 허용되었습니다. `
+                    });
+
+                    // SMS 전송 로직
+                    try {
+                        const smsResponse = await axios.post("http://localhost:8050/api/sms/sendApplicationMatchingWriteBoard", {
+                            phone: userPhone,
+                            jobTitle: recruitment.jobTitle
+                        });
+                        console.log(smsResponse.data);
+
+                        // Provider에게도 SMS 전송
+                        const sms2Response = await axios.post("http://localhost:8050/api/sms/sendApplicationMatchingWriteBoardCompany", {
+                            phone: providerPhone,
+                            jobTitle: recruitment.jobTitle
+                        });
+                        console.log(sms2Response.data);
+                    } catch (smsError) {
+                        console.error("SMS 전송 중 오류 발생:", smsError);
+                    }
+                }
+            } catch (error) {
+                console.error("Error accepting the matching:", error);
+                alert('권한 처리 중 오류가 발생했습니다.');
+            }
+        }
+    };
+
+    const cancelApproval = async (recruitment, user) => {
+        const userId = user.userId;
+        const recruitmentId = recruitment.jobId;
+        const userPhone = user.userPhone;
+        const confirmCancel = window.confirm(`${user.userId}님의 리뷰 권한을 취소하시겠습니까?`);
+        if (confirmCancel) {
+            try {
+                const response = await axios.put('http://localhost:8050/api/matchings/completedCancel', {
+                    recruitmentId,
+                    userId
+                }, {
+                    headers: {
+                        Authorization: `Bearer ${cookies.token}`
+                    }
+                });
+
+                if (response.status === 200) {
+                    alert('권한 취소 처리가 완료되었습니다.');
+                    fetchApplicants(recruitmentId);
+
+                    fireNotificationWithTimeout('권한 취소 완료', 5000, {
+                        body: `[${recruitment.jobTitle}]에 ${user.userName}의 리뷰 권한이 취소되었습니다. `
+                    });
+
+                    // SMS 전송 로직
+                    try {
+                        const smsResponse = await axios.post("http://localhost:8050/api/sms/sendApplicationMatchingWriteBoardCancel", {
+                            phone: userPhone,
+                            jobTitle: recruitment.jobTitle
+                        });
+                        console.log(smsResponse.data);
+
+                        // Provider에게도 SMS 전송
+                        const sms2Response = await axios.post("http://localhost:8050/api/sms/sendApplicationMatchingWriteBoardCancelCompany", {
+                            phone: providerPhone,
+                            jobTitle: recruitment.jobTitle
+                        });
+                        console.log(sms2Response.data);
+                    } catch (smsError) {
+                        console.error("SMS 전송 중 오류 발생:", smsError);
+                    }
+                }
+            } catch (error) {
+                console.error("Error canceling the approval:", error);
+                alert('권한 취소 처리 중 오류가 발생했습니다.');
+            }
+        }
     };
 
     return (
@@ -150,6 +343,9 @@ const ReviewPage = () => {
                     <RightNewsTitle>
                         {isUser &&
                             <Button onClick={handleOpenModal}>글쓰기</Button>
+                        }
+                        {isCompanyUser &&
+                            <Button onClick={handleOpenCompanyModal}>권한 허용</Button>
                         }
                     </RightNewsTitle>
                 </HeaderContainer>
@@ -202,6 +398,92 @@ const ReviewPage = () => {
                         닫기
                     </Button>
                 </Modal.Footer>
+            </StyledModal>
+            <StyledModal show={showCompanyModal} onHide={handleCloseCompanyModal}>
+                <Modal.Header closeButton>
+                    <Modal.Title>후기 작성 권한 허용</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    {pastAnnouncements.map(announcement => (
+                        <StyledSelectContainer key={announcement.job_id}>
+                            <p>{announcement.title}</p>
+                            <Button variant="primary" onClick={() => handleCheckApplicants(announcement)}>
+                                신청자
+                            </Button>
+                        </StyledSelectContainer>
+                    ))}
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleCloseCompanyModal}>
+                        닫기
+                    </Button>
+                </Modal.Footer>
+            </StyledModal>
+            <StyledModal show={isModalOpen} onHide={handleModalClose}>
+                <ModalContent>
+                    <ModalHeader>
+                        {selectedAnnouncement &&
+                            <h2>{selectedAnnouncement.title} 신청 명단</h2>
+                        }
+                        <button onClick={handleModalClose}>닫기</button>
+                    </ModalHeader>
+                    <ApplicantsList>
+                        {applicants.length > 0 ? (
+                            <StyledTable>
+                                <thead>
+                                <TableRow>
+                                    <TableHeader>이름</TableHeader>
+                                    <TableHeader>전화번호</TableHeader>
+                                    <TableHeader>권한상태</TableHeader>
+                                </TableRow>
+                                </thead>
+                                <tbody>
+                                {applicants.map(applicant => (
+                                    <TableRow key={applicant.user.userId}>
+                                        <TableCell onClick={() => handleUserClick(applicant.user)}>
+                                            {applicant.user.userName}
+                                        </TableCell>
+                                        <TableCell>{applicant.user.userPhone}</TableCell>
+                                        <TableCell>
+                                            {applicant.status === "ACCEPTED" &&
+                                                <NoApproveButton onClick={() => acceptMatching(applicant.recruitment, applicant.user)}>
+                                                    비허용
+                                                </NoApproveButton>
+                                            }
+                                            {applicant.status === "COMPLETED" &&
+                                                <ApproveButton onClick={() => cancelApproval(applicant.recruitment, applicant.user)}>
+                                                    허용
+                                                </ApproveButton>
+                                            }
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                                </tbody>
+                            </StyledTable>
+                        ) : (
+                            <p>신청자가 아직 없습니다. </p>
+                        )}
+                    </ApplicantsList>
+                </ModalContent>
+            </StyledModal>
+            <StyledModal show={isDetailModalOpen} onHide={handleDetailModalClose}>
+                <DetailModalContent>
+                    <h2>회원 상세 정보</h2>
+                    {selectedUser &&
+                        <>
+                            {selectedUser.userProfile === "hansoyeon/src/imgs/default_profile.png" ?
+                                <ProfileRequestPic src={defaultProfilePic} alt="Profile" />
+                                :
+                                <ProfileRequestPic src={selectedUser.userProfile} alt="Profile" />
+                            }
+                            <p>이름: {selectedUser.userName}</p>
+                            <p>전화번호: {selectedUser.userPhone}</p>
+                            <p>이메일: {selectedUser.userEmail}</p>
+                            <p>주소: {selectedUser.userAddress}</p>
+                        </>
+                    }
+                    <button onClick={handleDetailModalClose}>닫기</button>
+                </DetailModalContent>
             </StyledModal>
         </Container>
     );
@@ -347,5 +629,111 @@ const AdditionalInfo = styled.p`
   margin: 3px 0; // 여백 조정
 `;
 
+const ModalContent = styled.div`
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  max-width: 500px;
+  width: 100%;
+`;
+
+const ModalHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  button {
+    padding: 5px 10px;
+    margin-left: 10px;
+  }
+`;
+
+const StyledTable = styled.table`
+  width: 100%;
+  border-collapse: collapse;
+`;
+
+const TableHeader = styled.th`
+  background-color: #f4f4f4;
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+`;
+
+const TableRow = styled.tr`
+  &:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+`;
+
+const TableCell = styled.td`
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+`;
+
+const ApplicantsList = styled.div`
+    margin-top: 20px;
+    padding: 10px;
+    background: #fff;
+    border: 1px solid #ddd;
+`;
+
+const DetailModal = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const DetailModalContent = styled.div`
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  max-width: 500px;
+  width: 100%;
+  font-size: 18px;
+  text-align: center;
+`;
+
+const ProfileRequestPic = styled.img`
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-top: 10px;
+    margin-bottom: 20px;
+`;
+
+const NoApproveButton = styled.button`
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: #ff6b6b;
+  color: white;
+  &:hover {
+    background-color: #ff4747;
+  }
+`;
+
+const ApproveButton = styled.button`
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: green;
+  color: white;
+  &:hover {
+    background-color: darkgreen;
+  }
+`;
 
 export default ReviewPage;
