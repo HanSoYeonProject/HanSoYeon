@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import styled from "styled-components";
 import {useNavigate} from "react-router-dom";
 import aboutLogo from "../imgs/aboutLogo.jpg";
@@ -14,10 +14,21 @@ import Flow2 from "../imgs/Flow2.png";
 import Flow3 from "../imgs/Flow3.png";
 import Flow4 from "../imgs/Flow4.png";
 import Footer from "../Components/Footer";
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 
 
 const AboutPage = () => {
+    useEffect(() => {
+        AOS.init({
+            duration: 500,
+            offset: 500,
+            easing: "ease-in-out",
+        });
+    }, []);
+
     const navigate = useNavigate();
+
 
     const Detailbutton = () => {
         navigate("/aboutPolicy");
@@ -30,19 +41,23 @@ const AboutPage = () => {
         <Container>
             <CCContainer>
                 <BigAboutContainer>
+                    <div data-aos="fade-down">
                     <AboutContainer>
                         <TopAboutContainer>
                             <ImageContainer>
-                                <img src={aboutLogo} alt="About Image" />
+                                <img src={aboutLogo} alt="About Image"/>
                                 <OverlayTextContainer>
+
                                     <OverlayTextTop>
                                         <h2>한소연이란 무엇입니까?</h2>
                                     </OverlayTextTop>
                                     <OverlayTextBottom>
                                         <h2>About</h2>
                                     </OverlayTextBottom>
+
                                 </OverlayTextContainer>
                             </ImageContainer>
+
                         </TopAboutContainer>
                         <BottomAboutContainer>
                             <BottomCenterContainer>
@@ -54,46 +69,60 @@ const AboutPage = () => {
                             </BottomCenterContainer>
                         </BottomAboutContainer>
                     </AboutContainer>
+                    </div>
                 </BigAboutContainer>
             </CCContainer>
             <FeatureContainer>
-                <h2 style={{color:"#EF6C00"}}>매일의 특징</h2>
+                <h2 style={{color: "#EF6C00"}}>매일의 특징</h2>
                 <BigFeatureContainer>
                     <FirstFeatureContainer>
-                        <img src={about1} alt="about1 Image" />
+                        <div data-aos="flip-left">
+                        <img src={about1} alt="about1 Image"/>
                         <h2>도움(일)을 하고 <br/>돈을 벌 수 있습니다.</h2>
                         <h3>※최저임금 이상의 보상을 얻을 수 있습니다.</h3>
+                        </div>
                     </FirstFeatureContainer>
                     <FirstFeatureContainer>
-                        <img src={about2} alt="about2 Image" />
+                        <div data-aos="flip-left">
+                        <img src={about2} alt="about2 Image"/>
                         <h2>지역 여행</h2>
                         <h3>※교통비 지급은 없습니다.</h3>
+                        </div>
                     </FirstFeatureContainer>
                     <FirstFeatureContainer>
-                        <img src={about3} alt="about3 Image" />
+                        <div data-aos="flip-left">
+                        <img src={about3} alt="about3 Image"/>
                         <h2>무료로 숙박을 제공해주는 <br/> 지역도 매칭해 드립니다.</h2>
                         <h3>※일부 예외도 있습니다.</h3>
+                        </div>
                     </FirstFeatureContainer>
                 </BigFeatureContainer>
             </FeatureContainer>
             <BottomFeatureContainer>
-                <h2 style={{color:"#EF6C00", fontSize:"28px", fontWeight:"700"}}>조건 포인트</h2>
+                <h2 style={{color: "#EF6C00", fontSize: "28px", fontWeight: "700"}}>조건 포인트</h2>
                 <BottomBigFeatureContainer>
                     <FirstFeatureContainer>
-                        <img src={about5} alt="about4 Image" />
-                        <h2>도움을 통해 <br/>지역사람과 관계성이 있다!</h2>
-                        <h3>지역에는 다양한 곤란이 넘치고 있습니다.</h3>
-                        <h3>지역에서는 인력 부족으로 곤란을 <br/>겪고 있기 때문에 <br/>항상 진심으로 도움이 되어 관계치를 <br/>유지할 수 있습니다.</h3>
+                        <div data-aos="flip-right">
+                            <img src={about5} alt="about4 Image"/>
+                            <h2>도움을 통해 <br/>지역사람과 관계성이 있다!</h2>
+                            <h3>지역에는 다양한 곤란이 넘치고 있습니다.</h3>
+                            <h3>지역에서는 인력 부족으로 곤란을 <br/>겪고 있기 때문에 <br/>항상 진심으로 도움이 되어 관계치를 <br/>유지할 수 있습니다.</h3>
+                        </div>
                     </FirstFeatureContainer>
                     <FirstFeatureContainer>
-                        <img src={about6} alt="about5 Image" />
+                        <div data-aos="flip-right">
+                        <img src={about6} alt="about5 Image"/>
                         <h2>지역 여행</h2>
                         <h3>※교통비 지급은 없습니다.</h3>
+                            </div>
                     </FirstFeatureContainer>
                     <FirstFeatureContainer>
-                        <img src={about6} alt="about6 Image" />
+                        <div data-aos="flip-right">
+                        <img src={about6} alt="about6 Image"/>
                         <h2>무료로 숙박을 제공해주는 <br/> 지역도 매칭해 드립니다.</h2>
                         <h3>※일부 예외도 있습니다.</h3>
+                        </div>
+
                     </FirstFeatureContainer>
                 </BottomBigFeatureContainer>
             </BottomFeatureContainer>
@@ -109,36 +138,72 @@ const AboutPage = () => {
             <FlowContainer>
                 <FlowBigContainer>
                     <FlowCenterContainer>
+                        <div data-aos="zoom-in-up">
                         <TopText>
                             <h2>매번 참가까지의 흐름</h2>
                         </TopText>
                         <BBContainer>
-                            <div className={"Image1"} style={{display:"flex",flexDirection:"column",justifyContent:"center",alignItems:"center",width: "300px", height: "300px"}}>
-                                <img src={Flow1} alt="Flow1 Image" style={{borderBottom:"2px dashed red",width: "200px", height: "150px"}}/>
-                                <h2 style={{fontSize:"20px", fontWeight:"700", marginTop:"1rem"}}>마이 페이지 정보를 등록!</h2>
-                                <h4 style={{fontSize:"18px", fontWeight:"600"}}>간단한 자기소개나 스킬을 등록하자!</h4>
+                            <div className={"Image1"} style={{
+                                display: "flex",
+                                flexDirection: "column",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                width: "300px",
+                                height: "300px"
+                            }}>
+                                <img src={Flow1} alt="Flow1 Image"
+                                     style={{borderBottom: "2px dashed red", width: "200px", height: "150px"}}/>
+                                <h2 style={{fontSize: "20px", fontWeight: "700", marginTop: "1rem"}}>마이 페이지 정보를 등록!</h2>
+                                <h4 style={{fontSize: "18px", fontWeight: "600"}}>간단한 자기소개나 스킬을 등록하자!</h4>
                             </div>
-                            <div className={"Image2"} style={{display:"flex",flexDirection:"column",justifyContent:"center",alignItems:"center",width: "300px", height: "300px"}}>
-                                <img src={Flow2} alt="Flow2 Image" style={{borderBottom:"2px dashed red",width: "200px", height: "150px"}}/>
-                                <h2 style={{fontSize:"20px", fontWeight:"700", marginTop:"1rem"}}>가고 싶은 날을 지역에서 선택해 응모!</h2>
-                                <h4 style={{fontSize:"18px", fontWeight:"600"}}>모집 일람에서 가고 싶은 <br/>대접을 찾아 응모하자!</h4>
+                            <div className={"Image2"} style={{
+                                display: "flex",
+                                flexDirection: "column",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                width: "300px",
+                                height: "300px"
+                            }}>
+                                <img src={Flow2} alt="Flow2 Image"
+                                     style={{borderBottom: "2px dashed red", width: "200px", height: "150px"}}/>
+                                <h2 style={{fontSize: "20px", fontWeight: "700", marginTop: "1rem"}}>가고 싶은 날을 지역에서 선택해
+                                    응모!</h2>
+                                <h4 style={{fontSize: "18px", fontWeight: "600"}}>모집 일람에서 가고 싶은 <br/>대접을 찾아 응모하자!</h4>
                             </div>
-                            <div className={"Image3"} style={{display:"flex",flexDirection:"column",justifyContent:"center",alignItems:"center",width: "300px", height: "300px"}}>
-                                <img src={Flow3} alt="Flow3 Image" style={{borderBottom:"2px dashed red",width: "200px", height: "150px"}}/>
+                            <div className={"Image3"} style={{
+                                display: "flex",
+                                flexDirection: "column",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                width: "300px",
+                                height: "300px"
+                            }}>
+                                <img src={Flow3} alt="Flow3 Image"
+                                     style={{borderBottom: "2px dashed red", width: "200px", height: "150px"}}/>
                                 <div>
-                                    <h2 style={{fontSize:"20px", fontWeight:"700", marginTop:"1rem"}}>매칭 성립!</h2>
-                                    <h4 style={{fontSize:"18px", fontWeight:"600"}}>매칭이 성립되면, <br/> 매번 갈 준비를 시작합시다!</h4>
+                                    <h2 style={{fontSize: "20px", fontWeight: "700", marginTop: "1rem"}}>매칭 성립!</h2>
+                                    <h4 style={{fontSize: "18px", fontWeight: "600"}}>매칭이 성립되면, <br/> 매번 갈 준비를 시작합시다!
+                                    </h4>
                                 </div>
                             </div>
-                            <div className={"Image4"} style={{display:"flex",flexDirection:"column",justifyContent:"center",alignItems:"center",width: "300px", height: "300px"}}>
-                                <img src={Flow4} alt="Flow4 Image" style={{borderBottom:"2px dashed red",width: "200px", height: "150px"}}/>
-                                <h2 style={{fontSize:"20px", fontWeight:"700", marginTop:"1rem"}}>매번마다 출발!</h2>
-                                <h4 style={{fontSize:"18px", fontWeight:"600"}}>출발일이 오면, 매칭한 굉장히 먼저 출발!</h4>
+                            <div className={"Image4"} style={{
+                                display: "flex",
+                                flexDirection: "column",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                width: "300px",
+                                height: "300px"
+                            }}>
+                                <img src={Flow4} alt="Flow4 Image"
+                                     style={{borderBottom: "2px dashed red", width: "200px", height: "150px"}}/>
+                                <h2 style={{fontSize: "20px", fontWeight: "700", marginTop: "1rem"}}>매번마다 출발!</h2>
+                                <h4 style={{fontSize: "18px", fontWeight: "600"}}>출발일이 오면, 매칭한 굉장히 먼저 출발!</h4>
                             </div>
                         </BBContainer>
                         <FlowButtonContainer>
                             <FlowButton onClick={Flowbutton}>매번 시작하기</FlowButton>
                         </FlowButtonContainer>
+                        </div>
                     </FlowCenterContainer>
                 </FlowBigContainer>
                 <Footer/>
@@ -201,6 +266,7 @@ const ImageContainer = styled.div`
   align-items: center;
   width: 100%;
   height: 50%;
+
   img {
     width: 100%;
     height: 300px;
@@ -223,7 +289,7 @@ const OverlayTextContainer = styled.div`
 const OverlayTextTop = styled.div`
   border-radius: 5px;
   text-align: center;
-  
+
   h2 {
     font-size: 32px;
     font-weight: 700;
@@ -234,7 +300,7 @@ const OverlayTextTop = styled.div`
 const OverlayTextBottom = styled.div`
   border-radius: 5px;
   text-align: center;
-  
+
   h2 {
     font-size: 28px;
     font-weight: 600;
@@ -247,7 +313,7 @@ const BottomAboutContainer = styled.div`
   flex: 1;
   flex-direction: column;
   justify-content: center;
-  
+
 `;
 
 const BottomCenterContainer = styled.div`
@@ -266,6 +332,7 @@ const BottomCenterContainer = styled.div`
     color: orange;
     font-weight: 700;
   }
+
   h3 {
     font-size: 20px;
     font-weight: 600;
@@ -313,17 +380,20 @@ const FirstFeatureContainer = styled.div`
   border-radius: 8px;
   text-align: center;
   margin: 1rem;
+
   img {
     width: 20rem;
     height: 15rem;
     border-radius: 10rem;
     margin: 0 auto;
   }
+
   h2 {
     margin-top: 5px;
     font-size: 24px;
     font-weight: 700;
   }
+
   h3 {
     font-size: 18px;
     font-weight: 600;
@@ -364,14 +434,14 @@ const FlowBigContainer = styled.div`
   grid-template-rows: auto 1fr auto; /* Three rows for TopText, FlowCenterContainer, and FlowButtonContainer */
   width: 100%;
   height: auto;
-  
+
 `;
 
 const TopText = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  
+
   h2 {
     font-size: 28px;
     font-weight: 700;
@@ -390,6 +460,7 @@ const FlowCenterContainer = styled.div`
   margin-top: 2rem;
   margin-bottom: 3rem;
   /* 각 요소에 일정한 간격을 위해 마진 추가 */
+
   .Image1, .Image2, .Image3, .Image4 {
     margin: 10px;
   }
@@ -418,7 +489,7 @@ const FlowButton = styled.button`
   color: orange;
   font-weight: 700;
   font-size: 24px;
-  
+
   &:hover {
     background-color: #FBCEB1;
     color: #f7e8cb;
