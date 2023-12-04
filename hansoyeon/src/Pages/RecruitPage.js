@@ -13,7 +13,6 @@ const RecruitPage = (props) => {
     const [cookies, setCookie, removeCookie] = useCookies(['token']);
     const {user, setUser} = useUserStore();
     const userType = cookies.userType;
-
     const [recruitments, setRecruitments] = useState([]);
     const [isCompany, setIsCompany] = useState(false);
     const [detailData, setDetailData] = useState(null);
@@ -80,7 +79,7 @@ const RecruitPage = (props) => {
         axios.get('http://localhost:8050/api/recruitments')
             .then(response => {
                 // 받아온 목록을 오름차순으로 정렬
-                const reversedRecruitments = [...response.data];
+                const reversedRecruitments = [...response.data].reverse();
                 setRecruitments(reversedRecruitments);
                 console.log(reversedRecruitments);
 
@@ -300,7 +299,7 @@ const Bottom = styled.div`
   margin-top: -1rem;
   width: 80%;
   margin-bottom: 1rem;
-  max-height: 70vh; /* Increase the max-height value */
+  max-height: 100vh; /* Increase the max-height value */
   background-color: #f0f0f0;
   padding: 20px;
 `;

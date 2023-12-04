@@ -29,6 +29,7 @@ import recommend1 from '../imgs/recommendcourse-1.png';
 import recommend2 from '../imgs/recommendcourse-2.png';
 import Footer from '../Components/Footer';
 import logo from "../imgs/logo-removebg.png";
+import navigate from "../Components/Navigate";
 //리뷰 Test 데이터
 const dummyReviews = [
     {
@@ -57,7 +58,9 @@ const dummyReviews = [
 
 //===============================페이지 UI========================================
 
-const MainPage = () => {
+const MainPage = ({responseData}) => {
+
+    const CompanyData = responseData;
 
     return (
         <div>
@@ -240,7 +243,7 @@ const NewCourseContainer = styled.div`
   flex: 1;
   flex-direction: column;
   height: 500px;
-  border: 1px solid gray;
+  border-bottom: 1px solid gray;
   padding-left: 50px;
 `
 
