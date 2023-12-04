@@ -15,12 +15,12 @@ public class PaymentService {
     private PaymentRepository paymentRepository;
 
     public void savePayment(PaymentDto paymentDto) {
-        PaymentEntity payment = new Payment();
-        payment.setJob_id(paymentDto.getJob_id());
-        payment.setUser_id(paymentDto.getUser_id());
-        payment.setPayment_id(paymentDto.getPayment_id());
-        payment.setPayment_money(paymentDto.getPayment_money());
-        payment.setPayment_date(new Date());
+        PaymentEntity payment = new PaymentEntity();
+        payment.setJobId(paymentDto.getJob_id());
+        payment.setUserId(paymentDto.getUser_id());
+        payment.setPaymentId(paymentDto.getPayment_id());
+        payment.setPaymentMoney(paymentDto.getPayment_money());
+        payment.setPaymentDate(new Date());
         payment.setPaymentMethod(paymentDto.getPayment_method());
 
         paymentRepository.save(payment);

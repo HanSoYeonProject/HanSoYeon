@@ -188,8 +188,6 @@ const RecruitViewPage = ( props ) => {
                 {/*<h2>{recruitments.providers}</h2>*/}
             </TitleContainer>
 
-            <ApplyButton onClick={applyBtn}>지원하기</ApplyButton>
-
             <ScheduleContainer>
                 <TopSchedule>모집 일정</TopSchedule>
             </ScheduleContainer>
@@ -296,7 +294,7 @@ const RecruitViewPage = ( props ) => {
                 </MainCenterContainer>
             </MainContainer>
             <ButtonContainer>
-                {!hasApplied && isUser && (
+                {!hasApplied && userType !== "company" && (
                     <ApplyButton onClick={applyBtn}>지원하기</ApplyButton>
                 )}
             </ButtonContainer>
