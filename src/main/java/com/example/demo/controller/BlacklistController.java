@@ -119,5 +119,12 @@ public class BlacklistController {
                 .serviceResult(blacklistService.isUserInBlacklist(userId))
                 .build();
     }
+
+    @GetMapping("/api/blacklists/user/{userId}")
+    public ResponseEntity<?> getBlacklistsByUserId(@PathVariable("userId") String userId) {
+        return new ResponseBuilder()
+                .serviceResult(blacklistService.getBlacklistsByUserId(userId))
+                .build();
+    }
 }
 

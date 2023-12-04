@@ -1,152 +1,157 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
+import {Row, Col, Button, Form, Container} from 'react-bootstrap';
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { useUserStore } from "../stores";
-import Footer from "../Components/Footer";
+import { useNavigate, useLocation } from "react-router-dom";
+import axios from 'axios';
+import { useCookies } from 'react-cookie';
+import { useUserStore } from '../stores';
+import defaultProfilePic from '../imgs/default_profile.png';
 
 const WritingReviewPage = () => {
     const navigate = useNavigate();
-    const { user } = useUserStore();
-    const [reviewTitle, setReviewTitle] = useState("");
-    const [reviewContent, setReviewContent] = useState("");
-    const [reviewImage, setReviewImage] = useState(null);
-    const writer = user ? user.userName : "익명";
-    const [showPopup, setShowPopup] = useState(false);
+    const [cookies, setCookie, removeCookie] = useCookies(['token']);
+    const {user, setUser} = useUserStore();
+    const [postTitle, setPostTitle] = useState('');
+    const [postContent, setPostContent] = useState('');
+    const [postImage, setPostImage] = useState(null);
+    const [postImagePreview, setPostImagePreview] = useState(null);
+    const writer = user ? user.userName : "익명"; // 현재 로그인한 사용자의 이름이나 "익명" 사용
+    const [showPopup, setShowPopup] = useState(false); // 팝업 상태 관리
+    const [isLoading, setIsLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
 
-    const handleInputTitle = (e) => {
-        setReviewTitle(e.target.value);
-    };
+    const location = useLocation();
+    const { selectedMatching } = location.state || {};
 
-    const handleInputContent = (e) => {
-        setReviewContent(e.target.value);
-    };
-
-    const handleImageChange = async (e) => {
-        setReviewImage(e.target.files[0]);
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-
-        let base64Image = "";
-        if (reviewImage) {
-            const reader = new FileReader();
-            reader.readAsDataURL(reviewImage);
-            base64Image = await new Promise((resolve) => {
-                reader.onloadend = () => {
-                    resolve(reader.result);
-                };
+    useEffect(() => {
+        if (cookies.token) {
+            axios.get('http://localhost:8050/api/auth/currentUser', {
+                headers: {
+                    Authorization: `Bearer ${cookies.token}`
+                }
+            }).then(response => {
+                console.log(cookies.token)
+                // 토큰이 유효한 경우
+                const fetchedUser = response.data;
+                console.log(fetchedUser)
+                setUser(fetchedUser);
+            }).catch(error => {
+                // 토큰이 유효하지 않은 경우
+                console.error("Token verification failed:", error);
+                handleLogout();
             });
         }
+    }, []);
 
-        const reviewData = {
-            jobId: 1,
-            userId: user ? user.userId : 999,
-            reviewTitle: reviewTitle,
-            reviewContent: reviewContent,
-            reviewDate: new Date(),
-            reviewRecommend: 0,
-            writer: writer,
-            image: base64Image,
-        };
+    const handleLogout = () => {
+        removeCookie('token');
+        setUser(null);
+        navigate("/");
+    };
+
+
+    const handlePostImageChange = (e) => {
+        if (e.target.files && e.target.files[0]) {
+            let selectedFile = e.target.files[0];
+            setPostImage(selectedFile);
+
+            let reader = new FileReader();
+            reader.onload = (event) => {
+                setPostImagePreview(event.target.result);
+            }
+            reader.readAsDataURL(selectedFile);
+        }
+    };
+
+    const handleCreatePost = async () => {
+        if (!postTitle || !postContent) {
+            alert('제목과 내용을 모두 작성해주세요.');
+            return;
+        }
+
+        setIsLoading(true);
+        setErrorMessage('');
+
+        const formData = new FormData();
+        formData.append('reviewTitle', postTitle);
+        formData.append('userId', user.userId);
+        formData.append('jobId', selectedMatching.recruitment.jobId)
+        formData.append('reviewContent', postContent);
+
+        if (postImage) {
+            formData.append('postImage', postImage);
+        }
 
         try {
-            const response = await axios.post(
-                "http://localhost:8050/api/reviews",
-                reviewData,
-                {
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
+            const response = await axios.post('http://localhost:8050/api/createReview', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
                 }
-            );
+            });
 
-            if (response.status === 200) {
-                setShowPopup(true);
-                setTimeout(() => setShowPopup(false), 3000);
-                navigate("/review");
+            if (response.data.success) {
+                alert('게시글 작성이 완료되었습니다.');
+                navigate('/review');
             } else {
-                console.error(`HTTP error! Status: ${response.status}`);
+                setErrorMessage('게시글 작성 중 오류가 발생했습니다.');
             }
         } catch (error) {
-            console.error("Error posting review:", error);
+            setErrorMessage('게시글 작성 중 오류가 발생했습니다.');
+        } finally {
+            setIsLoading(false);
         }
     };
 
     return (
-        <Container>
-            <Form onSubmit={handleSubmit}>
-                <TitleContainer>리뷰 작성</TitleContainer>
-                <MiddleContainer>
-                    <WriterContainer>
-                        <Label>작성자 :</Label>
-                        <span>{writer}</span>
-                    </WriterContainer>
-                    <Title>
-                        <Label>리뷰 제목</Label>
-                        <Input
-                            type="text"
-                            placeholder="제목을 입력하세요"
-                            value={reviewTitle}
-                            onChange={handleInputTitle}
-                        />
-                    </Title>
-                    <ContentContainer>
-                        <Label>리뷰 내용</Label>
-                        <Textarea
-                            placeholder="리뷰를 작성하세요"
-                            value={reviewContent}
-                            onChange={handleInputContent}
-                        />
-                    </ContentContainer>
-                    <div>
-                        <Label>사진 첨부:</Label>
-                        <FileInput
-                            type="file"
-                            onChange={handleImageChange}
-                            accept="image/*"
-                        />
-                    </div>
-                    <ButtonContainer>
-                        <SubmitButton type="submit">리뷰 작성</SubmitButton>
-                    </ButtonContainer>
-                </MiddleContainer>
-            </Form>
-            {showPopup && <Popup>리뷰가 성공적으로 작성되었습니다!</Popup>}
-            <Footer />
-        </Container>
+        <StyledContainer>
+            <Row>
+                <Col md={{ span: 6, offset: 3 }}>
+                    <Form>
+                        <Form.Group className="mb-3" controlId="formPostTitle">
+                            <Form.Label>제목</Form.Label>
+                            <Form.Control
+                                type="text"
+                                placeholder="제목을 입력하세요"
+                                value={postTitle}
+                                onChange={(e) => setPostTitle(e.target.value)}
+                            />
+                        </Form.Group>
+
+                        <Form.Group className="mb-3" controlId="formPostContent">
+                            <Form.Label>내용</Form.Label>
+                            <Form.Control
+                                as="textarea"
+                                rows={8}
+                                placeholder="내용을 입력하세요"
+                                value={postContent}
+                                onChange={(e) => setPostContent(e.target.value)}
+                            />
+                        </Form.Group>
+
+                        {postImagePreview && (
+                            <ImagePreview src={postImagePreview} alt="Post Preview" />
+                        )}
+
+                        <Form.Group className="mb-3">
+                            <Form.Control
+                                type="file"
+                                onChange={handlePostImageChange}
+                            />
+                        </Form.Group>
+
+                        {errorMessage && (
+                            <Form.Text className="text-danger">{errorMessage}</Form.Text>
+                        )}
+
+                        <Button variant="primary" onClick={handleCreatePost} disabled={isLoading}>
+                            {isLoading ? '게시 중...' : '게시'}
+                        </Button>
+                    </Form>
+                </Col>
+            </Row>
+        </StyledContainer>
     );
 };
-
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-height: 85vh;
-  box-sizing: border-box;
-  margin-top: 35px;
-`;
-
-const Form = styled.form`
-  width: 100%;
-  max-width: 600px;
-  background-color: white;
-  border: 1px solid #dbdbdb;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  box-sizing: border-box;
-  
-
-  &:after {
-    content: "* 는 필수 입력 항목입니다.";
-    display: block;
-    font-size: 14px;
-    color: red;
-    padding-top: 10px;
-  }
-`;
 
 const TitleContainer = styled.div`
   font-size: 30px;
@@ -242,6 +247,22 @@ const Popup = styled.div`
   padding: 10px 20px;
   border-radius: 5px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+`;
+
+const StyledContainer = styled(Container)`
+    // 여기에 커스텀 CSS 스타일을 추가하세요
+    max-width: 800px;
+    background-color: white;
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 150px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+`;
+
+const ImagePreview = styled.img`
+    width: 100%;
+    max-height: 300px;
+    margin-bottom: 10px;
 `;
 
 export default WritingReviewPage;
