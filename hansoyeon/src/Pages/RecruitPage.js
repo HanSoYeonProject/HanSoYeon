@@ -248,6 +248,7 @@ const TitleContainer = styled.div`
   display: flex;
   flex-direction: column;
   flex: 5;
+  font-family: 'SUITE-Regular';
 `;
 
 const BottomContent = styled.div`
@@ -255,6 +256,7 @@ const BottomContent = styled.div`
   flex-basis: calc(25% - 10px); /* 25% 너비로 조절, 간격을 제외한 너비 계산 */
   margin: 5px; /* 각 요소 사이의 간격 조절 */
   box-sizing: border-box; /* 내부 여백 및 테두리를 요소의 크기에 포함시킵니다. */
+  font-family: 'GmarketSansTTFLight';
 `;
 
 const BottomMain = styled.div`
@@ -262,17 +264,20 @@ const BottomMain = styled.div`
   flex: 1;
   flex-direction: column;
   border-radius: 10px;
-  border: 2px solid #d6d6d6;
   width: 100%;
   height: 43vh;
   padding: 10px;
   box-sizing: border-box;
-  position: relative; /* Needed for positioning the overlay */
-  overflow: hidden; /* Ensure overflow doesn't affect overlay positioning */
-  transition: background-color 0.1s ease; /* Transition for background color change */
+  position: relative;
+  overflow: hidden;
+  transition: background-color 0.1s ease, border 0.3s ease;
+
+  /* 기본 상태에서 테두리 제거 */
+  border: 2px solid transparent;
 
   &:hover {
-    background-color: #eee; /* Change the background color on hover */
+    background-color: #eee;
+    border: 2px solid #d6d6d6;
   }
 
   h3,
