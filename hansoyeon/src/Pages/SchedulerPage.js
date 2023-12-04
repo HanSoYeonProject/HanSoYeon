@@ -256,7 +256,7 @@ const StyledCalendar = styled(Calendar)`
   .react-calendar__tile {
     max-height: 120px;
     display: flex;
-    flex-direction: column;
+    flex-direction: column; 
     justify-content: center;
     align-items: center;
   }
@@ -277,38 +277,38 @@ const CircleMarker = styled.div`
 `;
 
 const MainContainer = styled.div`
-  display: flex;
-  justify-content: space-around;
-  align-items: start;
-  padding: 20px;
+    display: flex;
+    justify-content: space-around;
+    align-items: start;
+    padding: 20px;
 `;
 
 const EventList = styled.div`
-  width: 30%; // Adjust width as needed
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  margin-top: 20px;
+    width: 30%; // Adjust width as needed
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-top: 20px;
 `;
 
 const FriendsList = styled.div`
-  width: 100%;
-  padding: 20px;
-  margin-top: 20px;
-  border-top: 1px solid #ccc;
+    width: 100%;
+    padding: 20px;
+    margin-top: 20px;
+    border-top: 1px solid #ccc;
 `;
 
 const Friend = styled.div`
-  margin: 10px 0;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  // Add more styling as needed
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    // Add more styling as needed
 `;
 
 const FriendName = styled.h3`
-  margin: 0;
-  // Add more styling as needed
+    margin: 0;
+    // Add more styling as needed
 `;
 
 const MatchingList = styled.div`
@@ -319,22 +319,22 @@ const MatchingList = styled.div`
 `;
 
 const MatchingItem = styled.div`
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  padding: 15px;
-  transition: transform 0.2s ease-in-out;
-  cursor: pointer;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 15px;
+    transition: transform 0.2s ease-in-out;
+    cursor: pointer;
 
-  &:hover {
-    transform: scale(1.05);
-  }
+    &:hover {
+        transform: scale(1.05);
+    }
 `;
 
 const JobTitle = styled.h5`
-  font-size: 1.2rem;
-  color: #333;
-  margin-bottom: 10px;
+    font-size: 1.2rem;
+    color: #333;
+    margin-bottom: 10px;
 `;
 
 const ModalBackdrop = styled.div`

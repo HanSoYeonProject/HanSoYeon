@@ -366,7 +366,7 @@ const BottomContent = styled.div`
   position: relative;
   overflow: hidden;
   transition: background-color 0.1s ease;
-  height: 100%;
+  height: 100%; 
 
   &:hover {
     background-color: #eee;
