@@ -127,6 +127,23 @@ const ReviewContentPage = () => {
             console.error("Error posting comment:", error);
         }
     };
+    const handleHeart = async (review) => {
+        if (userType !== "company") {
+            if (review.userId === user.userId) {
+                alert("본인 리뷰에는 좋아요를 누를 수 없어요!");
+                return;
+            }
+        }
+        try {
+            if (user.userId !== review.userId) { // 작성자와 현재 사용자가 다른 경우에만
+                await axios.post(`http://localhost:8050/api/reviews/${review.reviewId}/incrementLike`);
+            }
+            alert("좋아요가 반영되었습니다!")
+        } catch (error) {
+            console.error("Error incrementing view count:", error);
+        }
+    };
+
 
     if (!review) {
         return <LoadingContainer>Loading...</LoadingContainer>;
@@ -135,7 +152,12 @@ const ReviewContentPage = () => {
     return (
         <div>
             <Container>
-                <Title>{review.reviewTitle}</Title>
+                <Title>
+                    {review.reviewTitle}
+                    <HeartIcon onClick={() => handleHeart(review)}>
+                        ❤️
+                    </HeartIcon>
+                </Title>
                 <ReviewImage src={review.reviewImage} alt="Review" />
                 <ReviewDetails>
                     <DetailItem><Label>작성자:</Label> {review.userId}</DetailItem>
@@ -315,6 +337,13 @@ const PostCommentButton = styled.button`
   border-radius: 5px;
   cursor: pointer;
   margin-top: 10px;
+`;
+
+// 하트 아이콘 스타일링
+const HeartIcon = styled.span`
+  font-size: 28px;
+  cursor: pointer;
+  margin-left: 10px;
 `;
 
 export default ReviewContentPage;

@@ -102,7 +102,8 @@ const ReviewPage = () => {
                         commentCount: commentResponse.data.length // 댓글 수를 리뷰 객체에 추가
                     };
                 }));
-                setReviews(reviewsWithCommentCount.reverse()); // 업데이트된 리뷰 데이터 설정
+                reviewsWithCommentCount.sort((a, b) => b.reviewLikeCount - a.reviewLikeCount);
+                setReviews(reviewsWithCommentCount);
             } catch (error) {
                 console.error('Error fetching reviews and comment counts:', error);
             }

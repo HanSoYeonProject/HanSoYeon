@@ -57,6 +57,13 @@ public class ReviewService {
         reviewRepository.save(review);
     }
 
+    public void incrementLikeCount(int reviewId){
+        ReviewEntity review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new RuntimeException("리뷰 못 찾음"));
+        review.setReviewLikeCount(review.getReviewLikeCount()+1);
+        reviewRepository.save(review);
+    }
+
     public Optional<ReviewEntity> getReviewEntityById(int reviewId){
         return reviewRepository.findById(reviewId);
     }

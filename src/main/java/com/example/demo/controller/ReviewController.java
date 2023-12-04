@@ -111,4 +111,10 @@ public class ReviewController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/reviews/{reviewId}/incrementLike")
+    public ResponseEntity<Void> incrementLikeCount(@PathVariable int reviewId) {
+        reviewService.incrementLikeCount(reviewId);
+        return ResponseEntity.ok().build();
+    }
+
 }
