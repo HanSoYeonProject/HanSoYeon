@@ -77,16 +77,38 @@ const RecruitPage = (props) => {
                 });
             }
         }
-        axios.get('http://localhost:8050/api/recruitments')
-            .then(response => {
-                // 받아온 목록을 오름차순으로 정렬
-                const reversedRecruitments = [...response.data].reverse();
-                setRecruitments(reversedRecruitments);
-                console.log(reversedRecruitments);
-
-            })
-            .catch(error => console.error('Error fetching recruitments:', error));
     }, []);
+
+    useEffect(() => {
+        let blacklistedProviders = [];
+        if (user && userType !== "company") {
+            axios.get(`http://localhost:8050/api/blacklists/user/${user.userId}`)
+                .then(response => {
+                    blacklistedProviders = response.data.data.map(blacklist => blacklist.provider.providerId);
+                })
+                .then(() => {
+                    axios.get('http://localhost:8050/api/recruitments')
+                        .then(response => {
+                            // 받아온 공고 목록에서 블랙리스트에 있는 기업의 공고 제외
+                            const filteredRecruitments = response.data.filter(recruitment =>
+                                !blacklistedProviders.includes(recruitment.providers)
+                            ).reverse();
+                            setRecruitments(filteredRecruitments);
+                        })
+                        .catch(error => console.error('Error fetching recruitments:', error));
+                })
+                .catch(error => console.error('Error fetching blacklisted providers:', error));
+        }else {
+            // 회사 사용자의 경우 블랙리스트 필터링 없이 모든 공고 표시
+            axios.get('http://localhost:8050/api/recruitments')
+                .then(response => {
+                    const reversedRecruitments = [...response.data].reverse();
+                    setRecruitments(reversedRecruitments);
+                })
+                .catch(error => console.error('Error fetching recruitments:', error));
+        }
+    }, [user]);
+
 
     const handleLogout = () => {
         removeCookie('token');
