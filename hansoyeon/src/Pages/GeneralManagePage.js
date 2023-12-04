@@ -3,6 +3,7 @@ import axios from "axios";
 import { Table, Button, Modal } from "react-bootstrap";
 import styled from 'styled-components';
 import defaultProfile from '../imgs/default_profile.png';
+import Footer from "../Components/Footer";
 
 const GeneralManagePage = () => {
     const [users, setUsers] = useState([]);
@@ -151,6 +152,7 @@ const GeneralManagePage = () => {
                     <Button variant="secondary" onClick={handleCloseModal}>닫기</Button>
                 </StyledModalFooter>
             </StyledModal>
+            <Footer/>
         </Container>
     );
 };

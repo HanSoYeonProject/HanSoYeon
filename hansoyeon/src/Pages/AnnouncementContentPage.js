@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import {responsivePropType} from "react-bootstrap/createUtilityClasses";
 import axios from "axios";
 import {useCookies} from "react-cookie";
+import Footer from "../Components/Footer";
 
 const AnnouncementContentPage = () => {
     const { anno_id } = useParams();
@@ -172,16 +173,16 @@ const AnnouncementContentPage = () => {
                     </>
                 )}
             </ButtonContainer>
+            <Footer/>
         </Container>
     );
 };
 
 const Container = styled.div`
   display: flex;
-  flex: 1;
-  height: 700px;
   flex-direction: column;
-  justify-content: center;
+  min-height: 100vh; /* Set minimum height to 100% of the viewport height */
+  justify-content: space-between; /* Space between children elements */
   align-items: center;
 `;
 

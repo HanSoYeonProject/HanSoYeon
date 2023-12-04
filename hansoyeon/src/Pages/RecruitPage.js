@@ -1,21 +1,36 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom'; // useNavigate 훅 추가
 
-import {Cookies, useCookies} from "react-cookie";
+import {useCookies} from "react-cookie";
 import axios from "axios";
 import styled from "styled-components";
+import {useUserStore} from "../stores";
+import Pagination from '../Components/Pagination';
+import Footer from "../Components/Footer";
+
+
 
 const RecruitPage = (props) => {
     const navigate = useNavigate();
     const [cookies, setCookie, removeCookie] = useCookies(['token']);
+    const {user, setUser} = useUserStore();
+    const userType = cookies.userType;
     const [recruitments, setRecruitments] = useState([]);
+    const [isCompany, setIsCompany] = useState(false);
+    const [detailData, setDetailData] = useState(null);
+
+    // 페이지네이션
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 20;
+    const itemsPerPage = 8; // 변경: 페이지당 아이템 개수를 8로 설정
+
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = recruitments.slice(indexOfFirstItem, indexOfLastItem);
-    const [isCompany, setIsCompany] = useState(false);
-    const [detailData, setDetailData] = useState(null);
+
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
+
     //라디오버튼
     const [selectedCategory, setSelectedCategory] = useState("");
 
@@ -26,16 +41,105 @@ const RecruitPage = (props) => {
     const [selectedContentType, setSelectedContentType] = useState("12");
     //글 목록 띄우기
     useEffect(() => {
-        axios.get('http://localhost:8050/api/recruitments')
-            .then(response => {
-                // 받아온 목록을 오름차순으로 정렬
-                const reversedRecruitments = [...response.data];
-                setRecruitments(reversedRecruitments);
-                console.log(reversedRecruitments);
-
-            })
-            .catch(error => console.error('Error fetching recruitments:', error));
+        if (cookies.token) {
+            console.log(userType)
+            if(userType === "company"){
+                axios.get('http://localhost:8050/api/auth/currentCompany', {
+                    headers: {
+                        Authorization: `Bearer ${cookies.token}`
+                    }
+                }).then(response => {
+                    console.log(cookies.token)
+                    // 토큰이 유효한 경우
+                    const fetchedUser = response.data;
+                    console.log(fetchedUser)
+                    setUser(fetchedUser);
+                    setIsCompany(true)
+                }).catch(error => {
+                    // 토큰이 유효하지 않은 경우
+                    console.error("Token verification failed:", error);
+                    handleLogout();
+                });
+            }else{
+                axios.get('http://localhost:8050/api/auth/currentUser', {
+                    headers: {
+                        Authorization: `Bearer ${cookies.token}`
+                    }
+                }).then(response => {
+                    console.log(cookies.token)
+                    // 토큰이 유효한 경우
+                    const fetchedUser = response.data;
+                    console.log(fetchedUser)
+                    setUser(fetchedUser);
+                }).catch(error => {
+                    // 토큰이 유효하지 않은 경우
+                    console.error("Token verification failed:", error);
+                    handleLogout();
+                });
+            }
+        }
     }, []);
+
+    useEffect(() => {
+        const currentDate = new Date();
+
+        if (user && userType !== "company") {
+            axios.get(`http://localhost:8050/api/blacklists/isUserInBlacklist`, {
+                params: { userId: user.userId }
+            }).then(response => {
+                if (response.data.data) {
+                    // 사용자가 블랙리스트에 있는 경우
+                    axios.get(`http://localhost:8050/api/blacklists/user/${user.userId}`)
+                        .then(response => {
+                            const blacklistedProviders = response.data.data.map(blacklist => blacklist.provider.providerId);
+
+                            axios.get('http://localhost:8050/api/recruitments')
+                                .then(response => {
+                                    const filteredRecruitments = response.data.filter(recruitment => {
+                                        const startDate = new Date(recruitment.startDate);
+                                        return startDate >= currentDate && !blacklistedProviders.includes(recruitment.providers);
+                                    }).reverse();
+                                    setRecruitments(filteredRecruitments);
+                                })
+                                .catch(error => console.error('Error fetching recruitments:', error));
+                        })
+                        .catch(error => console.error('Error fetching blacklisted providers:', error));
+                } else {
+                    // 사용자가 블랙리스트에 없는 경우
+                    axios.get('http://localhost:8050/api/recruitments')
+                        .then(response => {
+                            const validRecruits = response.data.filter(recruitment => {
+                                const startDate = new Date(recruitment.startDate);
+                                return startDate >= currentDate;
+                            }).reverse();
+                            setRecruitments(validRecruits);
+                        })
+                        .catch(error => console.error('Error fetching recruitments:', error));
+                }
+            }).catch(error => {
+                console.error('Error checking user blacklist status:', error);
+            });
+        } else {
+            // 회사 사용자의 경우 블랙리스트 필터링 없이 모든 공고 표시
+            axios.get('http://localhost:8050/api/recruitments')
+                .then(response => {
+                    const validRecruits = response.data.filter(recruitment => {
+                        const startDate = new Date(recruitment.startDate);
+                        return startDate >= currentDate;
+                    }).reverse();
+                    setRecruitments(validRecruits);
+                })
+                .catch(error => console.error('Error fetching recruitments:', error));
+        }
+    }, [user]);
+
+
+
+    const handleLogout = () => {
+        removeCookie('token');
+        setUser(null);
+        navigate("/");
+    };
 
     // 글 제목 클릭시 상세내용 페이지 이동
     const viewRecruitment = async (Id) => {
@@ -49,31 +153,13 @@ const RecruitPage = (props) => {
         }
     };
 
-    //admin구분
-    useEffect(() => {
-        axios.get('http://localhost:8050/api/auth/currentUser', {
-            headers: {
-                Authorization: `Bearer ${cookies.token}`
-            }
-        })
-            .then((response) => {
-                console.log(response.data);
-                const user = response.data;
-                const isCompanyUser = user.userType === 'company';
-                setIsCompany(isCompanyUser);
-            })
-            .catch(error => {
-                console.error('Error fetching user info:', error);
-                if (error.response) {
-                    console.error('Status Code:', error.response.status);
-                    console.error('Response Data:', error.response.data);
-                }
-            });
-    }, []);
-
     //글쓰기 버튼
     const WritingBtn = () => {
         navigate("/recruit/write")
+    }
+
+    const handleHistoryApplication = () => {
+        navigate("/recruitHistory")
     }
 
 
@@ -113,7 +199,16 @@ const RecruitPage = (props) => {
                 <SmallAlgoContainer>
                     <RadioContainer>
                         {renderRadioButtons()}
-                        {isCompany && <WritingButton onClick={WritingBtn}>글 쓰기</WritingButton>}
+                        {isCompany ?
+                            null
+                            :
+                            <WritingButton onClick={handleHistoryApplication}>신청 내역</WritingButton>
+                        }
+                        {isCompany && user.providerApproval === "true" ?
+                            <WritingButton onClick={WritingBtn}>글 쓰기</WritingButton>
+                            :
+                            null
+                        }
                     </RadioContainer>
                 </SmallAlgoContainer>
             </AlgoContainer>
@@ -126,19 +221,19 @@ const RecruitPage = (props) => {
                                      onMouseOut={(e) => (e.target.style.textDecoration="none")}>
                             <ImgContainer>
                                 <img
-                                    src={recruitments.image}
+                                    src={recruitments.image[0]}
                                     alt="Image"
-                                    style={{display: "flex",height: "100%",justifyContent: "center", alignItems: "center",borderRadius:"10px"}}
+                                    style={{display: "flex",height: "250px",justifyContent: "center", alignItems: "center",borderRadius:"10px"}}
                                 />
                             </ImgContainer>
                             <TitleContainer>
                                 <h3
-                                    style={{ display: "flex",flex: "2",marginTop: "1rem", fontSize: '28px', fontWeight: 'bold', color: "#747474", justifyContent:"center", alignItems: "center"}}>
+                                    style={{ display: "flex",flex: "2",marginTop: "1rem", fontSize: '24px', fontWeight: 'bold', color: "#747474", justifyContent:"center", alignItems: "center"}}>
                                     {recruitments.title.length > 25
                                         ? `${recruitments.title.substring(0, 25)}...`
                                         : recruitments.title}
                                 </h3>
-                                <h3 style={{ display: "flex",flex: "2", fontSize: '24px', fontWeight: '600', color: '#747474', justifyContent: "center", alignItems: "center"}}>{recruitments.region} {recruitments.address}</h3>
+                                <h3 style={{ display: "flex",flex: "2", fontSize: '22px', fontWeight: '600', color: '#747474', justifyContent: "center", alignItems: "center"}}>{recruitments.region} {recruitments.address}</h3>
                                 <h4 style={{ display: "flex",flex: "1", fontSize: "18px", fontWeight: "600", color: "#747474", justifyContent: "center", alignItems: "center"}}>
                                     {recruitments.startDate} ~ {recruitments.endDate}
                                 </h4>
@@ -147,7 +242,17 @@ const RecruitPage = (props) => {
                     </BottomContent>
                 ))}
             </Bottom>
+            <PaginationContainer>
+                <Pagination
+                    totalPages={Math.ceil(recruitments.length / itemsPerPage)}
+                    currentPage={currentPage}
+                    onPageChange={handlePageChange}
+                />
+            </PaginationContainer>
+
+            <Footer/>
         </Container>
+
     );
 };
 
@@ -237,70 +342,102 @@ const RadioButton = styled.input`
 `;
 const Bottom = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Adjust the minmax values as needed */
-  gap: 20px; /* Adjust the gap as needed */
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
   margin-top: -1rem;
   width: 80%;
   margin-bottom: 1rem;
-  max-height: 45vh;
-`
+  max-height: 100vh; /* Increase the max-height value */
+  background-color: #f0f0f0;
+  padding: 20px;
+`;
+
 const TitleContainer = styled.div`
   display: flex;
   flex-direction: column;
-  flex: 5;
-  font-family: 'SUITE-Regular';
+  flex: 1;
 `;
 
 const BottomContent = styled.div`
-  flex: 1;
-  flex-basis: calc(25% - 10px); /* 25% 너비로 조절, 간격을 제외한 너비 계산 */
-  margin: 5px; /* 각 요소 사이의 간격 조절 */
-  box-sizing: border-box; /* 내부 여백 및 테두리를 요소의 크기에 포함시킵니다. */
-  font-family: 'GmarketSansTTFLight';
+  border-radius: 10px;
+  border: 2px solid #d6d6d6;
+  width: 100%;
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+  transition: background-color 0.1s ease;
+  height: 100%;
+
+  &:hover {
+    background-color: #eee;
+  }
+
+  h3,
+  h4 {
+    font-size: 18px;
+    margin: 0;
+    white-space: nowrap; /* 변경: 텍스트가 다음 줄로 넘어가지 않도록 설정 */
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  img {
+    width: 100%;
+    height: 60%;
+    border-radius: 10px;
+    object-fit: cover;
+    transition: transform 1s ease;
+  }
+
+  &:hover img {
+    transform: scale(1.05);
+  }
 `;
+
 
 const BottomMain = styled.div`
   display: flex;
   flex: 1;
   flex-direction: column;
   border-radius: 10px;
+  border: 2px solid #d6d6d6;
   width: 100%;
-  height: 43vh;
+  height: 100%;
   padding: 10px;
   box-sizing: border-box;
   position: relative;
   overflow: hidden;
-  transition: background-color 0.1s ease, border 0.3s ease;
-
-  /* 기본 상태에서 테두리 제거 */
-  border: 2px solid transparent;
+  transition: background-color 0.1s ease;
 
   &:hover {
     background-color: #eee;
-    border: 2px solid #d6d6d6;
   }
 
   h3,
   h4 {
     font-size: 10px;
-    transition: background-color 0.3s ease; /* Transition for background color change */
+    white-space: nowrap; /* 변경: 텍스트가 다음 줄로 넘어가지 않도록 설정 */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: background-color 0.3s ease;
   }
+
   img {
     width: 100%;
     height: 50%;
     border-radius: 10px;
-    transition: transform 1s ease; /* Transition for image scaling */
+    transition: transform 1s ease;
   }
 
   &:hover img {
-    transform: scale(1.05); /* Scale the image on hover */
+    transform: scale(1.05);
   }
 `;
 
 const ImgContainer = styled.div`
   display: flex;
   flex: 5;
-  height: 100px;
+  height: 200px;
 `
 const WritingButton = styled.button`
   width: 300px;
@@ -308,4 +445,75 @@ const WritingButton = styled.button`
   font-size: 24px;
   font-weight: 700;
 `;
+
+const PaginationContainer = styled.div`
+`;
+
+const Upimage = styled.div`
+  display: flex;
+  flex : 1;
+  height: 100px;
+  align-items: center;
+  width: 100%; /* Change to 100% to take the full width */
+  margin-bottom: -25px;
+  object-fit: cover; /* 이미지 비율 유지를 위한 설정 */
+`;
+const Footer1Container = styled.div`
+  display: flex;
+  flex : 3;
+`
+const Footer2Container = styled.div`
+  display: flex;
+  height: 100px;
+  flex : 7;
+  margin-bottom: -50px;
+`
+
+const Footer1Image = styled.div`
+  display: flex;
+  img {
+    width: 50px;
+    height: auto;
+  }
+`;
+
+const Footer2Image = styled.div`
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  img {
+    width: 60px;
+    height: auto; /* 높이 자동 조절 */
+  }
+`;
+const Aa = styled.div`
+  height: 50px;
+  flex: 5;
+  display: flex;
+  justify-content: flex-start;
+  margin-top: -1.3rem;
+`
+const Bb = styled.div`
+  flex: 5;
+  height: 100px;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: -3.5rem;
+`
+
+
+
 export default RecruitPage;
+
+//====================
+export const getRecruitmentsData = async () => {
+    try {
+        const response = await axios.get('http://localhost:8050/api/recruitments');
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching recruitments:', error);
+        throw error; // 예외를 호출자에게 전파
+    }
+};
+
+//====================

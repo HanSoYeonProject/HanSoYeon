@@ -53,9 +53,9 @@ public class RecruitmentController {
     }
 
     //상세글
+    //상세글
     @GetMapping("/recruitments/{Id}")
     public ResponseEntity<JobProvidersDto> getJobProviderById(@PathVariable int Id) {
-        System.out.println(Id);
 
         try {
             JobProvidersDto jobProviders = recruitmentService.getProvidersById(Id);
@@ -69,5 +69,28 @@ public class RecruitmentController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @GetMapping("/recruitments/byProvider/{provider}")
+    public ResponseEntity<List<JobProvidersDto>> getAnnouncementsByProvider(@PathVariable String provider) {
+        try {
+            List<JobProvidersDto> announcements = recruitmentService.getJobProvidersAnnouncements(provider);
+            return new ResponseEntity<>(announcements, HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("Error getting announcements by provider", e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @DeleteMapping("/recruitments/{recruitmentId}")
+    public ResponseEntity<?> deleteRecruitment(@PathVariable int recruitmentId) {
+        try {
+            recruitmentService.deleteRecruitmentById(recruitmentId);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("Error occurred while deleting recruitment with id " + recruitmentId, e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 
 }

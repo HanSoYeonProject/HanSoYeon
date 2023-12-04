@@ -4,6 +4,7 @@ import {useNavigate} from 'react-router-dom';
 import company from "../imgs/company.png"
 import member from "../imgs/member.png"
 import blacklist from "../imgs/Blacklist_logo.png"
+import Footer from "../Components/Footer";
 const SignupPage = (props) => {
     const navigate = useNavigate();
 
@@ -34,6 +35,7 @@ const SignupPage = (props) => {
                     <SelectImg alt="blacklist" src={blacklist} />
                 </UserImg>
             </ImageContainer>
+            <Footer/>
         </StyledContainer>
     );
 };
@@ -43,7 +45,7 @@ const StyledContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 80vh;
+  height: 97.5vh;
   background-color: #ffffff;
 `;
 

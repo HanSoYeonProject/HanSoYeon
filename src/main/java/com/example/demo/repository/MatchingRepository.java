@@ -13,4 +13,8 @@ public interface MatchingRepository extends JpaRepository<MatchingEntity, Intege
     List<MatchingEntity> findAllByRecruitmentJobId(int recruitmentId);
 
     List<MatchingEntity> findAllByRecruitmentJobIdAndStatus(int recruitmentId, String status);
+
+    List<MatchingEntity> findAllByUserUserId(String userId);
+
+    void deleteAllByRecruitmentJobId(int recruitmentId);
 }

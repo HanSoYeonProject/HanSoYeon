@@ -1,16 +1,18 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import {useNavigate} from 'react-router-dom';
-import company from "../imgs/company.png"
-import member from "../imgs/member.png"
+import { useNavigate } from 'react-router-dom';
+import company from "../imgs/company.png";
+import member from "../imgs/member.png";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {faArrowLeft, faEye, faEyeSlash} from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import kakao from "../imgs/kakaoRegister.png";
 import google from "../imgs/googleRegister.png";
-import email from "../imgs/emailRegister.png"
+import email from "../imgs/emailRegister.png";
 import GoogleLogin from "react-google-login";
 import logo from "../imgs/logo2.png";
-import {Form, InputGroup} from "react-bootstrap";
+import { Form, InputGroup } from "react-bootstrap";
+import Footer from "../Components/Footer";
+
 const SignupPage = (props) => {
     const [showMemberForm, setShowMemberForm] = useState(false);
     const [isKakaoSdkLoaded, setIsKakaoSdkLoaded] = useState(false);
@@ -37,7 +39,7 @@ const SignupPage = (props) => {
     }, []);
 
     const handleCompanyImageClick = () => {
-        navigate("/companyRegister")
+        navigate("/companyRegister");
     };
 
     const handleMemberImageClick = () => {
@@ -54,7 +56,7 @@ const SignupPage = (props) => {
     };
 
     const handleEmailRegisterImageClick = () => {
-        navigate("/memberRegister")
+        navigate("/memberRegister");
     };
 
     const handleBack = () => {
@@ -62,15 +64,14 @@ const SignupPage = (props) => {
     };
 
     const handleKakaoRegisterImageClick = () => {
-
         if (window.Kakao && window.Kakao.isInitialized()) { // Kakao SDK 초기화 확인
             window.Kakao.Auth.login({
-                success: function(authObj) {
+                success: function (authObj) {
                     console.log(authObj); // 인증 객체 확인
 
                     window.Kakao.API.request({
                         url: '/v2/user/me',
-                        success: function(response) {
+                        success: function (response) {
                             console.log(response);
                             if (response.kakao_account && response.kakao_account.email) {
                                 const email = "(kakao)" + response.kakao_account.email;
@@ -79,12 +80,12 @@ const SignupPage = (props) => {
                                 console.log("이메일 정보를 가져올 수 없습니다.");
                             }
                         },
-                        fail: function(error) {
+                        fail: function (error) {
                             console.log(error);
                         },
                     });
                 },
-                fail: function(err) {
+                fail: function (err) {
                     console.log(err);
                 },
             });
@@ -93,25 +94,29 @@ const SignupPage = (props) => {
         }
     };
 
-
     if (!showMemberForm) {
         return (
             <StyledContainer>
-                <Title>회원가입</Title>
-                <ImageContainer>
-                    <UserImg onClick={handleCompanyImageClick}>
-                        <SelectImg alt="company" src={company} />
-                    </UserImg>
-                    <UserImg onClick={handleMemberImageClick}>
-                        <SelectImg alt="member" src={member} />
-                    </UserImg>
-                </ImageContainer>
+                <PageContainer>
+                    <ContentContainer>
+                        <Title>회원가입</Title>
+                        <ImageContainer>
+                            <UserImg onClick={handleCompanyImageClick}>
+                                <SelectImg alt="company" src={company} />
+                            </UserImg>
+                            <UserImg onClick={handleMemberImageClick}>
+                                <SelectImg alt="member" src={member} />
+                            </UserImg>
+                        </ImageContainer>
+                    </ContentContainer>
+                </PageContainer>
+                <Footer />
             </StyledContainer>
         );
-    }else if(showMemberForm){
+    } else if (showMemberForm) {
         return (
             <StyledContainer>
-                <FormBox>
+                <FormBoxUser>
                     <BackButton onClick={handleBack}>
                         <FontAwesomeIcon icon={faArrowLeft} />
                     </BackButton>
@@ -125,19 +130,16 @@ const SignupPage = (props) => {
                     <UserImg onClick={handleEmailRegisterImageClick}>
                         <RegisterEmailImg alt="email" src={email} />
                     </UserImg>
-                </FormBox>
+                </FormBoxUser>
             </StyledContainer>
-        )
+        );
     }
 };
 
 const StyledContainer = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background-color: #ffffff;
+  min-height: 100vh;
 `;
 
 const Title = styled.div`
@@ -196,10 +198,38 @@ const FormBox = styled.div`
   background: #ffffff;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  width: 100%;
+  width: 100%; /* Set width to 100% */
   max-width: 600px;
   margin-top: 150px;
   position: relative;
+`;
+
+const FormBoxUser = styled.div`
+  padding: 40px;
+  justify-content: center;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 100%; /* Set width to 100% */
+  max-width: 600px;
+  margin-top: 150px;
+  position: relative;
+`;
+
+const PageContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+`;
+
+const ContentContainer = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 60px;
+  width: 100%; /* Set width to 100% */
 `;
 
 export default SignupPage;

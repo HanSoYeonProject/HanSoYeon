@@ -155,4 +155,17 @@ public class BlacklistService {
                 .data(blacklistRepository.existsByUserUserId(userId));
     }
 
+    /**
+     * userId를 받아 해당 사용자가 포함된 블랙리스트 목록을 반환
+     * @param userId 대상 사용자의 식별자
+     */
+    public ServiceResult getBlacklistsByUserId(String userId) {
+        List<BlacklistEntity> blacklists = blacklistRepository.findByUserUserId(userId);
+
+        if (blacklists.isEmpty())
+            return new ServiceResult().fail().message("No blacklists found for the user");
+
+        return new ServiceResult().success().data(blacklists);
+    }
+
 }

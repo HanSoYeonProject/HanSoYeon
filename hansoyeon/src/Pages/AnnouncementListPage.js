@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useCookies } from "react-cookie";
+import Footer from "../Components/Footer";
 
 const AnnouncementListPage = () => {
     const navigate = useNavigate();
@@ -70,9 +71,9 @@ const AnnouncementListPage = () => {
                     <SmallNewsTitle>
                         <LeftNewsTitle>한소연 소식</LeftNewsTitle>
                         {isAdmin && (
-                        <RightNewsTitle>
-                            <WritingButton onClick={WritingNews}>글 작성</WritingButton>
-                        </RightNewsTitle>
+                            <RightNewsTitle>
+                                <WritingButton onClick={WritingNews}>글 작성</WritingButton>
+                            </RightNewsTitle>
                         )}
                     </SmallNewsTitle>
                 </NewsTitle>
@@ -101,25 +102,29 @@ const AnnouncementListPage = () => {
                         </PageNumber>
                     ))}
                 </Pagination>
+
             </MiddleContainer>
+            <FinalContainer>
+                <Footer/>
+            </FinalContainer>
         </Container>
     );
 };
 
 const Container = styled.div`
   display: flex;
-  flex: 1;
-  height: 700px;
+  flex-direction: column;
+  min-height: 100vh; /* Set minimum height to 100% of the viewport height */
+  justify-content: space-between; /* Space between children elements */
   align-items: center;
-  justify-content: center;
-`
+`;
 
 const MiddleContainer = styled.div`
   display: flex;
-  height: 500px;
-  width: 1000px;
   flex-direction: column;
-`
+  width: 1000px;
+  flex-grow: 1; /* Expand to fill available space */
+`;
 const AnnouncementTitle = styled.div`
   display: flex;
   flex: 1;
@@ -217,5 +222,11 @@ const PageNumber = styled.div`
     color: white;
   }
 `;
+const FinalContainer = styled.div`
+  width: 100%;
+  margin-top: auto; /* Set margin-top to auto to push the Footer to the bottom */
+`;
+
+
 
 export default AnnouncementListPage;

@@ -32,10 +32,15 @@ import MemberManagePage from "./Pages/MemberManagePage";
 import CompanyManagePage from "./Pages/CompanyManagePage";
 import GeneralManagePage from "./Pages/GeneralManagePage";
 import BlackListPage from "./Pages/BlackListPage";
-import AdminApply from "./Pages/CompanyMatchingPage";
 import CompanyMatchingPage from "./Pages/CompanyMatchingPage";
 import FriendListPage from "./Pages/FriendListPage";
-
+import BlackListCompanyPage from "./Pages/BlackListCompanyPage";
+import RecruitApplicationPage from "./Pages/RecruitApplicationPage";
+import RecruitApplicationHistoryPage from "./Pages/RecruitApplicationHistoryPage";
+import SchedulerPage from "./Pages/SchedulerPage";
+import AdminMatchingPage from "./Pages/AdminMatchingPage";
+import ReviewChangePage from "./Pages/ReviewChangePage";
+import Payment from "./Pages/Payment";
 
 function App() {
     return (
@@ -62,8 +67,6 @@ function App() {
                     <Route path="/newcourse" element={<NewPage/>}></Route>
                     <Route path="/writingNewsPage" element={<WritingNewsPage/>}></Route>
                     <Route path="/recommendcourse" element={<RecommendPage/>}></Route>
-                    <Route path="/themecourse" element={<ThemePage/>}></Route>
-                    <Route path="/regioncourse" element={<RegionPage/>}></Route>
                     <Route path="/review" element={<ReviewPage/>}></Route>
                     <Route path="/recruit" element={<RecruitPage/>}></Route>
                     <Route path="/writeReview" element={<WritingReviewPage/>}></Route>
@@ -72,9 +75,15 @@ function App() {
                     <Route path="/recruit/:id" element={<RecruitViewPage/>}></Route>
                     <Route path="/recruit/write" element={<WritingRecruitPage/>}/>
                     <Route path="/BlackListManage" element={<BlackListPage/>}></Route>
-                    <Route path="/match/:id" element={<CompanyMatchingPage/>}></Route>
-                    <Route path="/match/:providerId" element={<CompanyMatchingPage/>}></Route>
+                    <Route path="/matchCompany" element={<CompanyMatchingPage/>}></Route>
                     <Route path="/FriendList" element={<FriendListPage/>}></Route>
+                    <Route path="/companyBlackList" element={<BlackListCompanyPage/>}></Route>
+                    <Route path="/recruitApply" element={<RecruitApplicationPage/>}></Route>
+                    <Route path="/recruitHistory" element={<RecruitApplicationHistoryPage />}></Route>
+                    <Route path="/scheduler" element={<SchedulerPage/>}></Route>
+                    <Route path="/matchAdmin" element={<AdminMatchingPage/>}></Route>
+                    <Route path="/reviewEdit/:id" element={<ReviewChangePage/>}></Route>
+                    <Route path="/payment" element={<Payment/>}></Route>
                 </Routes>
             </BrowserRouter>
         </div>

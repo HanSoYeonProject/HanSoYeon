@@ -10,6 +10,7 @@ import banner from "../imgs/banner.png"
 import banner2 from "../imgs/banner2.png"
 import banner3 from "../imgs/banner3.png"
 import {useNavigate} from "react-router-dom";
+import Footer from "../Components/Footer";
 
 const NewPage = (props) => {
     const navigate = useNavigate();
@@ -705,6 +706,7 @@ const NewPage = (props) => {
                                 <PageButton onClick={() => setContentPageNo(prev => Math.max(prev - 1, 1))}>이전</PageButton>
                                 <PageButton onClick={() => setContentPageNo(prev => prev + 1)}>다음</PageButton>
                             </PaginationContainer>
+                            <Footer/>
                         </AreaContentContainer>
                     </>
                 );
@@ -773,6 +775,7 @@ const NewPage = (props) => {
                                 <PageButton onClick={() => setPageNo(prev => Math.max(prev - 1, 1))}>이전</PageButton>
                                 <PageButton onClick={() => setPageNo(prev => prev + 1)}>다음</PageButton>
                             </PaginationContainer>
+                            <Footer/>
                         </AreaContentContainer>
                     </>
                 );
@@ -823,6 +826,7 @@ const NewPage = (props) => {
                             {myModalVisible && selectedMySpot && (
                                 <MyModal spot={selectedMySpot} onClose={() => setMyModalVisible(false)} />
                             )}
+                            <Footer/>
                         </AreaContentContainer>
                     </>
                 );
