@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import aboutPolicy from "../imgs/aboutPolicy.jpg";
+import Footer from "../Components/Footer";
 
 const AboutPolicyPage = () => {
     return (
@@ -36,6 +37,7 @@ const AboutPolicyPage = () => {
                     </BottomContentContainer>
                 </BottomContainer>
             </CenterContainer>
+            <Footer/>
         </Container>
     )
 }
@@ -45,6 +47,7 @@ const Container = styled.div`
   position: absolute;
   width: 100%;
   height: 100vh;
+  flex-direction: column;
 `
 const CenterContainer = styled.div`
   display: flex;

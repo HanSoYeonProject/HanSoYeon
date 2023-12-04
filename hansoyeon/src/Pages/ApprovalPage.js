@@ -4,6 +4,7 @@ import styled, { keyframes } from "styled-components";
 import logo from "../imgs/logo2.png";
 import {Button} from "react-bootstrap";
 import {useNavigate} from "react-router-dom";
+import Footer from "../Components/Footer";
 
 const ApprovalPage = () => {
     const navigate = useNavigate();

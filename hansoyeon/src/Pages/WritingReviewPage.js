@@ -162,20 +162,28 @@ const TitleContainer = styled.div`
 const MiddleContainer = styled.div`
   display: flex;
   flex-direction: column;
+  gap: 20px;
 `;
 
 const Title = styled.div`
   margin-bottom: 15px;
+  &:before {
+    content: "*";
+    display: inline;
+    color: red;
+  }
 `;
+
 
 const Label = styled.label`
   margin-right: 10px;
+  font-weight: bold;
 `;
 
 const Input = styled.input`
   width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
+  padding: 15px;
+  border: 1px solid #dbdbdb;
   border-radius: 5px;
 `;
 
@@ -187,43 +195,58 @@ const WriterContainer = styled.div`
 
 const ContentContainer = styled.div`
   margin-bottom: 15px;
+  &:before {
+    content: "*";
+    display: inline;
+    color: red;
+  }
 `;
 
 const Textarea = styled.textarea`
   width: 100%;
-  height: 150px;
-  padding: 10px;
-  border: 1px solid #ccc;
+  height: 200px; // 더 큰 입력 필드
+  padding: 15px;
+  border: 1px solid #dbdbdb;
   border-radius: 5px;
+`;
+
+const FileInput = styled.input`
+  padding: 10px;
+  border: 1px solid #dbdbdb;
+  border-radius: 5px;
+  cursor: pointer;
 `;
 
 const ButtonContainer = styled.div`
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;  // 가운데로 보내기 위해 수정
 `;
 
 const SubmitButton = styled.button`
-  background-color: #007bff;
+  background-color: #0095f6;
   color: white;
-  padding: 10px 20px;
+  padding: 15px 20px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.5s; // 부드러운 색상 전환
+  width: 40%;
 
   &:hover {
-    background-color: #0056b3;
+    background-color: #0077cc;
   }
-`
+`;
 const Popup = styled.div`
   position: fixed;
   bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
-  background-color: #4CAF50;
+  background-color: #4caf50;
   color: white;
   padding: 10px 20px;
   border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 `;
 
 const StyledContainer = styled(Container)`
@@ -241,6 +264,5 @@ const ImagePreview = styled.img`
     max-height: 300px;
     margin-bottom: 10px;
 `;
-
 
 export default WritingReviewPage;

@@ -2,6 +2,8 @@ import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import MemberSignUpPage from "./MemberSignupPage";
+import Footer from "../Components/Footer";
+import styled from 'styled-components';
 
 const GoogleLoginPage = () => {
     const location = useLocation();
@@ -21,7 +23,19 @@ const GoogleLoginPage = () => {
         }
     }, [location, navigate]);
 
-    return <div>Google 인증 중...</div>;
+    return (
+        <Container>
+            Google 인증 중...
+            <Footer />
+        </Container>
+    );
 };
+
+const Container = styled.div`
+  min-height: 100vh; /* Set minimum height to 100% of the viewport height */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+`;
 
 export default GoogleLoginPage;

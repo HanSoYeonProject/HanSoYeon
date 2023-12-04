@@ -40,7 +40,7 @@ import RecruitApplicationHistoryPage from "./Pages/RecruitApplicationHistoryPage
 import SchedulerPage from "./Pages/SchedulerPage";
 import AdminMatchingPage from "./Pages/AdminMatchingPage";
 import ReviewChangePage from "./Pages/ReviewChangePage";
-
+import Payment from "./Pages/Payment";
 
 function App() {
     return (
@@ -67,8 +67,6 @@ function App() {
                     <Route path="/newcourse" element={<NewPage/>}></Route>
                     <Route path="/writingNewsPage" element={<WritingNewsPage/>}></Route>
                     <Route path="/recommendcourse" element={<RecommendPage/>}></Route>
-                    <Route path="/themecourse" element={<ThemePage/>}></Route>
-                    <Route path="/regioncourse" element={<RegionPage/>}></Route>
                     <Route path="/review" element={<ReviewPage/>}></Route>
                     <Route path="/recruit" element={<RecruitPage/>}></Route>
                     <Route path="/writeReview" element={<WritingReviewPage/>}></Route>
@@ -85,6 +83,7 @@ function App() {
                     <Route path="/scheduler" element={<SchedulerPage/>}></Route>
                     <Route path="/matchAdmin" element={<AdminMatchingPage/>}></Route>
                     <Route path="/reviewEdit/:id" element={<ReviewChangePage/>}></Route>
+                    <Route path="/payment" element={<Payment/>}></Route>
                 </Routes>
             </BrowserRouter>
         </div>

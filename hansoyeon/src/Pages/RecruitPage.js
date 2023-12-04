@@ -13,7 +13,6 @@ const RecruitPage = (props) => {
     const [cookies, setCookie, removeCookie] = useCookies(['token']);
     const {user, setUser} = useUserStore();
     const userType = cookies.userType;
-
     const [recruitments, setRecruitments] = useState([]);
     const [isCompany, setIsCompany] = useState(false);
     const [detailData, setDetailData] = useState(null);
@@ -341,7 +340,7 @@ const BottomContent = styled.div`
   position: relative;
   overflow: hidden;
   transition: background-color 0.1s ease;
-  height: 100%; /* Increase the height to 100% */
+  height: 100%; 
 
   &:hover {
     background-color: #eee;
@@ -351,6 +350,9 @@ const BottomContent = styled.div`
   h4 {
     font-size: 18px;
     margin: 0;
+    white-space: nowrap; /* 변경: 텍스트가 다음 줄로 넘어가지 않도록 설정 */
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   img {
@@ -374,7 +376,7 @@ const BottomMain = styled.div`
   border-radius: 10px;
   border: 2px solid #d6d6d6;
   width: 100%;
-  height:100%; /* Increase the height to 100% */
+  height: 100%;
   padding: 10px;
   box-sizing: border-box;
   position: relative;
@@ -388,8 +390,12 @@ const BottomMain = styled.div`
   h3,
   h4 {
     font-size: 10px;
+    white-space: nowrap; /* 변경: 텍스트가 다음 줄로 넘어가지 않도록 설정 */
+    overflow: hidden;
+    text-overflow: ellipsis;
     transition: background-color 0.3s ease;
   }
+
   img {
     width: 100%;
     height: 50%;
@@ -405,7 +411,7 @@ const BottomMain = styled.div`
 const ImgContainer = styled.div`
   display: flex;
   flex: 5;
-  height: 100px;
+  height: 200px;
 `
 const WritingButton = styled.button`
   width: 300px;
@@ -416,6 +422,7 @@ const WritingButton = styled.button`
 
 const PaginationContainer = styled.div`
 `;
+
 const Upimage = styled.div`
   display: flex;
   flex : 1;

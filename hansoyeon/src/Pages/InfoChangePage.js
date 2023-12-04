@@ -11,6 +11,7 @@ import iu from "../imgs/iu3.png"
 import logoSmall from "../imgs/logo2.png"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {faArrowLeft, faCamera} from '@fortawesome/free-solid-svg-icons';
+import Footer from "../Components/Footer";
 
 const InfoChangePage = (props) => {
     const navigate = useNavigate();
@@ -348,15 +349,17 @@ const InfoChangePage = (props) => {
                     </InfoBox>
                 )}
             </BoxContainer>
+            <Footer/>
         </StyledContainer>
     );
 };
 
 const StyledContainer = styled.div`
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  height: 91.6vh;
 `;
 
 const BoxContainer = styled.div`

@@ -9,6 +9,7 @@ import logo from "../imgs/logo2.png";
 import license from "../imgs/license.jpg"
 import question from "../imgs/question.png"
 import noImage from "../imgs/noImage.png";
+import Footer from "../Components/Footer";
 
 const CompanySignUpPage = () => {
     const navigate = useNavigate();
@@ -426,6 +427,7 @@ const CompanySignUpPage = () => {
                     )}
                 </Form>
             </FormBox>
+            <Footer/>
             {modalVisible && <Modal onClose={toggleModal} />}
         </StyledContainer>
     );

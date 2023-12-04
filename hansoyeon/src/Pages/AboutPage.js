@@ -141,6 +141,7 @@ const AboutPage = () => {
                         </FlowButtonContainer>
                     </FlowCenterContainer>
                 </FlowBigContainer>
+                <Footer/>
             </FlowContainer>
         </Container>
     )
