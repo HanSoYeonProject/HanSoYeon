@@ -99,6 +99,7 @@ const RecruitPage = (props) => {
                                         const startDate = new Date(recruitment.startDate);
                                         return startDate >= currentDate && !blacklistedProviders.includes(recruitment.providers);
                                     }).reverse();
+                                    console.log(filteredRecruitments)
                                     setRecruitments(filteredRecruitments);
                                 })
                                 .catch(error => console.error('Error fetching recruitments:', error));
