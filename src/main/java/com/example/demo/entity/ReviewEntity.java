@@ -1,90 +1,50 @@
 package com.example.demo.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import java.util.Date;
 
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
-@Table(name ="comment_reviews")
+@Table(name ="reviews")
 public class ReviewEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long reviewId;
+    @Column(name = "review_number")
+    private int reviewId;
 
-    @Column(name = "job_id", nullable = false)
-    private Long jobId;
+    @Column(name = "job_id")
+    private int jobId;
 
-    @Column(name = "user_id", nullable = false, length = 100)
-    private String userId;
+    @Column(name = "review_title")
+    private String reviewTitle;
 
-    @Column(name = "review_content", nullable = false, columnDefinition = "TEXT")
+    @Column(name = "review_content")
     private String reviewContent;
 
-    @Column(name = "review_date", nullable = false)
-    private Date reviewDate;
+    @Column(name = "review_image")
+    private String reviewImage;
 
-    @Column(name = "review_recommend", nullable = false)
-    private int reviewRecommend;
+    @Column(name = "review_writer_id")
+    private String userId;
 
-    public ReviewEntity(Long reviewId, Long jobId, String userId, String reviewContent, Date reviewDate, int reviewRecommend) {
-        this.reviewId = reviewId;
-        this.jobId = jobId;
-        this.userId = userId;
-        this.reviewContent = reviewContent;
-        this.reviewDate = reviewDate;
-        this.reviewRecommend = reviewRecommend;
-    }
+    @Column(name = "review_write_date")
+    private String reviewWriteDate;
 
-    public ReviewEntity() {
+    @Column(name = "review_click_count")
+    private int reviewClickCount;
 
-    }
+    @Column(name = "review_like_count")
+    private int reviewLikeCount;
 
-    public Long getReviewId() {
-        return reviewId;
-    }
-
-    public void setReviewId(Long reviewId) {
-        this.reviewId = reviewId;
-    }
-
-    public Long getJobId() {
-        return jobId;
-    }
-
-    public void setJobId(Long jobId) {
-        this.jobId = jobId;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    public String getReviewContent() {
-        return reviewContent;
-    }
-
-    public void setReviewContent(String reviewContent) {
-        this.reviewContent = reviewContent;
-    }
-
-    public Date getReviewDate() {
-        return reviewDate;
-    }
-
-    public void setReviewDate(Date reviewDate) {
-        this.reviewDate = reviewDate;
-    }
-
-    public int getReviewRecommend() {
-        return reviewRecommend;
-    }
-
-    public void setReviewRecommend(int reviewRecommend) {
-        this.reviewRecommend = reviewRecommend;
-    }
-
+    @Column(name = "review_comment_count")
+    private int reviewCommentCount;
 
 }

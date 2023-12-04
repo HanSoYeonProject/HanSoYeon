@@ -14,4 +14,6 @@ public interface BlacklistRepository extends JpaRepository<BlacklistEntity, Inte
     void deleteByProviderProviderIdAndUserUserId(String providerId, String userId);
     void deleteById(int blacklistId);
     boolean existsByUserUserId(String userId);
+
+    List<BlacklistEntity> findByUserUserId(String userId);
 }

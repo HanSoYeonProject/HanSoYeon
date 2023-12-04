@@ -135,4 +135,36 @@ public class MatchingController {
                 .build();
     }
 
+    /**
+     * [PUT] /api/matchings/completed
+     * @autor YangjiwooGN
+     * @param reqBody
+     * <br>`reqBody.recruitmentId`: 지원하려는 모집 공고 식별자<br>
+    `reqBody.userId`: 지원자의 회원 식별자
+     * @see RequestRecruitmentRequestBody
+     */
+    @PutMapping("/matchings/completed")
+    public ResponseEntity<?> completeMatching(@RequestBody RequestRecruitmentRequestBody reqBody){
+
+        return new ResponseBuilder()
+                .serviceResult(matchingService.completeRecruitment(reqBody.getRecruitmentId(), reqBody.getUserId()))
+                .build();
+    }
+
+    /**
+     * [PUT] /api/matchings/completedCancel
+     * @autor YangjiwooGN
+     * @param reqBody
+     * <br>`reqBody.recruitmentId`: 지원하려는 모집 공고 식별자<br>
+    `reqBody.userId`: 지원자의 회원 식별자
+     * @see RequestRecruitmentRequestBody
+     */
+    @PutMapping("/matchings/completedCancel")
+    public ResponseEntity<?> completeCancelMatching(@RequestBody RequestRecruitmentRequestBody reqBody){
+
+        return new ResponseBuilder()
+                .serviceResult(matchingService.completeCancelRecruitment(reqBody.getRecruitmentId(), reqBody.getUserId()))
+                .build();
+    }
+
 }

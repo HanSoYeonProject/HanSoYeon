@@ -15,7 +15,6 @@ const RecruitPage = (props) => {
     const [cookies, setCookie, removeCookie] = useCookies(['token']);
     const {user, setUser} = useUserStore();
     const userType = cookies.userType;
-
     const [recruitments, setRecruitments] = useState([]);
     const [isCompany, setIsCompany] = useState(false);
     const [detailData, setDetailData] = useState(null);
@@ -79,16 +78,62 @@ const RecruitPage = (props) => {
                 });
             }
         }
-        axios.get('http://localhost:8050/api/recruitments')
-            .then(response => {
-                // 받아온 목록을 오름차순으로 정렬
-                const reversedRecruitments = [...response.data];
-                setRecruitments(reversedRecruitments);
-                console.log(reversedRecruitments);
-
-            })
-            .catch(error => console.error('Error fetching recruitments:', error));
     }, []);
+
+    useEffect(() => {
+        const currentDate = new Date();
+
+        if (user && userType !== "company") {
+            axios.get(`http://localhost:8050/api/blacklists/isUserInBlacklist`, {
+                params: { userId: user.userId }
+            }).then(response => {
+                if (response.data.data) {
+                    // 사용자가 블랙리스트에 있는 경우
+                    axios.get(`http://localhost:8050/api/blacklists/user/${user.userId}`)
+                        .then(response => {
+                            const blacklistedProviders = response.data.data.map(blacklist => blacklist.provider.providerId);
+
+                            axios.get('http://localhost:8050/api/recruitments')
+                                .then(response => {
+                                    const filteredRecruitments = response.data.filter(recruitment => {
+                                        const startDate = new Date(recruitment.startDate);
+                                        return startDate >= currentDate && !blacklistedProviders.includes(recruitment.providers);
+                                    }).reverse();
+                                    setRecruitments(filteredRecruitments);
+                                })
+                                .catch(error => console.error('Error fetching recruitments:', error));
+                        })
+                        .catch(error => console.error('Error fetching blacklisted providers:', error));
+                } else {
+                    // 사용자가 블랙리스트에 없는 경우
+                    axios.get('http://localhost:8050/api/recruitments')
+                        .then(response => {
+                            const validRecruits = response.data.filter(recruitment => {
+                                const startDate = new Date(recruitment.startDate);
+                                return startDate >= currentDate;
+                            }).reverse();
+                            setRecruitments(validRecruits);
+                        })
+                        .catch(error => console.error('Error fetching recruitments:', error));
+                }
+            }).catch(error => {
+                console.error('Error checking user blacklist status:', error);
+            });
+        } else {
+            // 회사 사용자의 경우 블랙리스트 필터링 없이 모든 공고 표시
+            axios.get('http://localhost:8050/api/recruitments')
+                .then(response => {
+                    const validRecruits = response.data.filter(recruitment => {
+                        const startDate = new Date(recruitment.startDate);
+                        return startDate >= currentDate;
+                    }).reverse();
+                    setRecruitments(validRecruits);
+                })
+                .catch(error => console.error('Error fetching recruitments:', error));
+        }
+    }, [user]);
+
+
 
     const handleLogout = () => {
         removeCookie('token');
@@ -178,17 +223,17 @@ const RecruitPage = (props) => {
                                 <img
                                     src={recruitments.image[0]}
                                     alt="Image"
-                                    style={{display: "flex",height: "100%",justifyContent: "center", alignItems: "center",borderRadius:"10px"}}
+                                    style={{display: "flex",height: "250px",justifyContent: "center", alignItems: "center",borderRadius:"10px"}}
                                 />
                             </ImgContainer>
                             <TitleContainer>
                                 <h3
-                                    style={{ display: "flex",flex: "2",marginTop: "1rem", fontSize: '28px', fontWeight: 'bold', color: "#747474", justifyContent:"center", alignItems: "center"}}>
+                                    style={{ display: "flex",flex: "2",marginTop: "1rem", fontSize: '24px', fontWeight: 'bold', color: "#747474", justifyContent:"center", alignItems: "center"}}>
                                     {recruitments.title.length > 25
                                         ? `${recruitments.title.substring(0, 25)}...`
                                         : recruitments.title}
                                 </h3>
-                                <h3 style={{ display: "flex",flex: "2", fontSize: '24px', fontWeight: '600', color: '#747474', justifyContent: "center", alignItems: "center"}}>{recruitments.region} {recruitments.address}</h3>
+                                <h3 style={{ display: "flex",flex: "2", fontSize: '22px', fontWeight: '600', color: '#747474', justifyContent: "center", alignItems: "center"}}>{recruitments.region} {recruitments.address}</h3>
                                 <h4 style={{ display: "flex",flex: "1", fontSize: "18px", fontWeight: "600", color: "#747474", justifyContent: "center", alignItems: "center"}}>
                                     {recruitments.startDate} ~ {recruitments.endDate}
                                 </h4>
@@ -321,7 +366,7 @@ const BottomContent = styled.div`
   position: relative;
   overflow: hidden;
   transition: background-color 0.1s ease;
-  height: 100%;
+  height: 100%; 
 
   &:hover {
     background-color: #eee;
@@ -348,6 +393,7 @@ const BottomContent = styled.div`
     transform: scale(1.05);
   }
 `;
+
 
 const BottomMain = styled.div`
   display: flex;
@@ -402,6 +448,58 @@ const WritingButton = styled.button`
 
 const PaginationContainer = styled.div`
 `;
+
+const Upimage = styled.div`
+  display: flex;
+  flex : 1;
+  height: 100px;
+  align-items: center;
+  width: 100%; /* Change to 100% to take the full width */
+  margin-bottom: -25px;
+  object-fit: cover; /* 이미지 비율 유지를 위한 설정 */
+`;
+const Footer1Container = styled.div`
+  display: flex;
+  flex : 3;
+`
+const Footer2Container = styled.div`
+  display: flex;
+  height: 100px;
+  flex : 7;
+  margin-bottom: -50px;
+`
+
+const Footer1Image = styled.div`
+  display: flex;
+  img {
+    width: 50px;
+    height: auto;
+  }
+`;
+
+const Footer2Image = styled.div`
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  img {
+    width: 60px;
+    height: auto; /* 높이 자동 조절 */
+  }
+`;
+const Aa = styled.div`
+  height: 50px;
+  flex: 5;
+  display: flex;
+  justify-content: flex-start;
+  margin-top: -1.3rem;
+`
+const Bb = styled.div`
+  flex: 5;
+  height: 100px;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: -3.5rem;
+`
 
 
 

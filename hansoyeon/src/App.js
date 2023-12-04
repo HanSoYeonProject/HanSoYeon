@@ -39,7 +39,8 @@ import RecruitApplicationPage from "./Pages/RecruitApplicationPage";
 import RecruitApplicationHistoryPage from "./Pages/RecruitApplicationHistoryPage";
 import SchedulerPage from "./Pages/SchedulerPage";
 import AdminMatchingPage from "./Pages/AdminMatchingPage";
-
+import ReviewChangePage from "./Pages/ReviewChangePage";
+import Payment from "./Pages/Payment";
 
 function App() {
     return (
@@ -81,6 +82,8 @@ function App() {
                     <Route path="/recruitHistory" element={<RecruitApplicationHistoryPage />}></Route>
                     <Route path="/scheduler" element={<SchedulerPage/>}></Route>
                     <Route path="/matchAdmin" element={<AdminMatchingPage/>}></Route>
+                    <Route path="/reviewEdit/:id" element={<ReviewChangePage/>}></Route>
+                    <Route path="/payment" element={<Payment/>}></Route>
                 </Routes>
             </BrowserRouter>
         </div>
