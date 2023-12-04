@@ -79,34 +79,58 @@ const RecruitPage = (props) => {
     }, []);
 
     useEffect(() => {
-        let blacklistedProviders = [];
+        const currentDate = new Date();
+
         if (user && userType !== "company") {
-            axios.get(`http://localhost:8050/api/blacklists/user/${user.userId}`)
-                .then(response => {
-                    blacklistedProviders = response.data.data.map(blacklist => blacklist.provider.providerId);
-                })
-                .then(() => {
+            axios.get(`http://localhost:8050/api/blacklists/isUserInBlacklist`, {
+                params: { userId: user.userId }
+            }).then(response => {
+                if (response.data.data) {
+                    // 사용자가 블랙리스트에 있는 경우
+                    axios.get(`http://localhost:8050/api/blacklists/user/${user.userId}`)
+                        .then(response => {
+                            const blacklistedProviders = response.data.data.map(blacklist => blacklist.provider.providerId);
+
+                            axios.get('http://localhost:8050/api/recruitments')
+                                .then(response => {
+                                    const filteredRecruitments = response.data.filter(recruitment => {
+                                        const startDate = new Date(recruitment.startDate);
+                                        return startDate >= currentDate && !blacklistedProviders.includes(recruitment.providers);
+                                    }).reverse();
+                                    setRecruitments(filteredRecruitments);
+                                })
+                                .catch(error => console.error('Error fetching recruitments:', error));
+                        })
+                        .catch(error => console.error('Error fetching blacklisted providers:', error));
+                } else {
+                    // 사용자가 블랙리스트에 없는 경우
                     axios.get('http://localhost:8050/api/recruitments')
                         .then(response => {
-                            // 받아온 공고 목록에서 블랙리스트에 있는 기업의 공고 제외
-                            const filteredRecruitments = response.data.filter(recruitment =>
-                                !blacklistedProviders.includes(recruitment.providers)
-                            ).reverse();
-                            setRecruitments(filteredRecruitments);
+                            const validRecruits = response.data.filter(recruitment => {
+                                const startDate = new Date(recruitment.startDate);
+                                return startDate >= currentDate;
+                            }).reverse();
+                            setRecruitments(validRecruits);
                         })
                         .catch(error => console.error('Error fetching recruitments:', error));
-                })
-                .catch(error => console.error('Error fetching blacklisted providers:', error));
-        }else {
+                }
+            }).catch(error => {
+                console.error('Error checking user blacklist status:', error);
+            });
+        } else {
             // 회사 사용자의 경우 블랙리스트 필터링 없이 모든 공고 표시
             axios.get('http://localhost:8050/api/recruitments')
                 .then(response => {
-                    const reversedRecruitments = [...response.data].reverse();
-                    setRecruitments(reversedRecruitments);
+                    const validRecruits = response.data.filter(recruitment => {
+                        const startDate = new Date(recruitment.startDate);
+                        return startDate >= currentDate;
+                    }).reverse();
+                    setRecruitments(validRecruits);
                 })
                 .catch(error => console.error('Error fetching recruitments:', error));
         }
     }, [user]);
+
 
 
     const handleLogout = () => {
