@@ -84,10 +84,6 @@ public class RecruitmentEntity {
     @Column(name = "job_money", nullable = false)
     private String jobMoney;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "recruitment_id")
-    private List<ImageEntity> images = new ArrayList<>();
-
     public String getJobMorning() {
         return jobMorning;
     }

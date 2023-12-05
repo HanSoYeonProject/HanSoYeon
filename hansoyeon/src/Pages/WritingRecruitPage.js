@@ -70,9 +70,9 @@ const WritingRecruitPage = () => {
     const handleRegionChange = (e) => {
         setSelectedRegion(e.target.value);
     };
-    const handleImageChange = async (e) => {
-        // 이미지 선택 시
-        setImage(e.target.files[0]);
+    const handleImageChange = (e) => {
+        // 파일 선택 시
+        setImage([...e.target.files]);
     };
 
     const handleSubmit = async (e) => {
@@ -84,6 +84,7 @@ const WritingRecruitPage = () => {
             for (let i = 0; i< image.length; i++) {
                 formData.append('profileImages', image[i]);
             }
+            console.log(image)
 
             const response = await axios.post(
                 'http://localhost:8050/api/uploadProfileImages',

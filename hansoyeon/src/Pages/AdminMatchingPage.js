@@ -246,7 +246,7 @@ const CompanyMatchingPage = () => {
                 }
 
                 fireNotificationWithTimeout('매칭 삭제 완료', 5000, {
-                    body: `[${recruitment.jobTitle}] 공고가 삭제되었습니다. `
+                    body: `[${recruitment.title}] 공고가 삭제되었습니다. `
                 });
 
                 // SMS 전송 로직
@@ -254,7 +254,7 @@ const CompanyMatchingPage = () => {
                     // Provider에게도 SMS 전송
                     const smsResponse = await axios.post("http://localhost:8050/api/sms/sendApplicationMatchingDelete", {
                         phone: user.companyTel,
-                        jobTitle: recruitment.jobTitle
+                        jobTitle: recruitment.title
                     });
                     console.log(smsResponse.data);
                 } catch (smsError) {
@@ -273,8 +273,8 @@ const CompanyMatchingPage = () => {
         return end < today;
     };
 
-    const pastAnnouncements = announcements.filter(announcement => hasDatePassed(announcement.endDate));
-    const upcomingAnnouncements = announcements.filter(announcement => !hasDatePassed(announcement.endDate));
+    const pastAnnouncements = announcements.filter(announcement => hasDatePassed(announcement.startDate));
+    const upcomingAnnouncements = announcements.filter(announcement => !hasDatePassed(announcement.startDate));
 
     return (
         <Container>

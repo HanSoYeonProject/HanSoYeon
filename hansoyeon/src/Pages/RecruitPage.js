@@ -128,6 +128,8 @@ const RecruitPage = (props) => {
                         const startDate = new Date(recruitment.startDate);
                         return startDate >= currentDate;
                     }).reverse();
+                    console.log(response.data)
+                    console.log(validRecruits)
                     setRecruitments(validRecruits);
                 })
                 .catch(error => console.error('Error fetching recruitments:', error));
