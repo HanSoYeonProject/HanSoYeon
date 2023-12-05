@@ -28,6 +28,7 @@ public class MatchingService {
     public static final String REQUESTED = "REQUESTED";
 
     public ServiceResult getAllMatchings() {
+
         return new ServiceResult().success().data(matchingRepository.findAll());
     }
 

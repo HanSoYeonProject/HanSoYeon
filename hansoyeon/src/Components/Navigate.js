@@ -189,14 +189,14 @@ const Navigate = () => {
     }
 
     const handleAdminApplyManage = () => {
-            navigate("/matchAdmin");
+        navigate("/matchAdmin");
     }
 
     const handleCompanyApplyManage = () => {
         navigate("/matchCompany");
     }
     const PaymentButton = () => {
-        handlePayment();
+        navigate("/payment", {state: {fetchedUser}});
     }
     const getProfilePicSrc = () => {
         if(userType === "company"){
@@ -231,6 +231,10 @@ const Navigate = () => {
                             <RecruitPageInfo onClick={RecruitPageButton}>모집 일정</RecruitPageInfo>
                             <ReviewButton onClick={ReviewPageButton}>체험 후기</ReviewButton>
                             <AnnouncementPageInfo onClick={AnnouncementListPageButton}>공지 사항</AnnouncementPageInfo>
+                            {isLoggedIn && userType === 'company' && (
+                                <PayButton onClick={PaymentButton}>결제</PayButton>
+
+                            )}
                         </PageNav>
                         <div>
                             {isLoggedIn ? (
@@ -278,7 +282,6 @@ const Navigate = () => {
                                                 {userType === 'company' && (
                                                     <>
                                                         <Dropdown.Item onClick={handleBlacklist}>블랙리스트</Dropdown.Item>
-                                                        <Dropdown.Item onClick={PaymentButton}>결제</Dropdown.Item>
                                                     </>
                                                 )}
                                                 {userType !== 'company' && userID !== 'admin' ? (
@@ -442,7 +445,7 @@ const AnnouncementPageInfo = styled.button`
   font-size: 24px;
   color: #D1774C;
 `
-const PayButton = styled.div`
+const PayButton = styled.button`
   border: none;
   background-color: white;
   font-weight: 600;

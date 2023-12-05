@@ -60,7 +60,6 @@ public class RecruitmentService {
             // 예외를 throw하거나, 기본값을 설정하는 등의 처리를 수행할 수 있습니다.
             throw new IllegalArgumentException("Input JobProvidersEntity cannot be null");
         }
-
         JobProvidersDto jobProvidersDto = new JobProvidersDto();
         jobProvidersDto.setJob_id(jobProviders.getJobId());
         jobProvidersDto.setTitle(jobProviders.getJobTitle());
