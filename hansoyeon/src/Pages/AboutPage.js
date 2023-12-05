@@ -93,9 +93,9 @@ const AboutPage = () => {
                     <FirstFeatureContainer>
                         <div data-aos="flip-left">
                             <img src={about3} alt="about3 Image"/>
-                            <h2>사회문제도 해결하고 <br/>
-                                여행경비 부담도 덜어보세요!.</h2>
+                            <h2>무료로 숙박을 제공해주는 <br/> 지역도 매칭해 드립니다.</h2>
                             <h3>※일부 예외도 있습니다.</h3>
+
                         </div>
                     </FirstFeatureContainer>
                 </BigFeatureContainer>
@@ -105,7 +105,7 @@ const AboutPage = () => {
                 <BottomBigFeatureContainer>
                     <FirstFeatureContainer>
                         <div data-aos="flip-right">
-                            <img src={about5} alt="about4 Image"/>
+                            <img src={about4} alt="about4 Image"/>
                             <h2>새로운 사람들과<br/>
                                 새로운 인연을 맺어보세요!
                             </h2>
@@ -118,7 +118,7 @@ const AboutPage = () => {
                     </FirstFeatureContainer>
                     <FirstFeatureContainer>
                         <div data-aos="flip-right">
-                            <img src={about6} alt="about6 Image"/>
+                            <img src={about5} alt="about5 Image"/>
                             <h2>모르는 지역에 갈 기회가 생긴다</h2>
                             <h3>
                                 「어디 거기?!」라고 생각하는 지역도 <br/>
@@ -130,9 +130,10 @@ const AboutPage = () => {
                     </FirstFeatureContainer>
                     <FirstFeatureContainer>
                         <div data-aos="flip-right">
-                            <img src={about6} alt="about7 Image"/>
-                            <h2>무료로 숙박을 제공해주는 <br/> 지역도 매칭해 드립니다.</h2>
-                            <h3>※일부 예외도 있습니다.</h3>
+                            <img src={about6} alt="about6 Image"/>
+                            <h2>사회문제도 해결하고 <br/>
+                                여행경비 부담도 덜어보세요!.</h2>
+                            <h3>여러가지 경험을 할 수 있습니다</h3>
                         </div>
 
                     </FirstFeatureContainer>
