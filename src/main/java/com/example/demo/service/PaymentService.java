@@ -32,14 +32,7 @@ public class PaymentService {
     }
     //결제 저장
     public void savePayment(PaymentDto paymentDto) {
-        PaymentEntity payment = new PaymentEntity();
-        payment.setJobId(paymentDto.getJob_id());
-        payment.setUserId(paymentDto.getUser_id());
-        payment.setPaymentId(paymentDto.getPayment_id());
-        payment.setPaymentMoney(paymentDto.getPayment_money());
-        payment.setPaymentDate(new Date());
-        payment.setPaymentMethod(paymentDto.getPayment_method());
-
+        PaymentEntity payment = new PaymentEntity(paymentDto);
         paymentRepository.save(payment);
     }
 
