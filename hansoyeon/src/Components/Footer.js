@@ -20,13 +20,18 @@ const Footer2Image = styled.div`
   margin-left: 1200px; /* 원하는 값으로 조절 */
 `;
 
+const Footer1ImageContainer = styled.div`
+  margin-left: auto; // 오른쪽 정렬을 위해 auto 사용
+  display: flex;
+`;
 
 const Footer1Image = styled.div`
   display: flex;
   height: 70px;
   width: 70px;
-  margin-top: 36px;
-  margin-left: 138px;
+  position: absolute; // 절대 위치 사용
+  right: 800px; // 오른쪽에서 50px 떨어진 곳에 위치
+  top: 36px; // 상단에서 36px 떨어진 곳에 위치
 `;
 
 const FooterContent = styled.div`
@@ -45,6 +50,7 @@ const ImageContainer = styled.div`
   align-self: flex-start;
   display: flex;
   justify-content: space-between;
+  position: relative;
 `;
 
 const LogoImageCon = styled.div`
@@ -84,7 +90,7 @@ const King = styled.div`
 `;
 
 const FirstRow = styled.div`
-  width: 80%;
+  width: 100%;
   height: 100px;
   display: flex;
   justify-content: space-between; /* 변경된 부분: 사이에 공간을 넣기 위해 space-between 추가 */
@@ -115,9 +121,11 @@ function Footer() {
             <FirstRow>
                 <FooterContent>
                     <ImageContainer>
-                        <Footer1Image>
-                            <img src={footer1} alt="Footer1" />
-                        </Footer1Image>
+                        <Footer1ImageContainer>
+                            <Footer1Image>
+                                <img src={footer1} alt="Footer1" />
+                            </Footer1Image>
+                        </Footer1ImageContainer>
                         <Footer2Image>
                             <img src={footer2} alt="Footer2" />
                         </Footer2Image>

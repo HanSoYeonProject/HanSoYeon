@@ -165,7 +165,12 @@ const SchedulerPage = () => {
                     jobEndDate: new Date(matching.recruitment.jobEndDate)
                 }
             }));
-            setFriendSchedule(acceptedMatchings);
+            const currentDate = new Date();
+            const validMatchings = acceptedMatchings.filter(matching => {
+                const startDate = new Date(matching.recruitment.startDate);
+                return startDate >= currentDate;
+            });
+            setFriendSchedule(validMatchings);
         } catch (error) {
             console.error("Error fetching matchings:", error);
         }

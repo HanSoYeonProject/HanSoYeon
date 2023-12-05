@@ -366,4 +366,6 @@ const WritingRecruitPage = () => {
     );
 };
 
+
+
 export default WritingRecruitPage;

@@ -27,6 +27,8 @@ public class MatchingService {
     public static final String ACCEPTED = "ACCEPTED";
     public static final String REQUESTED = "REQUESTED";
 
+    public static final String COMPLETED = "COMPLETED";
+
     public ServiceResult getAllMatchings() {
 
         return new ServiceResult().success().data(matchingRepository.findAll());
@@ -171,5 +173,60 @@ public class MatchingService {
         matchingRepository.deleteAllByRecruitmentJobId(recruitmentId);
         return new ServiceResult().success().message("All matchings deleted successfully for recruitment ID " + recruitmentId);
     }
+
+    /**
+     * @apiNote 일 완료 (게시판 권한 수락)
+     * @author YangjiwooGN
+     * @param recruitmentId 수락할 모집 공고 식별자
+     * @param userId 수락할 지원자의 회원 식별자
+     */
+    public ServiceResult completeRecruitment(int recruitmentId, String userId){
+
+        var nullableUser = userRepository.findByUserId(userId);
+        var optRecruitment = recruitmentRepository.findById(recruitmentId);
+
+        if (nullableUser == null || optRecruitment.isEmpty()) {
+            return new ServiceResult().fail().message("Invalid user or recruitment");
+        }
+
+        var matching = matchingRepository.findByRecruitmentJobIdAndUserUserId(recruitmentId, userId);
+
+        if (matching == null){
+            return new ServiceResult().fail().message("Matching not found");
+        }
+
+        matching.setStatus(COMPLETED);
+        matchingRepository.save(matching);
+
+        return new ServiceResult().success().message("Successfully accepted");
+    }
+
+    /**
+     * @apiNote 게시판 권한 수락 취소
+     * @author YangjiwooGN
+     * @param recruitmentId 수락할 모집 공고 식별자
+     * @param userId 수락할 지원자의 회원 식별자
+     */
+    public ServiceResult completeCancelRecruitment(int recruitmentId, String userId){
+
+        var nullableUser = userRepository.findByUserId(userId);
+        var optRecruitment = recruitmentRepository.findById(recruitmentId);
+
+        if (nullableUser == null || optRecruitment.isEmpty()) {
+            return new ServiceResult().fail().message("Invalid user or recruitment");
+        }
+
+        var matching = matchingRepository.findByRecruitmentJobIdAndUserUserId(recruitmentId, userId);
+
+        if (matching == null){
+            return new ServiceResult().fail().message("Matching not found");
+        }
+
+        matching.setStatus(ACCEPTED);
+        matchingRepository.save(matching);
+
+        return new ServiceResult().success().message("Successfully accepted");
+    }
+
 
 }

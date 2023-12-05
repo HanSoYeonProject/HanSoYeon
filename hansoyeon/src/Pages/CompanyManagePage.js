@@ -4,6 +4,7 @@ import { Table, Button, Modal } from "react-bootstrap";
 import styled from 'styled-components';
 import defaultProfile from '../imgs/default_profile.png';
 import approvalCheck from '../imgs/approvalCheck.png'
+import Footer from "../Components/Footer";
 
 const CompanyManagePage = () => {
     const [companies, setCompanies] = useState([]);
@@ -217,7 +218,11 @@ const CompanyManagePage = () => {
                 <StyledModalFooter>
                     <Button variant="secondary" onClick={handleCloseLicenseModal}>닫기</Button>
                 </StyledModalFooter>
+
             </StyledModal>
+            <StyledFooter>
+                <Footer />
+            </StyledFooter>
         </Container>
     );
 };
@@ -344,6 +349,14 @@ const StyledLicenseCheckImage = styled.img`
   margin-left: 5px;
   width: 15px;
   height: 15px;
+`;
+const StyledFooter = styled.footer`
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    padding: 10px;
+    text-align: center;
+  margin-bottom: -10px;
 `;
 
 

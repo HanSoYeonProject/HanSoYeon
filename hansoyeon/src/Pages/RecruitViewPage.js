@@ -19,6 +19,7 @@ import together from "../imgs/together.png";
 import work from "../imgs/work.png";
 
 const RecruitViewPage = ( props ) => {
+    const {isUser, setIsUser} = useState(false);
     const { id } = useParams();
     const [isCompanyUser, setIsCompanyUser] = useState(false);
     const [cookies, setCookie, removeCookie] = useCookies(['token']);
@@ -293,7 +294,7 @@ const RecruitViewPage = ( props ) => {
                 </MainCenterContainer>
             </MainContainer>
             <ButtonContainer>
-                {!hasApplied && isUser && (
+                {!hasApplied && userType !== "company" && (
                     <ApplyButton onClick={applyBtn}>지원하기</ApplyButton>
                 )}
             </ButtonContainer>

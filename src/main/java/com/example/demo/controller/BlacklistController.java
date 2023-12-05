@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequiredArgsConstructor
 @Slf4j
@@ -117,6 +118,13 @@ public class BlacklistController {
 
         return new ResponseBuilder()
                 .serviceResult(blacklistService.isUserInBlacklist(userId))
+                .build();
+    }
+
+    @GetMapping("/api/blacklists/user/{userId}")
+    public ResponseEntity<?> getBlacklistsByUserId(@PathVariable("userId") String userId) {
+        return new ResponseBuilder()
+                .serviceResult(blacklistService.getBlacklistsByUserId(userId))
                 .build();
     }
 }
