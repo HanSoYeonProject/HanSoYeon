@@ -120,28 +120,6 @@ const ReviewInfo = styled.p`
   color: #777777;
 `;
 
-const recruitmentSchedule = [
-    {
-        id: 1,
-        title: '모집 시작',
-        date: '2023-05-01',
-    },
-    {
-        id: 2,
-        title: '서류 제출 마감',
-        date: '2023-05-15',
-    },
-    {
-        id: 3,
-        title: '면접 일정 안내',
-        date: '2023-05-20',
-    },
-    {
-        id: 4,
-        title: '최종 합격자 발표',
-        date: '2023-06-01',
-    },
-];
 
 const MainPage = () => {
     const [recruitments, setRecruitments] = useState([]);
