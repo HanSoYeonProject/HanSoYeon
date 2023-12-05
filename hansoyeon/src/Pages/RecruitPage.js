@@ -27,6 +27,17 @@ const RecruitPage = (props) => {
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = recruitments.slice(indexOfFirstItem, indexOfLastItem);
 
+    const regions = ["지역 선택", "서울특별시", "인천광역시", "대전광역시", "광주광역시",
+        "대구광역시", "부산광역시", "경기도", "강원도", "충청북도",
+        "충청남도", "전라북도", "전라남도", "경상북도", "경상남도", "제주특별자치도"];
+
+    const [selectedRegion, setSelectedRegion] = useState(regions[0]);
+    const [fetchRecruit, setFetchRecruit] = useState(false);
+
+    const handleRegionChange = (event) => {
+        setSelectedRegion(event.target.value);
+    };
+
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
     };
@@ -136,11 +147,69 @@ const RecruitPage = (props) => {
                         const startDate = new Date(recruitment.startDate);
                         return startDate >= currentDate;
                     }).reverse();
+                    console.log(response.data)
+                    console.log(validRecruits)
                     setRecruitments(validRecruits);
                 })
                 .catch(error => console.error('Error fetching recruitments:', error));
         }
     }, [user]);
+
+    const fetchRecruitments = () => {
+        const currentDate = new Date();
+
+        if (user && userType !== "company") {
+            axios.get(`http://localhost:8050/api/blacklists/isUserInBlacklist`, {
+                params: { userId: user.userId }
+            }).then(response => {
+                if (response.data.data) {
+                    // 사용자가 블랙리스트에 있는 경우
+                    axios.get(`http://localhost:8050/api/blacklists/user/${user.userId}`)
+                        .then(response => {
+                            const blacklistedProviders = response.data.data.map(blacklist => blacklist.provider.providerId);
+
+                            axios.get('http://localhost:8050/api/recruitments')
+                                .then(response => {
+                                    const filteredRecruitments = response.data.filter(recruitment => {
+                                        const startDate = new Date(recruitment.startDate);
+                                        return startDate >= currentDate && !blacklistedProviders.includes(recruitment.providers);
+                                    }).reverse();
+                                    console.log(filteredRecruitments)
+                                    setRecruitments(filteredRecruitments);
+                                })
+                                .catch(error => console.error('Error fetching recruitments:', error));
+                        })
+                        .catch(error => console.error('Error fetching blacklisted providers:', error));
+                } else {
+                    // 사용자가 블랙리스트에 없는 경우
+                    axios.get('http://localhost:8050/api/recruitments')
+                        .then(response => {
+                            const validRecruits = response.data.filter(recruitment => {
+                                const startDate = new Date(recruitment.startDate);
+                                return startDate >= currentDate;
+                            }).reverse();
+                            setRecruitments(validRecruits);
+                        })
+                        .catch(error => console.error('Error fetching recruitments:', error));
+                }
+            }).catch(error => {
+                console.error('Error checking user blacklist status:', error);
+            });
+        } else {
+            // 회사 사용자의 경우 블랙리스트 필터링 없이 모든 공고 표시
+            axios.get('http://localhost:8050/api/recruitments')
+                .then(response => {
+                    const validRecruits = response.data.filter(recruitment => {
+                        const startDate = new Date(recruitment.startDate);
+                        return startDate >= currentDate;
+                    }).reverse();
+                    console.log(response.data)
+                    console.log(validRecruits)
+                    setRecruitments(validRecruits);
+                })
+                .catch(error => console.error('Error fetching recruitments:', error));
+        }
+    }
 
 
 
@@ -171,6 +240,19 @@ const RecruitPage = (props) => {
         navigate("/recruitHistory")
     }
 
+    const handleSearch = () => {
+        console.log("Selected Region:", selectedRegion);
+        if(selectedRegion !== "지역 선택"){
+            const validRecruits = recruitments.filter(recruitment => {
+                const region = recruitment.region;
+                return selectedRegion === region;
+            }).reverse();
+            setRecruitments(validRecruits);
+        }else if(selectedRegion === "지역 선택"){
+            fetchRecruitments();
+        }
+    };
+
 
     // 라디오 버튼 UI
     const renderRadioButtons = () => {
@@ -183,18 +265,13 @@ const RecruitPage = (props) => {
         ];
 
         return (
-            <div style={{display:"flex", flexDirection:"row",backgroundColor:""}}>
-                {contentTypeOptions.map((option, index) => (
-                    <RadioButtonLabel key={index}>
-                        <RadioButton
-                            type="radio"
-                            name="contentType"
-                            value={option.value}
-                            onChange={() => setSelectedContentType(option.value)}
-                        />
-                        <RadioButtonSpan>{option.label}</RadioButtonSpan>
-                    </RadioButtonLabel>
-                ))}
+            <div>
+                <StyledSelect value={selectedRegion} onChange={handleRegionChange}>
+                    {regions.map((region, index) => (
+                        <option key={index} value={region}>{region}</option>
+                    ))}
+                </StyledSelect>
+                <StyledButton onClick={handleSearch}>검색</StyledButton>
             </div>
         );
     };
@@ -510,6 +587,28 @@ const Bb = styled.div`
   margin-top: -3.5rem;
 `
 
+const StyledSelect = styled.select`
+  padding: 10px;
+  margin-right: 10px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  font-size: 16px;
+  cursor: pointer;
+`;
+
+const StyledButton = styled.button`
+  padding: 10px 20px;
+  border-radius: 5px;
+  border: none;
+  background-color: #4CAF50;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #45a049;
+  }
+`;
 
 
 export default RecruitPage;
