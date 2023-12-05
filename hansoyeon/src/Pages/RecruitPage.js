@@ -78,6 +78,14 @@ const RecruitPage = (props) => {
                 });
             }
         }
+        axios.get('http://localhost:8050/api/recruitments')
+            .then(response => {
+                // 받아온 목록을 오름차순으로 정렬
+                const reversedRecruitments = [...response.data].reverse();
+                setRecruitments(reversedRecruitments);
+                console.log(reversedRecruitments);
+            })
+            .catch(error => console.error('Error fetching recruitments:', error));
     }, []);
 
     useEffect(() => {

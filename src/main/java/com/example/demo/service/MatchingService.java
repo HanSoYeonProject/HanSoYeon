@@ -30,6 +30,7 @@ public class MatchingService {
     public static final String COMPLETED = "COMPLETED";
 
     public ServiceResult getAllMatchings() {
+
         return new ServiceResult().success().data(matchingRepository.findAll());
     }
 

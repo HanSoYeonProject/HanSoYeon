@@ -181,6 +181,7 @@ const CompanyManagePage = () => {
                             <StyledModalText>기업명: {selectedCompany.companyName}</StyledModalText>
                             <StyledModalText>회사 주소: {selectedCompany.companyAddress}</StyledModalText>
                             <StyledModalText>전화번호: {selectedCompany.companyTel}</StyledModalText>
+                            <StyledModalText></StyledModalText>
                             <StyledModalLicenseImage
                                 src={selectedCompany ? selectedCompany.companyLicense : ''}
                                 alt="license"

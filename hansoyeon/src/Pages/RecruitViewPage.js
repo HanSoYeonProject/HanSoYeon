@@ -25,6 +25,7 @@ const RecruitViewPage = ( props ) => {
     const [cookies, setCookie, removeCookie] = useCookies(['token']);
     const navigate = useNavigate(); // navigate 함수 초기화
     const [recruitments, setRecruitments] = useState([]);
+    const [isUser, setIsUser] = useState(false);
     const [recruitmentId, setRecruitmentId] = useState('');
     const [job_id, setJobId] = useState('');
     const [userId, setUserId] = useState('');
@@ -187,7 +188,6 @@ const RecruitViewPage = ( props ) => {
                 <h2>{recruitments.title}</h2>
                 {/*<h2>{recruitments.providers}</h2>*/}
             </TitleContainer>
-
             <ScheduleContainer>
                 <TopSchedule>모집 일정</TopSchedule>
             </ScheduleContainer>
