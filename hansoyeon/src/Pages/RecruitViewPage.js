@@ -105,6 +105,27 @@ const RecruitViewPage = ( props ) => {
         }
     }, []);
 
+    useEffect(() => {
+        if(userType !== "company"){
+            const checkApplicationStatus = async () => {
+                try {
+                    const response = await axios.get(`http://localhost:8050/api/matchings/user/${user.userId}`);
+                    const matchings = response.data.data;
+                    console.log(matchings);
+
+                    const hasApplied = matchings.some(matching => matching.recruitment.jobId === parseInt(id));
+                    console.log(id)
+                    console.log(hasApplied)
+                    setHasApplied(hasApplied);
+                } catch (error) {
+                    console.error('Error retrieving matchings: ', error);
+                }
+            };
+
+            checkApplicationStatus();
+        }
+    }, [id, user]);
+
     const handleLogout = () => {
         removeCookie('token');
         setUser(null);
@@ -293,7 +314,7 @@ const RecruitViewPage = ( props ) => {
                 </MainCenterContainer>
             </MainContainer>
             <ButtonContainer>
-                {!hasApplied && userType !== "company" && (
+                {!hasApplied && userType !== "company" && user && (
                     <ApplyButton onClick={applyBtn}>지원하기</ApplyButton>
                 )}
             </ButtonContainer>

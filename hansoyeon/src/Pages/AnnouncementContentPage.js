@@ -191,24 +191,28 @@ const MiddleContainer = styled.div`
   flex-direction: column;
   width: 900px;
   height: 500px;
+  font-weight: 600;
   background-color: #f8f8f8; /* Light gray background */
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow */
   padding: 20px; /* Add some padding */
   margin-top: 20px; /* Add space at the top */
+  font-family: 'SUITE-Light';
+  
 `;
 
 const NoticeTitleContainer = styled.div`
   font-size: 40px;
-  font-weight: 700;
-  width: 800px;
+  font-weight: 500;
+  width: 900px;
   display: flex;
   flex-direction: row;
   align-items: center;
-  margin-bottom: 1rem;
+  margin-top: 9rem;
+  font-family: 'omyu_pretty';
 `;
 const EditButton = styled.button`
-  background-color: #007bff;
+  background-color: #2582fa;
   border: none;
   color: white;
   border-radius: 10px;
@@ -221,7 +225,6 @@ const Title = styled.div`
   flex: 1;
   font-size: 20px;
   align-items: center;
-  margin-left: 2rem;
   margin-right: 2rem;
   justify-content: space-between;
 `;
@@ -231,14 +234,18 @@ const WriterContainer = styled.div`
   font-size: 20px;
   flex: 3;
   align-items: center;
-  margin-left: 1rem;
+  margin-left: 0.3rem;
+  
+  h6 {
+  font-size: 20px;
+}
 `;
 
 const ContentContainer = styled.div`
   display: flex;
   flex: 4;
-  font-size: 20px;
-  margin-left: 1rem;
+  margin-left: 0.3rem;
+  font-size: 24px;
 `;
 
 const ButtonContainer = styled.div`
@@ -267,21 +274,19 @@ const CancelButton = styled.button`
   border-radius: 10px;
   width: 80px;
   height: 30px;
-  margin-right: 1rem;
 `;
 
 const DeleteButton = styled.button`
-  background-color: #ff3b30; /* Red color */
+  background-color: tomato; /* Red color */
   border: none;
   color: white;
   border-radius: 10px;
-  margin-right: 1rem;
   width: 80px;
   height: 30px;
 `;
 
 const ModifyButton = styled.button`
-  background-color: #007bff; /* Blue color */
+  background-color: orange; /* Blue color */
   border: none;
   color: white;
   border-radius: 10px;

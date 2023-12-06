@@ -911,12 +911,13 @@ const NewCourseContainer = styled.div`
   align-items: center;
 `;
 const NewCourseTitle = styled.div`
-  font-size: 38px;
+  font-size: 44px;
   color: #663399;
   
   font-weight: 800;
   margin-top: 120px;
   margin-bottom: 180px;
+  font-family: 'omyu_pretty';
   //background-color: green;
 `;
 
@@ -947,9 +948,10 @@ const TabButton = styled.button`
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 20px;
+  font-size: 26px;
   margin: 0 10px;
   position: relative;
+  font-family: 'omyu_pretty';
 
   // hover 효과
   &:hover {
@@ -969,7 +971,7 @@ const TabButton = styled.button`
   // 선택된 탭의 스타일
   &.active {
     color: orange;
-    font-size: 24px;
+    font-size: 28px;
     font-weight: 700;
     &::after {
       content: "";
@@ -1075,6 +1077,9 @@ const SearchButton = styled.button`
   background-color: #4CAF50;
   color: white;
   cursor: pointer;
+  font-size: 18px;
+  font-family: 'omyu_pretty';
+  
   &:hover {
     background-color: #45a049;
   }
@@ -1102,7 +1107,8 @@ const PageButton = styled.button`
 
 const SearchResultText = styled.div`
   color: #333;
-  font-size: 17px;
+  font-size: 20px;
+  font-family: 'omyu_pretty';
 `;
 
 const StyledSelect = styled.select`
@@ -1113,6 +1119,8 @@ const StyledSelect = styled.select`
   box-shadow: 0px 2px 4px rgba(0,0,0,0.1);
   margin-right: 10px;
   cursor: pointer;
+  font-size: 18px;
+  font-family: 'omyu_pretty';
 
   &:hover {
     border-color: #aaa;
@@ -1128,6 +1136,8 @@ const RadioButtonLabel = styled.label`
   border: 2px solid #ddd;
   cursor: pointer;
   font-weight: 500;
+  font-size: 18px;
+  font-family: 'omyu_pretty';
 
   &:hover {
     background-color: #e8e8e8;
@@ -1141,6 +1151,8 @@ const RadioButton = styled.input`
     color: #0000ff;
     font-weight: bold;
     border-color: #4CAF50;
+    font-size: 20px;
+    font-family: 'omyu_pretty';
   }
 `;
 
