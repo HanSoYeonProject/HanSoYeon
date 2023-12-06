@@ -153,9 +153,12 @@ const ReviewContentPage = () => {
         <div>
             <Container>
                 <Title>
-                    {review.reviewTitle}
+                    <ReviewTitle>
+                        <h2>{review.reviewTitle}</h2>
+                    </ReviewTitle>
+
                     <HeartIcon onClick={() => handleHeart(review)}>
-                        ❤️
+                        <h2>좋아요</h2>❤️
                     </HeartIcon>
                 </Title>
                 <ReviewImage src={review.reviewImage} alt="Review" />
@@ -209,17 +212,31 @@ const Container = styled.div`
   margin: 50px auto;
   padding: 20px;
   border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 50px rgba(0, 0, 0,0.3);
   background-color: white;
   position: relative;
 `;
 
-const Title = styled.h2`
+const Title = styled.div`
+  display: flex;
+  flex-direction: row;
   text-align: center;
   color: #333;
-  margin-bottom: 20px;
+  margin-bottom: 5px;
   font-weight: bold;
 `;
+const ReviewTitle = styled.div`
+  display: flex;
+  font-family: 'omyu_pretty';
+  width:90%;
+  justify-content: center;
+  align-items: center;
+  h2 {
+
+    font-weight: 500;
+    font-size: 40px;
+  }
+`
 
 const ReviewImage = styled.img`
   display: block;
@@ -256,15 +273,21 @@ const ButtonContainer = styled.div`
 `;
 
 const ActionButton = styled.button`
-  background-color: #4CAF50;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #ff9933;
   color: white;
+  font-size: 18px;
+  width: 70px;
+  height: 40px;
   padding: 10px 15px;
   margin-left: 10px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   &:hover {
-    background-color: #45a049;
+    background-color: darkorange;
   }
 `;
 
@@ -330,20 +353,40 @@ const CommentInput = styled.textarea`
 `;
 
 const PostCommentButton = styled.button`
-  background-color: #007bff;
-  color: white;
+  background-color: #ffffff;
+  color: #333333;
+  font-weight: 600;
+  border: 1px solid #dcdcdc;
   padding: 10px 20px;
-  border: none;
   border-radius: 5px;
   cursor: pointer;
   margin-top: 10px;
+  transition: background-color 0.3s, color 0.3s, border-color 0.3s; /* hover 효과를 부드럽게 만들기 위한 트랜지션 설정 */
+
+  &:hover {
+    background-color: #f5f5f5; /* hover 시 배경 색상 변경 */
+    color: #555555; /* hover 시 글자 색상 변경 */
+    border-color: #bfbfbf; /* hover 시 테두리 색상 변경 */
+  }
 `;
 
+
 // 하트 아이콘 스타일링
-const HeartIcon = styled.span`
-  font-size: 28px;
+const HeartIcon = styled.div`
+  display: flex;
+  flex-direction: row;
+  font-size: 20px;
+  width: 70px;
   cursor: pointer;
   margin-left: 10px;
+  align-items: flex-end;
+  justify-content: center;
+  h2 {
+    margin-right: 0.3rem;
+    display: flex;
+    align-items: flex-end;
+    font-size: 12px;
+  }
 `;
 
 export default ReviewContentPage;

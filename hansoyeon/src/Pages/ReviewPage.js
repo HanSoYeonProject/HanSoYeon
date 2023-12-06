@@ -544,7 +544,10 @@ const RightNewsTitle = styled.div`
 const Button = styled.button`
   background-color: orange;
   color: white;
-  padding: 10px 20px;
+  font-size: 20px;
+  width: 80px;
+  padding: 5px 10px;
+  font-weight: 500;
   border: none;
   border-radius: 5px;
   cursor: pointer;
