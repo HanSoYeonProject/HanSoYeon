@@ -9,6 +9,7 @@ import {useUserStore} from '../stores';
 import defaultProfilePic from '../imgs/default_profile.png';
 import useThrottle from "../Components/useThrottle";
 import usePushNotification from "../Components/usePushNotification";
+import Footer from "../Components/Footer";
 
 const ReviewPage = () => {
     const navigate = useNavigate();
@@ -19,7 +20,7 @@ const ReviewPage = () => {
     const [isCompanyUser, setIsCompanyUser] = useState(false)
     const [reviews, setReviews] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const ITEMS_PER_PAGE = 8;
+    const ITEMS_PER_PAGE = 4;
 
     const [matchings, setMatchings] = useState([]);
     const [showModal, setShowModal] = useState(false);
@@ -175,7 +176,7 @@ const ReviewPage = () => {
             });
             const validWritingMatchings = validMatchings.filter(matching => {
                 const status = matching.status;
-               return status === "COMPLETED"
+                return status === "COMPLETED"
             });
             console.log(validMatchings)
             setMatchings(validWritingMatchings);
@@ -352,34 +353,34 @@ const ReviewPage = () => {
                     </RightNewsTitle>
                 </HeaderContainer>
                 <NewsTitle>
-                <ReviewPageContentContainer>
-                {currentItems.map(item => (
-                    <ReviewPageContentItem key={item.reviewId} onClick={() => handleReviewClick(item)}>
-                        <ReviewDetails>
-                            <ImgContainer>
-                                <Image
-                                    src={item.reviewImage || noImage}
-                                    alt="Review"
-                                />
-                            </ImgContainer>
-                            <TextInfo>
-                                <Title>{item.reviewTitle} ({item.commentCount})</Title>
-                                <AdditionalInfo>작성자: {item.userId}</AdditionalInfo>
-                                <AdditionalInfo>날짜: {item.reviewWriteDate}</AdditionalInfo>
-                                <AdditionalInfo>조회수: {item.reviewClickCount},  좋아요: {item.reviewLikeCount}</AdditionalInfo>
-                            </TextInfo>
-                        </ReviewDetails>
-                    </ReviewPageContentItem>
-                ))}
-            </ReviewPageContentContainer>
+                    <ReviewPageContentContainer>
+                        {currentItems.map(item => (
+                            <ReviewPageContentItem key={item.reviewId} onClick={() => handleReviewClick(item)}>
+                                <ReviewDetails>
+                                    <ImgContainer>
+                                        <Image
+                                            src={item.reviewImage || noImage}
+                                            alt="Review"
+                                        />
+                                    </ImgContainer>
+                                    <TextInfo>
+                                        <Title>{item.reviewTitle} ({item.commentCount})</Title>
+                                        <AdditionalInfo>작성자: {item.userId}</AdditionalInfo>
+                                        <AdditionalInfo>날짜: {item.reviewWriteDate}</AdditionalInfo>
+                                        <AdditionalInfo>조회수: {item.reviewClickCount},  좋아요: {item.reviewLikeCount}</AdditionalInfo>
+                                    </TextInfo>
+                                </ReviewDetails>
+                            </ReviewPageContentItem>
+                        ))}
+                    </ReviewPageContentContainer>
                 </NewsTitle>
-            <Pagination>
-                {Array.from({ length: Math.ceil(reviews.length / ITEMS_PER_PAGE) }, (_, i) => (
-                    <PageNumber key={i} onClick={() => paginate(i + 1)}>
-                        {i + 1}
-                    </PageNumber>
-                ))}
-            </Pagination>
+                <Pagination>
+                    {Array.from({ length: Math.ceil(reviews.length / ITEMS_PER_PAGE) }, (_, i) => (
+                        <PageNumber key={i} onClick={() => paginate(i + 1)}>
+                            {i + 1}
+                        </PageNumber>
+                    ))}
+                </Pagination>
             </MiddleContainer>
             <StyledModal show={showModal} onHide={handleCloseModal}>
                 <Modal.Header closeButton>
@@ -487,6 +488,7 @@ const ReviewPage = () => {
                     <button onClick={handleDetailModalClose}>닫기</button>
                 </DetailModalContent>
             </StyledModal>
+            <Footer/>
         </Container>
     );
 };
@@ -494,7 +496,8 @@ const ReviewPage = () => {
 const Container = styled.div`
   display: flex;
   flex: 1;
-  height: 700px;
+  height: auto;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
 `
@@ -505,14 +508,17 @@ const HeaderContainer = styled.div`
   align-items: center;
   width: 100%;
   margin-bottom: 20px; // 여백 추가
+  margin-left: 3rem;
 `;
 
 const MiddleContainer = styled.div`
   display: flex;
-  height: 500px;
-  width: 1000px;
   flex-direction: column;
   align-items: center;
+  margin-top: 2rem; // 상단 여백 조정
+  margin-bottom: 2rem; // 하단 여백 조정
+  width: 1000px; // 너비 조정
+  height: auto; // 높이 자동 조절
 `;
 
 const NewsTitle = styled.div`
@@ -523,33 +529,36 @@ const NewsTitle = styled.div`
 `
 
 const ReviewPageTitle = styled.div`
-  font-size: 40px;
-  font-weight: 700;
+  font-size: 44px;
+  font-weight: 500;
+  font-family: 'omyu_pretty';
 `;
 
 const RightNewsTitle = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  margin-right: 100px;
+  margin-right: 50px;
 `;
 
 const Button = styled.button`
-  background-color: #4CAF50;
+  background-color: orange;
   color: white;
   padding: 10px 20px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   &:hover {
-    background-color: #45a049;
+    background-color: darkorange;
   }
 `;
 
 const ReviewPageContentContainer = styled.div`
   display: grid;
-  grid-template-columns: repeat(2, 1fr);;
-  gap: 20px;
+  grid-template-columns: repeat(2, 1fr); // 2열 그리드 레이아웃
+  gap: 20px; // 그리드 사이 간격
+  width: 100%; // 전체 너비 사용
+  // 필요한 경우 여기에 추가 스타일을 적용
 `;
 
 const ReviewPageContentItem = styled.div`
@@ -676,10 +685,10 @@ const TableCell = styled.td`
 `;
 
 const ApplicantsList = styled.div`
-    margin-top: 20px;
-    padding: 10px;
-    background: #fff;
-    border: 1px solid #ddd;
+  margin-top: 20px;
+  padding: 10px;
+  background: #fff;
+  border: 1px solid #ddd;
 `;
 
 const DetailModal = styled.div`
@@ -706,12 +715,12 @@ const DetailModalContent = styled.div`
 `;
 
 const ProfileRequestPic = styled.img`
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-top: 10px;
-    margin-bottom: 20px;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-top: 10px;
+  margin-bottom: 20px;
 `;
 
 const NoApproveButton = styled.button`
