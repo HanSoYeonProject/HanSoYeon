@@ -37,38 +37,13 @@ import banner2 from '../imgs/banner5.png';
 import banner3 from '../imgs/banner6.png';
 import noImage from '../imgs/noImage.png';
 
-const dummyReviews = [
-    {
-        id: 1,
-        title: '멋진 경험이었습니다!',
-        content: '가이드분이 너무 친절하셨고, 경치도 환상적이었어요. 다음에 또 방문하고 싶습니다.',
-        author: '홍길동',
-        date: '2023-01-01',
-    },
-    {
-        id: 2,
-        title: '가족과 함께한 최고의 여행',
-        content: '아이들과 함께 갔는데 모두가 즐거워했습니다. 추천해요!',
-        author: '김철수',
-        date: '2023-02-15',
-    },
-    {
-        id: 3,
-        title: '다시 오고 싶은 곳',
-        content: '서비스도 좋았고, 특히 음식이 맛있었습니다. 여행의 즐거움을 더해주는 곳이었어요.',
-        author: '이영희',
-        date: '2023-03-20',
-    },
-];
-
 SwiperCore.use([Autoplay, Pagination]);
 
 const MainContainer = styled.div`
   font-family: 'Apple SD Gothic Neo', 'Arial', sans-serif;
   width: 100%;
   margin: 0 auto;
-  padding: 5px;
-  background-color: #f8f8f8;
+  background-color: #ffffff;
 `;
 
 const SectionContainer = styled.div`
@@ -91,7 +66,7 @@ const TitleStyle = styled.h1`
 
 const SubTitleStyle = styled.div`
   font-weight: bolder;
-  margin: 0 0 20px;
+  margin: 0 0 16px;
   color: #555555;
 `;
 
@@ -354,23 +329,29 @@ const SwiperSection = ({ images }) => {
 };
 
 const RecruitmentSchedule = ({ schedule }) => {
+    const navigate = useNavigate();
+
+    const handleRecruitmentClick = (recruitmentId) => {
+        navigate(`/recruit/${recruitmentId}`);
+    };
+
     return (
         <RecruitmentGrid>
             {schedule.map((item) => (
-                <RecruitmentCard key={item.id}>
+                <RecruitmentCard key={item.id} onClick={() => handleRecruitmentClick(item.id)}>
                     <CardImage src={item.image && item.image.length > 0 ? item.image : noImage} alt={item.title} />
-
                     <CardContent>
-                        <Link to={`/recruit/${item.id}`}>
-                            <RecruitmentTitle>{item.title}</RecruitmentTitle>
+                        <RecruitmentTitle>
+                            {item.title}
                             <RecruitmentDate>{item.date}</RecruitmentDate>
-                        </Link>
+                        </RecruitmentTitle>
                     </CardContent>
                 </RecruitmentCard>
             ))}
         </RecruitmentGrid>
     );
 };
+
 
 const RecruitmentItem = styled.div`
   display: flex;
@@ -383,11 +364,12 @@ const RecruitmentItem = styled.div`
 const RecruitmentTitle = styled.h3`
   font-weight: bold;
   color: #333;
-  margin-bottom: 5px;
 `;
 
 const RecruitmentDate = styled.div`
   color: #666;
+  font-size: 20px;
+  margin-top: 1rem;
 `;
 
 const RecruitmentGrid = styled.div`
@@ -407,7 +389,8 @@ const RecruitmentCard = styled.div`
   height: 350px; // 카드의 높이 조정
   padding: 20px; // 내부 여백 추가
   margin-bottom: 15px;
-
+  cursor : pointer;
+  
   &:hover {
     transform: translateY(-5px);
   }
@@ -426,7 +409,8 @@ const CardContent = styled.div`
 `;
 
 const SwiperStyle = styled(Swiper)`
-  height: 800px; 
+  height: 500px;
+  margin-bottom: 20px;
 `;
 
 const StyledImage = styled.img`
