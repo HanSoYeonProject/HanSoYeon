@@ -7,7 +7,7 @@ import styled from "styled-components";
 import {useUserStore} from "../stores";
 import Pagination from '../Components/Pagination';
 import Footer from "../Components/Footer";
-
+import App from "../App.css";
 
 
 const RecruitPage = (props) => {
@@ -308,7 +308,7 @@ const RecruitPage = (props) => {
                             </ImgContainer>
                             <TitleContainer>
                                 <h3
-                                    style={{ display: "flex",flex: "2",marginTop: "1rem", fontSize: '24px', fontWeight: 'bold', color: "#747474", justifyContent:"center", alignItems: "center"}}>
+                                    style={{ display: "flex",flex: "2",marginTop: "1rem", fontSize: '24px', fontWeight: 'bold', color: "", justifyContent:"center", alignItems: "center"}}>
                                     {recruitments.title.length > 25
                                         ? `${recruitments.title.substring(0, 25)}...`
                                         : recruitments.title}
@@ -357,8 +357,9 @@ const TopContainer = styled.div`
 const MoTopContainer = styled.div`
   display: flex;
   font-size: 48px;
-  font-weight: 700;
+  font-weight: 500;
   width: 100%;
+  font-family: 'omyu_pretty';
 `
 const RadioButtonSpan = styled.span`
   display: flex;
@@ -366,10 +367,11 @@ const RadioButtonSpan = styled.span`
 
 const MoBottomContainer = styled.div`
   display: flex;
-  font-size: 20px;
-  margin-top: 1rem;
+  font-size: 24px;
+  margin-top: 0.2rem;
   width: 100%;
-  margin-left: 0.2rem;
+  margin-left: 0.4rem;
+  font-family: 'omyu_pretty';
 `
 const AlgoContainer = styled.div`
   display: flex;
@@ -377,6 +379,7 @@ const AlgoContainer = styled.div`
   justify-content: center;
   align-items: center;
   width: 80%;
+  
 `
 const SmallAlgoContainer = styled.div`
   display: flex;
@@ -431,23 +434,25 @@ const Bottom = styled.div`
   margin-bottom: 1rem;
   max-height: 100vh; /* Increase the max-height value */
   padding: 20px;
+
 `;
 
 const TitleContainer = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
+  font-family: GmarketSansTTFLight;
 `;
 
 const BottomContent = styled.div`
   border-radius: 10px;
-  border: 1px solid #d6d6d6;
   width: 100%;
   box-sizing: border-box;
   position: relative;
   overflow: hidden;
   transition: background-color 0.1s ease;
   height: 100%; 
+  
 
   &:hover {
     background-color: #eee;
@@ -460,6 +465,7 @@ const BottomContent = styled.div`
     white-space: nowrap; /* 변경: 텍스트가 다음 줄로 넘어가지 않도록 설정 */
     overflow: hidden;
     text-overflow: ellipsis;
+    
   }
 
   img {
@@ -521,11 +527,19 @@ const ImgContainer = styled.div`
   height: 200px;
 `
 const WritingButton = styled.button`
-  width: 280px;
+  width: 230px;
+  color: white;
   margin-right: 1.3rem;
   border-radius: 10px;
-  font-size: 24px;
-  font-weight: 700;
+  font-size: 28px;
+  font-weight: 500;
+  border: none;
+  background-color: orange;
+
+  &:hover {
+    background-color: darkorange;
+  }
+  
 `;
 
 const PaginationContainer = styled.div`
@@ -599,14 +613,15 @@ const ButtonContainer = styled.div`
 const StyledButton = styled.button`
   padding: 10px 20px;
   border-radius: 5px;
+  width: 80px;
   border: none;
-  background-color: #4CAF50;
+  background-color: orange;
   color: white;
   font-size: 16px;
   cursor: pointer;
   
   &:hover {
-    background-color: #45a049;
+    background-color: darkorange;
   }
 `;
 

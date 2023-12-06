@@ -123,21 +123,23 @@ const MiddleContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 1000px;
+  margin-top: 9rem;
   flex-grow: 1; /* Expand to fill available space */
 `;
 const AnnouncementTitle = styled.div`
   display: flex;
-  flex: 1;
+  height: 50px;
   align-items:center;
-  font-size: 40px;
-  font-weight: 700;
+  font-size: 44px;
+  font-weight: 500;
+  font-family: 'omyu_pretty';
 `
 
 const NewsTitle = styled.div`
   display: flex;
-  flex: 2;
+  flex: 1;
   flex-direction: row;
-  align-items: center;
+  font-family: 'omyu_pretty';
 `
 const SmallNewsTitle = styled.div`
   display: flex;
@@ -150,7 +152,7 @@ const LeftNewsTitle = styled.div`
   display: flex;
   flex: 5;
   height: 60px;
-  font-size: 20px;
+  font-size: 24px;
   align-items: center;
   margin-left: 0.5rem;
 `
@@ -170,9 +172,8 @@ const WritingButton = styled.button`
   height: 40px;
   text-align: center;
   color: white;
-  margin-right: 1rem;
   border-radius: 10px;
-  font-size: 20px;
+  font-size: 24px;
   align-items: center;
   justify-content: center;
   border: none;
@@ -186,8 +187,8 @@ const MainTitle = styled.div`
 const TopMainTitle = styled.div`
   display: flex;
   flex-direction: row;
-  border-bottom: 2px solid hotpink;
-  border-top: 2px solid gray;
+  border-bottom: 2px solid #495057;
+  border-top: 2px solid black;
   height: 50px;
   align-items: center;
 `
@@ -201,7 +202,7 @@ const BottomContent = styled.div`
   display: flex;
   flex-direction: row;
   height: 50px;
-  border-bottom: 1px solid skyblue;
+  border-bottom: 1px groove gray;
 `
 
 const Pagination = styled.div`

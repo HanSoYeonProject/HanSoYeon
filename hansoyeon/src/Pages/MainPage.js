@@ -62,12 +62,15 @@ const SectionContainer = styled.div`
 const TitleStyle = styled.h1`
   color: #000000;
   margin: 20px 0;
+  font-size: 48px;
+  font-family: 'omyu_pretty';
 `;
 
 const SubTitleStyle = styled.div`
   font-weight: bolder;
   margin: 0 0 16px;
   color: #555555;
+  font-size: 20px;
 `;
 
 const SwiperContainer = styled.div`
