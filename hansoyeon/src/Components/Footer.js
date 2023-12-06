@@ -54,13 +54,13 @@ const ImageContainer = styled.div`
 `;
 
 const LogoImageCon = styled.div`
-  background-color: white;
+  background-color: #ffa506;
   flex: 3;
 `;
 
 const LogoImage = styled.img`
   width: 220px;
-  background-color: white;
+  background-color: #FFA506;
 `;
 
 const FooterInfo = styled.div`

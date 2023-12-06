@@ -89,14 +89,6 @@ const RecruitPage = (props) => {
                 });
             }
         }
-        axios.get('http://localhost:8050/api/recruitments')
-            .then(response => {
-                // 받아온 목록을 오름차순으로 정렬
-                const reversedRecruitments = [...response.data].reverse();
-                setRecruitments(reversedRecruitments);
-                console.log(reversedRecruitments);
-            })
-            .catch(error => console.error('Error fetching recruitments:', error));
     }, []);
 
     useEffect(() => {
@@ -265,14 +257,16 @@ const RecruitPage = (props) => {
         ];
 
         return (
-            <div>
+            <ButtonContainer>
                 <StyledSelect value={selectedRegion} onChange={handleRegionChange}>
                     {regions.map((region, index) => (
                         <option key={index} value={region}>{region}</option>
                     ))}
                 </StyledSelect>
+
                 <StyledButton onClick={handleSearch}>검색</StyledButton>
-            </div>
+
+            </ButtonContainer>
         );
     };
     return (
@@ -356,6 +350,7 @@ const TopContainer = styled.div`
   flex-direction: column;
   height: auto;  // 높이를 자동으로 조정
   margin-top: 8rem;
+  margin-left: 2.2rem;
   justify-content: center;
   align-items: center;
 `;
@@ -374,6 +369,7 @@ const MoBottomContainer = styled.div`
   font-size: 20px;
   margin-top: 1rem;
   width: 100%;
+  margin-left: 0.2rem;
 `
 const AlgoContainer = styled.div`
   display: flex;
@@ -434,7 +430,6 @@ const Bottom = styled.div`
   width: 80%;
   margin-bottom: 1rem;
   max-height: 100vh; /* Increase the max-height value */
-  background-color: #f0f0f0;
   padding: 20px;
 `;
 
@@ -446,7 +441,7 @@ const TitleContainer = styled.div`
 
 const BottomContent = styled.div`
   border-radius: 10px;
-  border: 2px solid #d6d6d6;
+  border: 1px solid #d6d6d6;
   width: 100%;
   box-sizing: border-box;
   position: relative;
@@ -526,7 +521,8 @@ const ImgContainer = styled.div`
   height: 200px;
 `
 const WritingButton = styled.button`
-  width: 300px;
+  width: 280px;
+  margin-right: 1.3rem;
   border-radius: 10px;
   font-size: 24px;
   font-weight: 700;
@@ -595,7 +591,11 @@ const StyledSelect = styled.select`
   font-size: 16px;
   cursor: pointer;
 `;
-
+const ButtonContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  margin-left: 1.5rem;
+`
 const StyledButton = styled.button`
   padding: 10px 20px;
   border-radius: 5px;
@@ -604,7 +604,7 @@ const StyledButton = styled.button`
   color: white;
   font-size: 16px;
   cursor: pointer;
-
+  
   &:hover {
     background-color: #45a049;
   }
