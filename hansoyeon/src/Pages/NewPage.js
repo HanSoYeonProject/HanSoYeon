@@ -664,7 +664,7 @@ const NewPage = (props) => {
                             <MiddleContainer>
                                 <MiddleBottomContainer>
                                     <NewCourseContainer>
-                                        <NewCourseTitle>테마별 코스</NewCourseTitle>
+                                        <NewCourseTitle></NewCourseTitle>
                                     </NewCourseContainer>
                                 </MiddleBottomContainer>
                             </MiddleContainer>
@@ -717,7 +717,7 @@ const NewPage = (props) => {
                             <MiddleContainer>
                                 <MiddleBottomContainer>
                                     <NewCourseContainer>
-                                        <NewCourseTitle>지역별 코스</NewCourseTitle>
+                                        <NewCourseTitle></NewCourseTitle>
                                     </NewCourseContainer>
                                 </MiddleBottomContainer>
                             </MiddleContainer>
@@ -786,7 +786,7 @@ const NewPage = (props) => {
                             <MiddleContainer>
                                 <MiddleBottomContainer>
                                     <NewCourseContainer>
-                                        <NewCourseTitle>나만의 코스</NewCourseTitle>
+                                        <NewCourseTitle></NewCourseTitle>
                                     </NewCourseContainer>
                                 </MiddleBottomContainer>
                             </MiddleContainer>
@@ -913,6 +913,7 @@ const NewCourseContainer = styled.div`
 const NewCourseTitle = styled.div`
   font-size: 44px;
   color: #663399;
+  
   font-weight: 800;
   margin-top: 120px;
   margin-bottom: 180px;
@@ -998,6 +999,7 @@ const GridContainer = styled.div`
   grid-template-columns: repeat(3, 1fr);
   grid-gap: 20px;
   width: 80%;
+  height: 80%;
   margin: 0 auto;
 `;
 
@@ -1017,18 +1019,25 @@ const GridTitle = styled.h2`
 `;
 
 const GridItem = styled.div`
-  border: 1px solid #ddd;
-  padding: 15px;
-  text-align: center;
-  background-color: #f9f9f9;
-  box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
-  border-radius: 10px;
-  cursor: pointer;
+  width: 320px; // 신용카드 가로 크기에 맞춤
+  height: 400px; // 신용카드 세로 크기에 맞춤 (320px 가로에 대한 비율적 세로 크기)
+  border-radius: 15px; // 신용카드 모서리의 일반적인 둥근 정도
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2); // 신용카드에 그림자 효과 적용
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: white; // 배경색은 하얀색으로 설정
+  color: #333; // 텍스트 색상은 어두운 회색으로 설정
+  font-family: 'Arial', sans-serif; // 신용카드에 자주 사용되는 글꼴 설정
+  padding: 20px; // 내부 여백
+  margin: 20px; // 외부 여백
+  box-sizing: border-box; // 박스 크기 계산 방법을 border-box로 설정
 `;
 
 const StyledImage = styled.img`
   width: 100%;
-  height: 150px;
+  height: 280px;
   object-fit: cover;
   margin-bottom: 10px;
   border-radius: 5px;
