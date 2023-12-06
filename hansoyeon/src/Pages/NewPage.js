@@ -679,12 +679,14 @@ const NewPage = (props) => {
                             </MenuContainer>
                         </BottomContainer>
                         <AreaContentContainer>
+                            <SearchSContainer>
                             <SearchBoxContainer>
                                 <SearchContainer>
                                     {renderRadioButtons()}
                                     <SearchButton onClick={handleSearch}>검색</SearchButton>
                                 </SearchContainer>
                             </SearchBoxContainer>
+                            </SearchSContainer>
                             <GridContainer>
                                 {Array.isArray(searchResults) && searchResults.length > 0 ? (
                                     searchResults.map((spot, index) => (
@@ -913,7 +915,7 @@ const NewCourseContainer = styled.div`
 const NewCourseTitle = styled.div`
   font-size: 44px;
   color: #663399;
-  
+  height: 190px;
   font-weight: 800;
   margin-top: 120px;
   margin-bottom: 180px;
@@ -993,13 +995,20 @@ const AreaContentContainer = styled.div`
   align-items: center;
 `;
 
+const SearchSContainer = styled.div`
+display: flex;
+  flex-direction: row;
+  justify-content: center;
+  width: 100%;
+`
 
 const GridContainer = styled.div`
   display: grid;
+  place-items: center;
   grid-template-columns: repeat(3, 1fr);
-  grid-gap: 20px;
-  width: 80%;
-  height: 80%;
+  grid-gap: -20px;
+  width: 65%;
+  height: 82%;
   margin: 0 auto;
 `;
 
@@ -1044,19 +1053,17 @@ const StyledImage = styled.img`
 `;
 
 const SearchBoxContainer = styled.div`
-  margin-bottom: 20px;
-  padding: 20px;
+  padding: 10px;
   border-radius: 10px;
   background-color: #f5f5f5; 
   box-shadow: 0px 2px 4px rgba(0,0,0,0.1); 
-  width: 80%;
+  width: 60%;
   justify-content: center;
   align-items: center;
 `;
 
 const SearchContainer = styled.div`
   display: flex;
-  margin-bottom: 10px;
   justify-content: center;
 `;
 

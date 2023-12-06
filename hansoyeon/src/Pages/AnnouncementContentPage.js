@@ -194,7 +194,7 @@ const MiddleContainer = styled.div`
   font-weight: 600;
   background-color: #f8f8f8; /* Light gray background */
   border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Soft shadow */
   padding: 20px; /* Add some padding */
   margin-top: 20px; /* Add space at the top */
   font-family: 'SUITE-Light';
