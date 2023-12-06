@@ -9,6 +9,7 @@ import {useUserStore} from '../stores';
 import defaultProfilePic from '../imgs/default_profile.png';
 import useThrottle from "../Components/useThrottle";
 import usePushNotification from "../Components/usePushNotification";
+import Footer from "../Components/Footer";
 
 const ReviewPage = () => {
     const navigate = useNavigate();
@@ -19,7 +20,7 @@ const ReviewPage = () => {
     const [isCompanyUser, setIsCompanyUser] = useState(false)
     const [reviews, setReviews] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const ITEMS_PER_PAGE = 8;
+    const ITEMS_PER_PAGE = 4;
 
     const [matchings, setMatchings] = useState([]);
     const [showModal, setShowModal] = useState(false);
@@ -487,6 +488,7 @@ const ReviewPage = () => {
                     <button onClick={handleDetailModalClose}>닫기</button>
                 </DetailModalContent>
             </StyledModal>
+            <Footer/>
         </Container>
     );
 };
@@ -495,6 +497,7 @@ const Container = styled.div`
   display: flex;
   flex: 1;
   height: 700px;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
 `
@@ -505,6 +508,7 @@ const HeaderContainer = styled.div`
   align-items: center;
   width: 100%;
   margin-bottom: 20px; // 여백 추가
+  margin-left: 3rem;
 `;
 
 const MiddleContainer = styled.div`
@@ -513,6 +517,8 @@ const MiddleContainer = styled.div`
   width: 1000px;
   flex-direction: column;
   align-items: center;
+  margin-top: 19rem;
+  margin-bottom: 2rem;
 `;
 
 const NewsTitle = styled.div`
@@ -523,26 +529,27 @@ const NewsTitle = styled.div`
 `
 
 const ReviewPageTitle = styled.div`
-  font-size: 40px;
-  font-weight: 700;
+  font-size: 44px;
+  font-weight: 500;
+  font-family: 'omyu_pretty';
 `;
 
 const RightNewsTitle = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  margin-right: 100px;
+  margin-right: 50px;
 `;
 
 const Button = styled.button`
-  background-color: #4CAF50;
+  background-color: orange;
   color: white;
   padding: 10px 20px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   &:hover {
-    background-color: #45a049;
+    background-color: darkorange;
   }
 `;
 

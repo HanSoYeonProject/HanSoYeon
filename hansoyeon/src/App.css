@@ -155,21 +155,21 @@ ul .input-skill{
 @font-face {
   font-family: 'Pretendard-Regular';
   src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
-  font-weight: 900;
+  font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'Pretendard-SemiBold';
   src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-SemiBold.woff') format('woff');
-  font-weight: 900;
+  font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'Pretendard-Thin';
   src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Thin.woff') format('woff');
-  font-weight: 900;
+  font-weight: normal;
   font-style: normal;
 }
 
@@ -183,14 +183,14 @@ ul .input-skill{
 @font-face {
   font-family: 'GmarketSansTTFLight';
   src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansTTFLight.woff') format('woff');
-  font-weight: 100;
+  font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'GmarketSansTTFMedium';
   src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansTTFMedium.woff') format('woff');
-  font-weight: 600;
+  font-weight: normal;
   font-style: normal;
 }
 
@@ -232,7 +232,7 @@ ul .input-skill{
 @font-face {
   font-family: 'SUITE-Regular';
   src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-Regular.woff2') format('woff2');
-  font-weight: 700;
+  font-weight: normal;
   font-style: normal;
 }
 
@@ -240,5 +240,12 @@ ul .input-skill{
   font-family: 'SUITE-SemiBold';
   src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-SemiBold.woff2') format('woff');
   font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'omyu_pretty';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-01@1.0/omyu_pretty.woff2') format('woff2');
+  font-weight: normal;
   font-style: normal;
 }
