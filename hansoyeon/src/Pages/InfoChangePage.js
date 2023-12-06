@@ -349,7 +349,9 @@ const InfoChangePage = (props) => {
                     </InfoBox>
                 )}
             </BoxContainer>
-            <Footer/>
+            <StyledFooter>
+                <Footer />
+            </StyledFooter>
         </StyledContainer>
     );
 };
@@ -642,6 +644,13 @@ const PhoneNumberInput = styled.input`
     outline: none;
     border-color: #F7E600;
   }
+`;
+
+const StyledFooter = styled.footer`
+  padding: 10px;
+  text-align: center;
+  width: 100%;
+  margin-top: auto; /* 다른 요소 아래에 위치하도록 설정 */
 `;
 
 export default InfoChangePage;

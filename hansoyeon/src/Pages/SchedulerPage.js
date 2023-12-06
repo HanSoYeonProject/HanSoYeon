@@ -203,7 +203,7 @@ const SchedulerPage = () => {
     return (
         <MainContainer>
             <Container>
-                <h1>스케줄러</h1>
+                <Title>스케줄러</Title>
                 <StyledCalendar
                     onChange={onChange}
                     value={date}
@@ -211,7 +211,7 @@ const SchedulerPage = () => {
                 />
             </Container>
             <EventList>
-                <h2>일정 목록</h2>
+                <Title>일정 목록</Title>
                 <MatchingList>
                     {selectedDateEvents.map(matching => (
                         <MatchingItem
@@ -224,7 +224,7 @@ const SchedulerPage = () => {
                     ))}
                 </MatchingList>
                 <FriendsList>
-                    <h2>친구 목록</h2>
+                    <Title>친구 목록</Title>
                     {friends.map((friend, index) => (
                         <Friend key={index} onClick={() => handleFriendClick(friend.userId, friend.userName)}>
                             <FriendName>{friend.userName}({friend.userId})</FriendName>
@@ -247,6 +247,11 @@ const Container = styled.div`
   flex-direction: column;
   align-items: center;
   padding: 20px;
+`;
+
+const Title = styled.h1`
+  font-size: 44px;
+  font-family: 'omyu_pretty';
 `;
 
 const StyledCalendar = styled(Calendar)`
@@ -277,10 +282,15 @@ const CircleMarker = styled.div`
 `;
 
 const MainContainer = styled.div`
-    display: flex;
-    justify-content: space-around;
-    align-items: start;
-    padding: 20px;
+  display: flex;
+  justify-content: space-around;
+  align-items: start;
+  padding: 20px;
+  flex-direction: row;
+
+  @media (max-width: 1100px) {
+    flex-direction: column; 
+  }
 `;
 
 const EventList = styled.div`
@@ -288,7 +298,7 @@ const EventList = styled.div`
     padding: 20px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    margin-top: 20px;
+    margin-top: 70px;
 `;
 
 const FriendsList = styled.div`

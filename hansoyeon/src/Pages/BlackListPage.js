@@ -3,6 +3,7 @@ import axios from "axios";
 import styled from "styled-components";
 import { Table, Modal, Button } from "react-bootstrap";
 import defaultProfilePic from '../imgs/default_profile.png';
+import Footer from "../Components/Footer";
 
 const BlackListPage = () => {
     const [blacklist, setBlacklist] = useState([]);
@@ -115,6 +116,9 @@ const BlackListPage = () => {
                 onHide={() => setShowModal(false)}
                 user={selectedUser}
             />
+            <StyledFooter>
+                <Footer />
+            </StyledFooter>
         </Container>
     );
 };
@@ -123,7 +127,8 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20px;
+  margin-top: 50px;
+  min-height: 100vh;
 `;
 
 const Header = styled.h2`
@@ -227,7 +232,10 @@ const UserInfo = styled.div`
   text-align: center;
 `;
 
-
+const StyledFooter = styled.footer`
+  width: 100%;
+  margin-top: auto; 
+`;
 
 
 export default BlackListPage;

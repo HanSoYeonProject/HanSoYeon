@@ -147,6 +147,7 @@ const StyledContainer = styled.div`
   justify-content: center;
   align-items: center;
   height: 90vh;
+  margin-top: 50px;
 `;
 
 const BoxContainer = styled.div`
@@ -181,7 +182,7 @@ const ImageBox = styled.div`
 `;
 
 const LargeImage = styled.img`
-  max-width: 100%;
+  max-width: 124%;
   max-height: 90%;
   border-radius: 10px;
   object-fit: cover; 
@@ -233,8 +234,9 @@ const EditProfileButton = styled.button`
   color: #381E1F; 
   border: none;
   cursor: pointer;
-  font-size: 15px;
+  font-size: 18px;
   margin-top: 5px;
+  font-family: 'omyu_pretty';
   &:hover {
     background-color: #e6d700;
   }

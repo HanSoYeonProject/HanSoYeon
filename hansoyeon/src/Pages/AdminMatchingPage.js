@@ -7,6 +7,7 @@ import axios from "axios";
 import defaultProfilePic from '../imgs/default_profile.png';
 import useThrottle from "../Components/useThrottle";
 import usePushNotification from "../Components/usePushNotification";
+import Footer from "../Components/Footer";
 
 const CompanyMatchingPage = () => {
     const navigate = useNavigate();
@@ -278,7 +279,7 @@ const CompanyMatchingPage = () => {
 
     return (
         <Container>
-            <h2>신청 가능 공고</h2>
+            <Title>신청 가능 공고</Title>
             {upcomingAnnouncements.map(announcement => (
                 <AnnouncementCard
                     key={announcement.job_id}
@@ -286,13 +287,13 @@ const CompanyMatchingPage = () => {
                     <AnnouncementTitle onClick={() => handleJobView(announcement.job_id)}>
                         <h3>{announcement.title}</h3>
                     </AnnouncementTitle>
-                    <div className="buttons">
-                        <button onClick={() => handleCheckApplicants(announcement)}>신청자 확인</button>
-                        <button onClick={() => handleDeleteAllMatchings(announcement)}>공고 삭제</button>
+                    <div>
+                        <Button onClick={() => handleCheckApplicants(announcement)}>신청자 확인</Button>
+                        <Button onClick={() => handleDeleteAllMatchings(announcement)}>공고 삭제</Button>
                     </div>
                 </AnnouncementCard>
             ))}
-            <h2>지난 공고</h2>
+            <Title>지난 공고</Title>
             {pastAnnouncements.map(announcement => (
                 <AnnouncementCard
                     key={announcement.job_id}
@@ -300,9 +301,9 @@ const CompanyMatchingPage = () => {
                     <AnnouncementTitle onClick={() => handleJobView(announcement.job_id)}>
                         <h3>{announcement.title}</h3>
                     </AnnouncementTitle>
-                    <div className="buttons">
-                        <button onClick={() => handleCheckApplicants(announcement)}>신청자 확인</button>
-                        <button onClick={() => handleDeleteAllMatchings(announcement)}>공고 삭제</button>
+                    <div>
+                        <Button onClick={() => handleCheckApplicants(announcement)}>신청자 확인</Button>
+                        <Button onClick={() => handleDeleteAllMatchings(announcement)}>공고 삭제</Button>
                     </div>
                 </AnnouncementCard>
             ))}
@@ -376,6 +377,9 @@ const CompanyMatchingPage = () => {
                     </DetailModalContent>
                 </DetailModal>
             )}
+            <StyledFooter>
+                <Footer />
+            </StyledFooter>
         </Container>
     )
 }
@@ -384,45 +388,69 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px; 
-  padding: 20px;
+  margin-top: 50px;
+  gap: 30px;
 `;
 
+const Title = styled.h2`
+  font-size: 40px;
+  font-family: 'omyu_pretty';
+`
 
 const AnnouncementCard = styled.div`
   display: flex;
-  justify-content: space-between; 
-  align-items: center; 
-  background: #f3f3f3;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 15px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  width: 60%;
+  justify-content: space-between;
+  align-items: center;
+  background: #FFFFFF;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  width: 70%;
+  transition: all 0.3s ease;
 
-  .title {
-    margin-right: auto; 
-  }
-
-  .buttons {
-    display: flex;
-    gap: 10px; 
-  }
-
-  h3 {
-    margin-top: 0;
-    margin-bottom: 0;
-    color: #333;
-  }
-
-  button {
-    padding: 5px 10px;
+  &:hover {
+    box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.15);
+    transform: translateY(-3px);
   }
 `;
 
 const AnnouncementTitle = styled.div`
   cursor: pointer;
-`
+
+  h3 {
+    font-size: 1.2em;
+    color: #333;
+    margin: 0;
+  }
+`;
+
+const Button = styled.button`
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-weight: bold;
+  margin-left: 10px;
+
+  &:first-child {
+    background-color: #4CAF50;
+    color: white;
+
+    &:hover {
+      background-color: #45A049;
+    }
+  }
+
+  &:last-child {
+    background-color: #F44336;
+    color: white;
+
+    &:hover {
+      background-color: #D32F2F;
+    }
+  }
+`;
 
 const ApplicantsList = styled.div`
     margin-top: 20px;
@@ -550,6 +578,12 @@ const DisabledButton = styled.button`
   color: white;
   cursor: not-allowed; 
 `;
+
+const StyledFooter = styled.footer`
+  width: 100%;
+  margin-top: auto; 
+`;
+
 
 
 export default CompanyMatchingPage;

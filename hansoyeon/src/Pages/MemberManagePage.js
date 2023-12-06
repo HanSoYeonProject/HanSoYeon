@@ -35,7 +35,9 @@ const SignupPage = (props) => {
                     <SelectImg alt="blacklist" src={blacklist} />
                 </UserImg>
             </ImageContainer>
-            <Footer/>
+            <StyledFooter>
+                <Footer />
+            </StyledFooter>
         </StyledContainer>
     );
 };
@@ -45,8 +47,9 @@ const StyledContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 97.5vh;
+  height: 90vh;
   background-color: #ffffff;
+  margin-top: 50px;
 `;
 
 const Title = styled.div`
@@ -54,8 +57,9 @@ const Title = styled.div`
   margin-bottom: 80px;
   align-items:center;
   justify-content: center;
-  font-size: 30px;
+  font-size: 44px;
   font-weight: 700;
+  font-family: 'omyu_pretty';
 `;
 
 const ImageContainer = styled.div`
@@ -109,6 +113,11 @@ const FormBox = styled.div`
   max-width: 600px;
   margin-top: 150px;
   position: relative;
+`;
+
+const StyledFooter = styled.footer`
+  width: 100%;
+  margin-top: auto; 
 `;
 
 export default SignupPage;

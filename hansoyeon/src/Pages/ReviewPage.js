@@ -548,13 +548,14 @@ const RightNewsTitle = styled.div`
 const Button = styled.button`
   background-color: orange;
   color: white;
-  font-size: 20px;
+  font-size: 24px;
   width: 80px;
   padding: 5px 10px;
   font-weight: 500;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  font-family: 'omyu_pretty';
   &:hover {
     background-color: darkorange;
   }

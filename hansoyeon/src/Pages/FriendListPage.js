@@ -5,6 +5,7 @@ import { useCookies } from 'react-cookie';
 import { useUserStore } from '../stores';
 import defaultProfilePic from '../imgs/default_profile.png';
 import axios from "axios";
+import Footer from "../Components/Footer";
 
 const FriendListPage = () => {
     const navigate = useNavigate();
@@ -182,7 +183,7 @@ const FriendListPage = () => {
 
     return(
         <Container>
-            <h1>친구 리스트</h1>
+            <Title>친구 리스트</Title>
             <div>
                 <Button onClick={() => setShowModal(true)}>친구 추가</Button>
                 <Button onClick={handleOpenRequestModal}>요청 목록</Button>
@@ -205,7 +206,7 @@ const FriendListPage = () => {
             {showModal && (
                 <Modal>
                     <ModalContent>
-                        <h2>친구 추가</h2>
+                        <Title>친구 추가</Title>
                         <input
                             type="text"
                             placeholder="아이디 검색"
@@ -236,7 +237,7 @@ const FriendListPage = () => {
             {showRequestModal && (
                 <Modal>
                     <ModalContent>
-                        <h2>친구 요청 목록</h2>
+                        <Title>친구 요청 목록</Title>
                         <Section>
                             <SectionTitle>보낸 요청</SectionTitle>
                             {sentRequests.map((request, index) => (
@@ -275,6 +276,9 @@ const FriendListPage = () => {
                     </ModalContent>
                 </Modal>
             )}
+            <StyledFooter>
+                <Footer />
+            </StyledFooter>
         </Container>
     )
 }
@@ -283,7 +287,13 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20px;
+  min-height: 90vh;
+  margin-top: 30px;
+`;
+
+const Title = styled.h1`
+  font-size: 40px;
+  font-family: 'omyu_pretty';
 `;
 
 const FriendsContainer = styled.div`
@@ -319,8 +329,9 @@ const Button = styled.button`
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 19px;
   transition: background-color 0.2s;
+  font-family: 'omyu_pretty';
 
   &:hover {
     background-color: #0056b3;
@@ -398,6 +409,7 @@ const Section = styled.div`
 
 const SectionTitle = styled.h3`
     margin-bottom: 10px;
+  font-family: 'omyu_pretty';
 `;
 
 const Divider = styled.hr`
@@ -441,7 +453,14 @@ const DeleteButton = styled.button`
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    margin-top: 10px; // Add margin to separate it from user info
+    margin-top: 10px; 
+  font-size: 18px;
+  font-family: 'omyu_pretty';
+`;
+
+const StyledFooter = styled.footer`
+  width: 100%;
+  margin-top: auto; 
 `;
 
 export default FriendListPage;

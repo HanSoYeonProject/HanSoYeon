@@ -5,6 +5,7 @@ import axios from 'axios';
 import { useCookies } from 'react-cookie';
 import { useUserStore } from '../stores';
 import defaultProfilePic from '../imgs/default_profile.png';
+import Footer from "../Components/Footer";
 
 
 const BlackListCompanyPage = () => {
@@ -223,68 +224,78 @@ const BlackListCompanyPage = () => {
             {isModalOpen && (
                 <UserAddModal closeModal={closeModal} />
             )}
-
+            <StyledFooter>
+                <Footer />
+            </StyledFooter>
         </StyledContainer>
     );
 };
 
 const StyledContainer = styled.div`
-  max-width: 800px;
-  margin: auto;
-  padding: 20px;
   background-color: #fafafa;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 50px;
+  min-height: 100vh;
   font-family: 'Segoe UI', sans-serif;
 `;
 
 const Title = styled.h1`
   color: #333;
-  font-size: 28px;
+  font-size: 40px;
   margin-bottom: 20px;
   text-align: center;
+  font-family: 'omyu_pretty';
 `;
 
 const ListContainer = styled.div`
   display: flex;
   flex-direction: column;
+  width: 80%; // Adjust the width as per your layout
+  margin: 0 auto; // Center align the container
 `;
 
 const BlackListItem = styled.div`
   background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  padding: 15px;
   margin-bottom: 20px;
-  transition: transform 0.2s ease-in-out;
+  transition: box-shadow 0.3s ease;
 
   &:hover {
-    transform: scale(1.02);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   }
 `;
 
 const UserHeader = styled.div`
   display: flex;
   align-items: center;
-  margin-bottom: 10px;
+  justify-content: space-between;
 `;
 
 const UserAvatar = styled.img`
-  width: 50px;
-  height: 50px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
-  margin-right: 10px;
+  margin-right: 15px;
 `;
 
 const UserInfo = styled.div`
-  display: flex;
-  flex-direction: column;
+  flex-grow: 1;
+  margin-right: 20px;
 `;
 
-const ItemTitle = styled.div`
-  font-weight: bold;
-  margin-bottom: 4px;
+const ItemTitle = styled.h3`
+  font-size: 1.1em;
+  font-weight: 600;
+  margin-bottom: 5px;
+  color: #333;
 `;
 
-const ItemContent = styled.div`
+const ItemContent = styled.p`
+  font-size: 0.9em;
   color: #555;
 `;
 
@@ -292,9 +303,10 @@ const DeleteButton = styled.button`
   background-color: #dc3545;
   color: white;
   border: none;
-  padding: 5px 10px;
+  padding: 8px 12px;
+  border-radius: 5px;
   cursor: pointer;
-  margin-left: auto; // Add this to align the delete button to the right
+  transition: background-color 0.2s ease;
 
   &:hover {
     background-color: #c82333;
@@ -305,14 +317,17 @@ const AddButton = styled.button`
   background-color: #28a745;
   color: white;
   border: none;
-  padding: 8px 16px;
+  padding: 10px 15px;
+  border-radius: 5px;
   cursor: pointer;
+  font-size: 1em;
   margin-bottom: 20px;
 
   &:hover {
     background-color: #218838;
   }
 `;
+
 
 const ModalWrapper = styled.div`
   position: fixed;
@@ -388,6 +403,9 @@ const SearchResultItem = styled.div`
   }
 `;
 
-
+const StyledFooter = styled.footer`
+  width: 100%;
+  margin-top: auto; 
+`;
 
 export default BlackListCompanyPage;
