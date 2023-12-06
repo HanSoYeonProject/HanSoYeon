@@ -146,6 +146,10 @@ const ReviewPage = () => {
     };
 
     const handleReviewClick = async (review) => {
+        if(user === null){
+            alert("로그인이 필요한 서비스입니다.");
+            return;
+        }
         try {
             if (user.userId !== review.userId) { // 작성자와 현재 사용자가 다른 경우에만
                 await axios.post(`http://localhost:8050/api/reviews/${review.reviewId}/incrementView`);

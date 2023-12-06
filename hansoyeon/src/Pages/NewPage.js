@@ -482,9 +482,11 @@ const NewPage = (props) => {
                 <ModalContent>
                     <ModalHeader>
                         <ModalTitle>{spot.title}</ModalTitle>
-                        <FavoriteButton onClick={toggleFavorite}>
-                            {isFavorited ? '♥' : '♡'}
-                        </FavoriteButton>
+                        {user &&
+                            <FavoriteButton onClick={toggleFavorite}>
+                                {isFavorited ? '♥' : '♡'}
+                            </FavoriteButton>
+                        }
                     </ModalHeader>
                     <ModalImage src={spot.firstimage || noImage} alt={spot.title} />
                     <ModalText>주소 : {spot.addr1}</ModalText>

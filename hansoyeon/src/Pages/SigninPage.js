@@ -306,8 +306,6 @@ const SigninPage = () => {
 const FooterContainer = styled.footer`
   /* Footer 컨테이너 스타일 */
   margin-top: auto; /* 화면 하단으로 이동 */
-  padding: 20px;
-  background-color: #f8f9fa; /* 배경색 설정 */
 `;
 
 const PageContainer = styled.div`
@@ -322,7 +320,7 @@ const ContentContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding-bottom: 60px; /* 푸터 높이만큼 여백 추가 */
+  margin-top: 80px;
 `;
 
 // 나머지 스타일 및 컴포넌트 정의
@@ -453,8 +451,9 @@ const Title = styled.div`
   display: flex;
   margin-bottom: 80px;
   align-items:center;
-  font-size: 40px;
+  font-size: 44px;
   font-weight: 700;
+  font-family: 'omyu_pretty';
 `;
 
 const ImageContainer = styled.div`
