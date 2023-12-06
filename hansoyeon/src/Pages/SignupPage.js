@@ -140,6 +140,8 @@ const StyledContainer = styled.div`
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  justify-content: center;
+  align-items: center;
 `;
 
 const Title = styled.div`
@@ -147,8 +149,9 @@ const Title = styled.div`
   margin-bottom: 80px;
   align-items:center;
   justify-content: center;
-  font-size: 30px;
+  font-size: 44px;
   font-weight: 700;
+  font-family: 'omyu_pretty';
 `;
 
 const ImageContainer = styled.div`
@@ -206,13 +209,15 @@ const FormBox = styled.div`
 
 const FormBoxUser = styled.div`
   padding: 40px;
+  display: flex; 
+  flex-direction: column; 
+  align-items: center;
   justify-content: center;
   background: #ffffff;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  width: 100%; /* Set width to 100% */
+  width: 100%; 
   max-width: 600px;
-  margin-top: 150px;
   position: relative;
 `;
 
@@ -229,7 +234,7 @@ const ContentContainer = styled.div`
   justify-content: center;
   align-items: center;
   padding-bottom: 60px;
-  width: 100%; /* Set width to 100% */
+  width: 100%; 
 `;
 
 export default SignupPage;
