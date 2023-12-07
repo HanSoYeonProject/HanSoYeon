@@ -309,11 +309,14 @@ const RecruitPage = (props) => {
                             <TitleContainer>
                                 <h3
                                     style={{ display: "flex",flex: "2",marginTop: "1rem", fontSize: '24px', fontWeight: 'bold', color: "", justifyContent:"center", alignItems: "center"}}>
-                                    {recruitments.title.length > 25
-                                        ? `${recruitments.title.substring(0, 25)}...`
+                                    {recruitments.title.length > 18
+                                        ? `${recruitments.title.substring(0, 18)}...`
                                         : recruitments.title}
                                 </h3>
-                                <h3 style={{ display: "flex",flex: "2", fontSize: '22px', fontWeight: '600', color: '#747474', justifyContent: "center", alignItems: "center"}}>{recruitments.region} {recruitments.address}</h3>
+                                <h3 style={{ display: "flex", flex: "2", fontSize: '22px', fontWeight: '600', color: '#747474', justifyContent: "center", alignItems: "center"}}>
+                                    {`${recruitments.region} ${recruitments.address}`.substring(0, 18)}...
+                                </h3>
+
                                 <h4 style={{ display: "flex",flex: "1", fontSize: "18px", fontWeight: "600", color: "#747474", justifyContent: "center", alignItems: "center"}}>
                                     {recruitments.startDate} ~ {recruitments.endDate}
                                 </h4>
