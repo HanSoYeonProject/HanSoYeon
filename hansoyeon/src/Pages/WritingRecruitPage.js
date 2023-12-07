@@ -173,10 +173,10 @@ const WritingRecruitPage = () => {
 
     return (
         <div>
-            <h2 style={{marginTop: '120px', fontWeight: 'bold' }}>글쓰기</h2>
+            <h2 style={{marginTop: '120px', fontWeight: '500',fontSize: '48px', fontFamily:'omyu_pretty', justifyContent:"center", display:"flex",width:"55%"}}>글쓰기</h2>
             <form onSubmit={handleSubmit}>
                 <div style={{ marginBottom: '20px' }}>
-                    <label htmlFor="title" style={{ display: 'block', marginBottom: '5px' }}>제목</label>
+                    <label htmlFor="title" style={{ display: 'block', marginBottom: '5px',fontSize: '20px' }}>제목</label>
                     <input
                         id="title"
                         type="text"

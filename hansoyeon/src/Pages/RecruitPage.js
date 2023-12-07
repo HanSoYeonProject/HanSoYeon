@@ -538,6 +538,15 @@ const WritingButton = styled.button`
   width: 280px;
   margin-right: 1.3rem;
   border-radius: 10px;
+  font-size: 28px;
+  font-weight: 500;
+  border: none;
+  background-color: orange;
+
+  &:hover {
+    background-color: darkorange;
+  }
+
   font-size: 24px;
   font-weight: 700;
 `;

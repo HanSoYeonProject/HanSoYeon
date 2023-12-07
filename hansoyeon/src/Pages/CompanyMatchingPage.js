@@ -29,6 +29,7 @@ const CompanyMatchingPage = () => {
     const { fireNotificationWithTimeout } = usePushNotification();
     const { throttle } = useThrottle();
 
+
     useEffect(() => {
         if (cookies.token) {
             axios.get('http://localhost:8050/api/auth/currentCompany', {
@@ -353,8 +354,10 @@ const CompanyMatchingPage = () => {
                         <p>전화번호: {selectedUser.userPhone}</p>
                         <p>이메일: {selectedUser.userEmail}</p>
                         <p>주소: {selectedUser.userAddress}</p>
-                        {/*다른거 출력하려면 ㄱㄱ*/}
-                        <button onClick={() => setIsDetailModalOpen(false)}>닫기</button>
+                        <p>자기소개: {selectedUser.userInfo}</p>
+                        <div style={{display:'flex',justifyContent:'center'}}>
+                        <button style={{display:'flex',justifyContent:'center',alignItems:'center',height:'30px',width:'60px', backgroundColor:'green',color: 'white',border:'none', borderRadius:'10px'}} onClick={() => setIsDetailModalOpen(false)}>닫기</button>
+                        </div>
                     </DetailModalContent>
                 </DetailModal>
             )}
@@ -552,7 +555,14 @@ const DetailModalContent = styled.div`
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
   max-width: 500px;
   width: 100%;
-  font-size: 18px;
+  font-family: 'omyu_pretty';
+  font-size: 24px;
+  h2 {
+    font-size: 40px;
+
+
+  }
+  
 `;
 
 const ProfileRequestPic = styled.img`

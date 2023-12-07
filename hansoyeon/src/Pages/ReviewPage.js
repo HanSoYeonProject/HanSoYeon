@@ -10,6 +10,7 @@ import defaultProfilePic from '../imgs/default_profile.png';
 import useThrottle from "../Components/useThrottle";
 import usePushNotification from "../Components/usePushNotification";
 import Footer from "../Components/Footer";
+import GoogleLogin from "react-google-login";
 
 const ReviewPage = () => {
     const navigate = useNavigate();
@@ -33,6 +34,7 @@ const ReviewPage = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
     const [selectedUser, setSelectedUser] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
 
     const [providerPhone, setProviderPhone] = useState('')
 
@@ -109,6 +111,7 @@ const ReviewPage = () => {
             } catch (error) {
                 console.error('Error fetching reviews and comment counts:', error);
             }
+            setIsLoading(false);
         };
 
         fetchReviewsWithCommentCount();
@@ -348,7 +351,7 @@ const ReviewPage = () => {
                 <HeaderContainer>
                     <ReviewPageTitle>체험 후기 게시판</ReviewPageTitle>
                     <RightNewsTitle>
-                        {isUser &&
+                        {isUser && user.userId !== "admin" &&
                             <Button onClick={handleOpenModal}>글쓰기</Button>
                         }
                         {isCompanyUser &&
@@ -358,6 +361,9 @@ const ReviewPage = () => {
                 </HeaderContainer>
                 <NewsTitle>
                     <ReviewPageContentContainer>
+                        {isLoading &&
+                            <LoadingContainer>Loading...</LoadingContainer>
+                        }
                         {currentItems.map(item => (
                             <ReviewPageContentItem key={item.reviewId} onClick={() => handleReviewClick(item)}>
                                 <ReviewDetails>
@@ -496,6 +502,14 @@ const ReviewPage = () => {
         </Container>
     );
 };
+
+const LoadingContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+  font-size: 24px;
+`;
 
 const Container = styled.div`
   display: flex;
