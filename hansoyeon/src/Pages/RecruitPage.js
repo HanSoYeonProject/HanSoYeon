@@ -1,23 +1,25 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from 'react-router-dom'; // useNavigate 훅 추가
-
-import {useCookies} from "react-cookie";
+import React, { useEffect, useState, useCallback } from "react";
+import { useNavigate } from 'react-router-dom';
+import { useCookies } from "react-cookie";
 import axios from "axios";
-import styled from "styled-components";
-import {useUserStore} from "../stores";
 import Pagination from '../Components/Pagination';
 import Footer from "../Components/Footer";
-import App from "../App.css";
-
+import { useRecruitments } from '../hooks/useRecruitments';
+import { useUserStore } from "../stores";
+import styled from "styled-components";
+import { Bars } from 'react-loader-spinner';
 
 const RecruitPage = (props) => {
     const navigate = useNavigate();
     const [cookies, setCookie, removeCookie] = useCookies(['token']);
-    const {user, setUser} = useUserStore();
+    const { user, setUser } = useUserStore();
     const userType = cookies.userType;
-    const [recruitments, setRecruitments] = useState([]);
+    const { recruitments, isLoading } = useRecruitments();
     const [isCompany, setIsCompany] = useState(false);
     const [detailData, setDetailData] = useState(null);
+
+
+
 
     // 페이지네이션
     const [currentPage, setCurrentPage] = useState(1);
@@ -32,7 +34,6 @@ const RecruitPage = (props) => {
         "충청남도", "전라북도", "전라남도", "경상북도", "경상남도", "제주특별자치도"];
 
     const [selectedRegion, setSelectedRegion] = useState(regions[0]);
-    const [fetchRecruit, setFetchRecruit] = useState(false);
 
     const handleRegionChange = (event) => {
         setSelectedRegion(event.target.value);
@@ -48,22 +49,29 @@ const RecruitPage = (props) => {
     const handleCategoryChange = (category) => {
         setSelectedCategory(category);
     }
-    // 라디오 버튼 상태
-    const [selectedContentType, setSelectedContentType] = useState("12");
+
+
+    const handleLogout = useCallback(() => {
+        removeCookie('token');
+        setUser(null);
+        navigate("/");
+    }, [removeCookie, setUser, navigate]);
+
+
     //글 목록 띄우기
     useEffect(() => {
         if (cookies.token) {
-            console.log(userType)
+
             if(userType === "company"){
                 axios.get('http://localhost:8050/api/auth/currentCompany', {
                     headers: {
                         Authorization: `Bearer ${cookies.token}`
                     }
                 }).then(response => {
-                    console.log(cookies.token)
+
                     // 토큰이 유효한 경우
                     const fetchedUser = response.data;
-                    console.log(fetchedUser)
+
                     setUser(fetchedUser);
                     setIsCompany(true)
                 }).catch(error => {
@@ -77,10 +85,10 @@ const RecruitPage = (props) => {
                         Authorization: `Bearer ${cookies.token}`
                     }
                 }).then(response => {
-                    console.log(cookies.token)
+
                     // 토큰이 유효한 경우
                     const fetchedUser = response.data;
-                    console.log(fetchedUser)
+
                     setUser(fetchedUser);
                 }).catch(error => {
                     // 토큰이 유효하지 않은 경우
@@ -89,7 +97,7 @@ const RecruitPage = (props) => {
                 });
             }
         }
-    }, []);
+    }, [cookies.token, userType, setUser, navigate, removeCookie]);
 
     useEffect(() => {
         const currentDate = new Date();
@@ -106,12 +114,13 @@ const RecruitPage = (props) => {
 
                             axios.get('http://localhost:8050/api/recruitments')
                                 .then(response => {
+                                    console.log("start");
                                     const filteredRecruitments = response.data.filter(recruitment => {
                                         const startDate = new Date(recruitment.startDate);
                                         return startDate >= currentDate && !blacklistedProviders.includes(recruitment.providers);
+
                                     }).reverse();
-                                    console.log(filteredRecruitments)
-                                    setRecruitments(filteredRecruitments);
+                                    console.log("end");
                                 })
                                 .catch(error => console.error('Error fetching recruitments:', error));
                         })
@@ -120,11 +129,12 @@ const RecruitPage = (props) => {
                     // 사용자가 블랙리스트에 없는 경우
                     axios.get('http://localhost:8050/api/recruitments')
                         .then(response => {
+
+                            console.log('2');
                             const validRecruits = response.data.filter(recruitment => {
                                 const startDate = new Date(recruitment.startDate);
                                 return startDate >= currentDate;
                             }).reverse();
-                            setRecruitments(validRecruits);
                         })
                         .catch(error => console.error('Error fetching recruitments:', error));
                 }
@@ -135,21 +145,20 @@ const RecruitPage = (props) => {
             // 회사 사용자의 경우 블랙리스트 필터링 없이 모든 공고 표시
             axios.get('http://localhost:8050/api/recruitments')
                 .then(response => {
+
+                    console.log('3');
                     const validRecruits = response.data.filter(recruitment => {
                         const startDate = new Date(recruitment.startDate);
                         return startDate >= currentDate;
                     }).reverse();
-                    console.log(response.data)
-                    console.log(validRecruits)
-                    setRecruitments(validRecruits);
                 })
                 .catch(error => console.error('Error fetching recruitments:', error));
         }
     }, [user]);
 
-    const fetchRecruitments = () => {
-        const currentDate = new Date();
+    const fetchRecruitments = useCallback(async () => {
 
+        const currentDate = new Date();
         if (user && userType !== "company") {
             axios.get(`http://localhost:8050/api/blacklists/isUserInBlacklist`, {
                 params: { userId: user.userId }
@@ -162,12 +171,13 @@ const RecruitPage = (props) => {
 
                             axios.get('http://localhost:8050/api/recruitments')
                                 .then(response => {
+
+                                    console.log('4')
                                     const filteredRecruitments = response.data.filter(recruitment => {
                                         const startDate = new Date(recruitment.startDate);
                                         return startDate >= currentDate && !blacklistedProviders.includes(recruitment.providers);
                                     }).reverse();
-                                    console.log(filteredRecruitments)
-                                    setRecruitments(filteredRecruitments);
+
                                 })
                                 .catch(error => console.error('Error fetching recruitments:', error));
                         })
@@ -176,11 +186,12 @@ const RecruitPage = (props) => {
                     // 사용자가 블랙리스트에 없는 경우
                     axios.get('http://localhost:8050/api/recruitments')
                         .then(response => {
+
+                            console.log('5')
                             const validRecruits = response.data.filter(recruitment => {
                                 const startDate = new Date(recruitment.startDate);
                                 return startDate >= currentDate;
                             }).reverse();
-                            setRecruitments(validRecruits);
                         })
                         .catch(error => console.error('Error fetching recruitments:', error));
                 }
@@ -191,33 +202,32 @@ const RecruitPage = (props) => {
             // 회사 사용자의 경우 블랙리스트 필터링 없이 모든 공고 표시
             axios.get('http://localhost:8050/api/recruitments')
                 .then(response => {
+
+                    console.log('6')
                     const validRecruits = response.data.filter(recruitment => {
                         const startDate = new Date(recruitment.startDate);
                         return startDate >= currentDate;
                     }).reverse();
-                    console.log(response.data)
-                    console.log(validRecruits)
-                    setRecruitments(validRecruits);
+
                 })
                 .catch(error => console.error('Error fetching recruitments:', error));
         }
-    }
+    }, [user, userType]);
+
+    useEffect(() => {
+        fetchRecruitments();
+    }, [fetchRecruitments]);
 
 
-
-    const handleLogout = () => {
-        removeCookie('token');
-        setUser(null);
-        navigate("/");
-    };
 
     // 글 제목 클릭시 상세내용 페이지 이동
     const viewRecruitment = async (Id) => {
         try {
             const response = await axios.get(`http://localhost:8050/api/recruitments/${Id}`);
+            console.log('7');
             setDetailData(response.data); // 가져온 데이터를 state에 저장
             navigate(`/recruit/${Id}`);
-            console.log("111"+response);
+
         } catch (error) {
             console.error('Error fetching or updating recruitmnet:', error);
         }
@@ -233,13 +243,11 @@ const RecruitPage = (props) => {
     }
 
     const handleSearch = () => {
-        console.log("Selected Region:", selectedRegion);
         if(selectedRegion !== "지역 선택"){
             const validRecruits = recruitments.filter(recruitment => {
                 const region = recruitment.region;
                 return selectedRegion === region;
             }).reverse();
-            setRecruitments(validRecruits);
         }else if(selectedRegion === "지역 선택"){
             fetchRecruitments();
         }
@@ -269,73 +277,76 @@ const RecruitPage = (props) => {
             </ButtonContainer>
         );
     };
+
+    if (isLoading) {
+        return <LoadingComponent />;
+    }
+
     return (
-        <Container>
-            <TopContainer>
-                <MoTopContainer>모집 일정</MoTopContainer>
-                <MoBottomContainer>앞으로의 일정</MoBottomContainer>
-            </TopContainer>
-            <AlgoContainer>
-                <SmallAlgoContainer>
-                    <RadioContainer>
-                        {renderRadioButtons()}
-                        {isCompany ?
-                            null
-                            :
-                            <WritingButton onClick={handleHistoryApplication}>신청 내역</WritingButton>
-                        }
-                        {isCompany && user.providerApproval === "true" ?
-                            <WritingButton onClick={WritingBtn}>글 쓰기</WritingButton>
-                            :
-                            null
-                        }
-                    </RadioContainer>
-                </SmallAlgoContainer>
-            </AlgoContainer>
-            <Bottom>
-                {currentItems.map((recruitments) => (
-                    <BottomContent key={recruitments.job_id}>
+        <React.Suspense fallback={<LoadingComponent />}>
+            <Container>
+                <TopContainer>
+                    <MoTopContainer>모집 일정</MoTopContainer>
+                    <MoBottomContainer>앞으로의 일정</MoBottomContainer>
+                </TopContainer>
+                <AlgoContainer>
+                    <SmallAlgoContainer>
+                        <RadioContainer>
+                            {renderRadioButtons()}
+                            {isCompany ?
+                                null
+                                :
+                                <WritingButton onClick={handleHistoryApplication}>신청 내역</WritingButton>
+                            }
+                            {isCompany && user.providerApproval === "true" ?
+                                <WritingButton onClick={WritingBtn}>글 쓰기</WritingButton>
+                                :
+                                null
+                            }
+                        </RadioContainer>
+                    </SmallAlgoContainer>
+                </AlgoContainer>
+                <Bottom>
+                    {currentItems.map((recruitments) => (
+                        <BottomContent key={recruitments.job_id}>
 
-                        <BottomMain  style={{cursor: "pointer"}} onClick={() => viewRecruitment(recruitments.job_id)}
-                                     onMouseOver={(e) => (e.target.style.textDecoration="underline")}
-                                     onMouseOut={(e) => (e.target.style.textDecoration="none")}>
-                            <ImgContainer>
-                                <img
-                                    src={recruitments.image[0]}
-                                    alt="Image"
-                                    style={{display: "flex",height: "250px",justifyContent: "center", alignItems: "center",borderRadius:"10px"}}
-                                />
-                            </ImgContainer>
-                            <TitleContainer>
-                                <h3
-                                    style={{ display: "flex",flex: "2",marginTop: "1rem", fontSize: '24px', fontWeight: 'bold', color: "", justifyContent:"center", alignItems: "center"}}>
-                                    {recruitments.title.length > 18
-                                        ? `${recruitments.title.substring(0, 18)}...`
-                                        : recruitments.title}
-                                </h3>
-                                <h3 style={{ display: "flex", flex: "2", fontSize: '22px', fontWeight: '600', color: '#747474', justifyContent: "center", alignItems: "center"}}>
-                                    {`${recruitments.region} ${recruitments.address}`.substring(0, 18)}...
-                                </h3>
+                            <BottomMain  style={{cursor: "pointer"}} onClick={() => viewRecruitment(recruitments.job_id)}
+                                         onMouseOver={(e) => (e.target.style.textDecoration="underline")}
+                                         onMouseOut={(e) => (e.target.style.textDecoration="none")}>
+                                <ImgContainer>
+                                    <img
+                                        src={recruitments.image[0]}
+                                        alt="Image"
+                                        style={{display: "flex",height: "250px",justifyContent: "center", alignItems: "center",borderRadius:"10px"}}
+                                    />
+                                </ImgContainer>
+                                <TitleContainer>
+                                    <h3
+                                        style={{ display: "flex",flex: "2",marginTop: "1rem", fontSize: '24px', fontWeight: 'bold', color: "#747474", justifyContent:"center", alignItems: "center"}}>
+                                        {recruitments.title.length > 25
+                                            ? `${recruitments.title.substring(0, 25)}...`
+                                            : recruitments.title}
+                                    </h3>
+                                    <h3 style={{ display: "flex",flex: "2", fontSize: '22px', fontWeight: '600', color: '#747474', justifyContent: "center", alignItems: "center"}}>{recruitments.region} {recruitments.address}</h3>
+                                    <h4 style={{ display: "flex",flex: "1", fontSize: "18px", fontWeight: "600", color: "#747474", justifyContent: "center", alignItems: "center"}}>
+                                        {recruitments.startDate} ~ {recruitments.endDate}
+                                    </h4>
+                                </TitleContainer>
+                            </BottomMain>
+                        </BottomContent>
+                    ))}
+                </Bottom>
+                <PaginationContainer>
+                    <Pagination
+                        totalPages={Math.ceil(recruitments.length / itemsPerPage)}
+                        currentPage={currentPage}
+                        onPageChange={handlePageChange}
+                    />
+                </PaginationContainer>
 
-                                <h4 style={{ display: "flex",flex: "1", fontSize: "18px", fontWeight: "600", color: "#747474", justifyContent: "center", alignItems: "center"}}>
-                                    {recruitments.startDate} ~ {recruitments.endDate}
-                                </h4>
-                            </TitleContainer>
-                        </BottomMain>
-                    </BottomContent>
-                ))}
-            </Bottom>
-            <PaginationContainer>
-                <Pagination
-                    totalPages={Math.ceil(recruitments.length / itemsPerPage)}
-                    currentPage={currentPage}
-                    onPageChange={handlePageChange}
-                />
-            </PaginationContainer>
-
-            <Footer/>
-        </Container>
-
+                <Footer/>
+            </Container>
+        </React.Suspense>
     );
 };
 
@@ -360,9 +371,8 @@ const TopContainer = styled.div`
 const MoTopContainer = styled.div`
   display: flex;
   font-size: 48px;
-  font-weight: 500;
+  font-weight: 700;
   width: 100%;
-  font-family: 'omyu_pretty';
 `
 const RadioButtonSpan = styled.span`
   display: flex;
@@ -370,11 +380,10 @@ const RadioButtonSpan = styled.span`
 
 const MoBottomContainer = styled.div`
   display: flex;
-  font-size: 24px;
-  margin-top: 0.2rem;
+  font-size: 20px;
+  margin-top: 1rem;
   width: 100%;
-  margin-left: 0.4rem;
-  font-family: 'omyu_pretty';
+  margin-left: 0.2rem;
 `
 const AlgoContainer = styled.div`
   display: flex;
@@ -382,7 +391,6 @@ const AlgoContainer = styled.div`
   justify-content: center;
   align-items: center;
   width: 80%;
-  
 `
 const SmallAlgoContainer = styled.div`
   display: flex;
@@ -437,25 +445,23 @@ const Bottom = styled.div`
   margin-bottom: 1rem;
   max-height: 100vh; /* Increase the max-height value */
   padding: 20px;
-
 `;
 
 const TitleContainer = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
-  font-family: GmarketSansTTFLight;
 `;
 
 const BottomContent = styled.div`
   border-radius: 10px;
+  border: 1px solid #d6d6d6;
   width: 100%;
   box-sizing: border-box;
   position: relative;
   overflow: hidden;
   transition: background-color 0.1s ease;
-  height: 100%; 
-  
+  height: 100%;
 
   &:hover {
     background-color: #eee;
@@ -468,7 +474,6 @@ const BottomContent = styled.div`
     white-space: nowrap; /* 변경: 텍스트가 다음 줄로 넘어가지 않도록 설정 */
     overflow: hidden;
     text-overflow: ellipsis;
-    
   }
 
   img {
@@ -530,75 +535,15 @@ const ImgContainer = styled.div`
   height: 200px;
 `
 const WritingButton = styled.button`
-  width: 230px;
-  color: white;
+  width: 280px;
   margin-right: 1.3rem;
   border-radius: 10px;
-  font-size: 28px;
-  font-weight: 500;
-  border: none;
-  background-color: orange;
-
-  &:hover {
-    background-color: darkorange;
-  }
-  
+  font-size: 24px;
+  font-weight: 700;
 `;
 
 const PaginationContainer = styled.div`
 `;
-
-const Upimage = styled.div`
-  display: flex;
-  flex : 1;
-  height: 100px;
-  align-items: center;
-  width: 100%; /* Change to 100% to take the full width */
-  margin-bottom: -25px;
-  object-fit: cover; /* 이미지 비율 유지를 위한 설정 */
-`;
-const Footer1Container = styled.div`
-  display: flex;
-  flex : 3;
-`
-const Footer2Container = styled.div`
-  display: flex;
-  height: 100px;
-  flex : 7;
-  margin-bottom: -50px;
-`
-
-const Footer1Image = styled.div`
-  display: flex;
-  img {
-    width: 50px;
-    height: auto;
-  }
-`;
-
-const Footer2Image = styled.div`
-  display: flex;
-  flex-direction: row;
-  flex: 1;
-  img {
-    width: 60px;
-    height: auto; /* 높이 자동 조절 */
-  }
-`;
-const Aa = styled.div`
-  height: 50px;
-  flex: 5;
-  display: flex;
-  justify-content: flex-start;
-  margin-top: -1.3rem;
-`
-const Bb = styled.div`
-  flex: 5;
-  height: 100px;
-  display: flex;
-  justify-content: flex-end;
-  margin-top: -3.5rem;
-`
 
 const StyledSelect = styled.select`
   padding: 10px;
@@ -616,15 +561,14 @@ const ButtonContainer = styled.div`
 const StyledButton = styled.button`
   padding: 10px 20px;
   border-radius: 5px;
-  width: 80px;
   border: none;
-  background-color: orange;
+  background-color: #4CAF50;
   color: white;
   font-size: 16px;
   cursor: pointer;
-  
+
   &:hover {
-    background-color: darkorange;
+    background-color: #45a049;
   }
 `;
 
@@ -648,3 +592,10 @@ export const getRecruitmentsData = async () => {
 };
 
 //====================
+
+// 로딩 컴포넌트
+const LoadingComponent = () => (
+    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <Bars type="Bars" color="#00BFFF" height={80} width={80} />
+    </div>
+);
