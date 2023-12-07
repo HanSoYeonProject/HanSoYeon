@@ -323,15 +323,19 @@ const RecruitPage = (props) => {
                                 </ImgContainer>
                                 <TitleContainer>
                                     <h3
-                                        style={{ display: "flex",flex: "2",marginTop: "1rem", fontSize: '24px', fontWeight: 'bold', color: "#747474", justifyContent:"center", alignItems: "center"}}>
-                                        {recruitments.title.length > 25
-                                            ? `${recruitments.title.substring(0, 25)}...`
+                                        style={{ display: "flex",flex: "2",marginTop: "1rem", fontSize: '24px', fontWeight: 'bold', color: "", justifyContent:"center", alignItems: "center"}}>
+                                        {recruitments.title.length > 18
+                                            ? `${recruitments.title.substring(0, 18)}...`
                                             : recruitments.title}
                                     </h3>
-                                    <h3 style={{ display: "flex",flex: "2", fontSize: '22px', fontWeight: '600', color: '#747474', justifyContent: "center", alignItems: "center"}}>{recruitments.region} {recruitments.address}</h3>
+                                    <h3 style={{ display: "flex", flex: "2", fontSize: '22px', fontWeight: '600', color: '#747474', justifyContent: "center", alignItems: "center"}}>
+                                        {`${recruitments.region} ${recruitments.address}`.substring(0, 18)}...
+                                    </h3>
+
                                     <h4 style={{ display: "flex",flex: "1", fontSize: "18px", fontWeight: "600", color: "#747474", justifyContent: "center", alignItems: "center"}}>
                                         {recruitments.startDate} ~ {recruitments.endDate}
                                     </h4>
+
                                 </TitleContainer>
                             </BottomMain>
                         </BottomContent>
@@ -372,8 +376,9 @@ const TopContainer = styled.div`
 const MoTopContainer = styled.div`
   display: flex;
   font-size: 48px;
-  font-weight: 700;
+  font-weight: 500;
   width: 100%;
+  font-family: 'omyu_pretty';
 `
 const RadioButtonSpan = styled.span`
   display: flex;
@@ -381,10 +386,11 @@ const RadioButtonSpan = styled.span`
 
 const MoBottomContainer = styled.div`
   display: flex;
-  font-size: 20px;
-  margin-top: 1rem;
+  font-size: 24px;
+  margin-top: 0.2rem;
   width: 100%;
-  margin-left: 0.2rem;
+  margin-left: 0.4rem;
+  font-family: 'omyu_pretty';
 `
 const AlgoContainer = styled.div`
   display: flex;
@@ -392,6 +398,7 @@ const AlgoContainer = styled.div`
   justify-content: center;
   align-items: center;
   width: 80%;
+
 `
 const SmallAlgoContainer = styled.div`
   display: flex;
@@ -446,23 +453,25 @@ const Bottom = styled.div`
   margin-bottom: 1rem;
   max-height: 100vh; /* Increase the max-height value */
   padding: 20px;
+
 `;
 
 const TitleContainer = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
+  font-family: GmarketSansTTFLight;
 `;
 
 const BottomContent = styled.div`
   border-radius: 10px;
-  border: 1px solid #d6d6d6;
   width: 100%;
   box-sizing: border-box;
   position: relative;
   overflow: hidden;
   transition: background-color 0.1s ease;
   height: 100%;
+
 
   &:hover {
     background-color: #eee;
@@ -475,6 +484,7 @@ const BottomContent = styled.div`
     white-space: nowrap; /* 변경: 텍스트가 다음 줄로 넘어가지 않도록 설정 */
     overflow: hidden;
     text-overflow: ellipsis;
+
   }
 
   img {
@@ -536,7 +546,8 @@ const ImgContainer = styled.div`
   height: 200px;
 `
 const WritingButton = styled.button`
-  width: 280px;
+  width: 230px;
+  color: white;
   margin-right: 1.3rem;
   border-radius: 10px;
   font-size: 28px;
@@ -548,12 +559,62 @@ const WritingButton = styled.button`
     background-color: darkorange;
   }
 
-  font-size: 24px;
-  font-weight: 700;
 `;
 
 const PaginationContainer = styled.div`
 `;
+
+const Upimage = styled.div`
+  display: flex;
+  flex : 1;
+  height: 100px;
+  align-items: center;
+  width: 100%; /* Change to 100% to take the full width */
+  margin-bottom: -25px;
+  object-fit: cover; /* 이미지 비율 유지를 위한 설정 */
+`;
+const Footer1Container = styled.div`
+  display: flex;
+  flex : 3;
+`
+const Footer2Container = styled.div`
+  display: flex;
+  height: 100px;
+  flex : 7;
+  margin-bottom: -50px;
+`
+
+const Footer1Image = styled.div`
+  display: flex;
+  img {
+    width: 50px;
+    height: auto;
+  }
+`;
+
+const Footer2Image = styled.div`
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  img {
+    width: 60px;
+    height: auto; /* 높이 자동 조절 */
+  }
+`;
+const Aa = styled.div`
+  height: 50px;
+  flex: 5;
+  display: flex;
+  justify-content: flex-start;
+  margin-top: -1.3rem;
+`
+const Bb = styled.div`
+  flex: 5;
+  height: 100px;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: -3.5rem;
+`
 
 const StyledSelect = styled.select`
   padding: 10px;
@@ -571,16 +632,18 @@ const ButtonContainer = styled.div`
 const StyledButton = styled.button`
   padding: 10px 20px;
   border-radius: 5px;
+  width: 80px;
   border: none;
-  background-color: #4CAF50;
+  background-color: orange;
   color: white;
   font-size: 16px;
   cursor: pointer;
 
   &:hover {
-    background-color: #45a049;
+    background-color: darkorange;
   }
 `;
+
 
 
 export default RecruitPage;
