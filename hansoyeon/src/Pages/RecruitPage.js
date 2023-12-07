@@ -4,6 +4,7 @@ import { useCookies } from "react-cookie";
 import axios from "axios";
 import Pagination from '../Components/Pagination';
 import Footer from "../Components/Footer";
+import App from "../App.css";
 import { useRecruitments } from '../hooks/useRecruitments';
 import { useUserStore } from "../stores";
 import styled from "styled-components";

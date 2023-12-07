@@ -190,7 +190,7 @@ const BlackListCompanyPage = () => {
                             }
                             <ItemTitle>{user.userId}</ItemTitle>
                             <ItemContent>{user.userName}</ItemContent>
-                            <AddButton onClick={handleAddUserToBlacklist}>추가</AddButton>
+                            <Add11Button onClick={handleAddUserToBlacklist}>추가</Add11Button>
                         </SearchResultItem>
                     ))}
                 </ModalContent>
@@ -203,7 +203,9 @@ const BlackListCompanyPage = () => {
         <StyledContainer>
             <Title>블랙리스트</Title>
             <ListContainer>
-                <AddButton onClick={handleAddUser}>추가</AddButton>
+                <div style={{display:'flex', justifyContent:'center'}}>
+                <AddButton onClick={handleAddUser}>추 가</AddButton>
+                </div>
                 {blacklist.map((black) => (
                     <BlackListItem key={black.id}>
                         <UserHeader>
@@ -314,20 +316,37 @@ const DeleteButton = styled.button`
 `;
 
 const AddButton = styled.button`
-  background-color: #28a745;
+  background-color: #aab5bd;
   color: white;
   border: none;
+  font-weight: 600;
   padding: 10px 15px;
   border-radius: 5px;
   cursor: pointer;
-  font-size: 1em;
+  font-size: 24px;
   margin-bottom: 20px;
+  width: 500px;
 
   &:hover {
-    background-color: #218838;
+    background-color: #868e96;
   }
 `;
+const Add11Button = styled.button`
+  background-color: green;
+  color: white;
+  border: none;
+  font-weight: 600;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 18px;
+  margin-bottom: 20px;
+  width: 250px;
 
+  &:hover {
+    background-color: #868e96;
+  }
+`
 
 const ModalWrapper = styled.div`
   position: fixed;
