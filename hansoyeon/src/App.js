@@ -41,8 +41,7 @@ import SchedulerPage from "./Pages/SchedulerPage";
 import AdminMatchingPage from "./Pages/AdminMatchingPage";
 import ReviewChangePage from "./Pages/ReviewChangePage";
 import Payment from "./Pages/Payment";
-
-
+import useRecruitments from "./hooks/useRecruitments";
 function App() {
     return (
         <div className="App">
