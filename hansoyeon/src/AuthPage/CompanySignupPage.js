@@ -110,8 +110,12 @@ const CompanySignUpPage = () => {
         }
 
         // 라이센스 유효성 검사
-        if(!imagePreview){
+        if(!businessNumber){
             errors.companyLicense = "사업자 등록증을 제출해주세요. "
+        }
+
+        if(!businessCheck){
+            errors.businessCheck = "사업자 등록을 확인해주세요"
         }
 
         // 회사명
@@ -162,6 +166,38 @@ const CompanySignUpPage = () => {
         }
     };
 
+    const [businessNumber, setBusinessNumber] = useState('');
+    const [resultMessage, setResultMessage] = useState('');
+    const [businessCheck, setBusinessCheck] = useState(false);
+
+
+    async function handleCheckRegistrationNumber(req: string): Promise<string> {
+        const url: string = `https://api.odcloud.kr/api/nts-businessman/v1/status?serviceKey=7qe7vg3zUQdiZErzcHVVolstffAp3wUBke37nX4dyFcWCPsjYsiHmb5Su25Dw/s1uv5zk6sh3oQq4sIynl8z0A==`;
+        const { data } = await axios.post(url, {
+            b_no: [req],
+        });
+        // 📌 01 값이 반환되면 계속사업자 02 값은 휴업자 03 값은 폐업자로 확인이 가능합니다.
+        return data.data[0].b_stt_cd;
+    }
+
+    const handleChangeBusinessNumber = (e) => {
+        setBusinessNumber(e.target.value);
+    };
+
+    const handlerCheckSchoolNum = async () => {
+        try {
+            const data = await handleCheckRegistrationNumber(businessNumber);
+            if (data === "01") {
+                setResultMessage('사업자 등록이 확인되었습니다.');
+                setBusinessCheck(true);
+            } else {
+                setResultMessage('사업자 등록이 확인되지 않았습니다.');
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     const handleSignUp = async (event) => {
         event.preventDefault();
         if (validateForm()) {
@@ -170,7 +206,7 @@ const CompanySignUpPage = () => {
             const signUpData = {
                 ...formData,
                 companyAddress: combinedAddress,
-                companyLicense: imageUrl,
+                companyLicense: businessNumber,
                 providerApproval: "false"
             };
 
@@ -319,20 +355,19 @@ const CompanySignUpPage = () => {
                         </>
                     ) : (
                         <>
-                            <StyledFormGroup>
-                                {(imagePreview || license) && <CompanyImagePreview src={imagePreview || license} alt="사업자 등록증 첨부" />}
-                                <br/>
-                                <CameraIconLabel onClick={triggerFileInput}>
-                                    사업자 등록증 추가
-                                </CameraIconLabel>
-                                <QuestionImg src={question} alt="question" onClick={toggleModal} />
-                                <HiddenFileInput
-                                    type="file"
-                                    ref={fileInputRef}
-                                    onChange={handleImageChange}
+                            <StyledFormGroup controlId="formBasicBusinessNumber">
+                                <StyledFormControl
+                                    type="text"
+                                    placeholder="사업자 등록번호"
+                                    name="businessNumber"
+                                    value={businessNumber}
+                                    onChange={handleChangeBusinessNumber}
                                 />
-                                {validationErrors.companyLicense && <ErrorText>{validationErrors.companyLicense}</ErrorText>}
+                                <StyledButton variant="outline-secondary" onClick={handlerCheckSchoolNum}>
+                                    사업자 등록 확인
+                                </StyledButton>
                             </StyledFormGroup>
+                            {resultMessage && <ResultMessage>{resultMessage}</ResultMessage>}
                             <StyledFormGroup>
                                 <Row>
                                     <Col>
@@ -580,6 +615,12 @@ const CloseButton = styled.button`
     &:hover {
         background-color: #d32f2f;
     }
+`;
+
+const ResultMessage = styled.div`
+    color: #006400; /* Green color */
+    font-size: 14px;
+    margin-top: 10px;
 `;
 
 export default CompanySignUpPage;

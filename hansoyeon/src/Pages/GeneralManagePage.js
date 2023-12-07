@@ -80,7 +80,7 @@ const GeneralManagePage = () => {
                     <tr key={user.userId}>
                         <td>
                             <CompanyProfile onClick={() => handleShowModal(user)}>
-                                {user.userProfile === 'hansoyeon/src/imgs/default_profile.png' ?
+                                {user.userProfile === 'hansoyeon/src/imgs/default_profile.png' || user.userProfile === null ?
                                     <>
                                         <img src={defaultProfile} alt="Profile" />
                                         <span>{user.userName}</span>

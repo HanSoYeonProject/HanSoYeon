@@ -182,11 +182,15 @@ const CompanyManagePage = () => {
                             <StyledModalText>회사 주소: {selectedCompany.companyAddress}</StyledModalText>
                             <StyledModalText>전화번호: {selectedCompany.companyTel}</StyledModalText>
                             <StyledModalText></StyledModalText>
-                            <StyledModalLicenseImage
-                                src={selectedCompany ? selectedCompany.companyLicense : ''}
-                                alt="license"
-                                onClick={handleShowLicenseModal}
-                            />
+                            {selectedCompany.companyLicense.length === 10 ?
+                                <StyledModalText>사업자 번호: {selectedCompany.companyLicense}</StyledModalText>
+                                :
+                                <StyledModalLicenseImage
+                                    src={selectedCompany ? selectedCompany.companyLicense : ''}
+                                    alt="license"
+                                    onClick={handleShowLicenseModal}
+                                />
+                            }
                         </>
                     )}
                 </StyledModalBody>
