@@ -9,7 +9,6 @@ import Pagination from '../Components/Pagination';
 import Footer from "../Components/Footer";
 import App from "../App.css";
 
-
 const RecruitPage = (props) => {
     const navigate = useNavigate();
     const [cookies, setCookie, removeCookie] = useCookies(['token']);
