@@ -143,7 +143,7 @@ function Footer() {
                     <InfoContainer>
                         <FooterInfo>
                             <h2 className="color2 f-w_600">
-                                서울특별시 강남구<br />
+                                충청남도 아산시 탕정면 선문로 221번길 70<br />
                                 한소연 Copyright(C)<br />
                                 HanSoYeon all rights reserved.
                             </h2>

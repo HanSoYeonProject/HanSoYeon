@@ -139,15 +139,6 @@ const AboutPage = () => {
                     </FirstFeatureContainer>
                 </BottomBigFeatureContainer>
             </BottomFeatureContainer>
-            <SocialContainer>
-                <SocialBigContainer>
-                    <h2>안녕하세요!</h2>
-                    <h4>동해물과 백두산이 마르고닳도록 하느님이 보우하사 우리나라만세 무궁화 삼천리 화려강산 대한사람 대한으로 길이 보전하세</h4>
-                    <h4>남산 위에 저 소나무 철갑을 두른듯 바람서리 분별함은 우리 기상일세 무궁화 삼천리 화려강산 대한사람 대한으로 길이 보전하세</h4>
-                    <h4>가을 하늘 공활한데 높고 구름 없이 밝은 달은 우리 가삼 일편 단심일세 무궁화 삼천리 화려강산 대한사람 대한으로 길이 보전하세</h4>
-                    <h4>이 기상과 이 맘으로 충성을 다하여 괴로우나 즐거우나 나라 사랑하세 무궁화 삼천리 화려강산 대한사람 대한으로 길이 보전하세</h4>
-                </SocialBigContainer>
-            </SocialContainer>
             <FlowContainer>
                 <FlowBigContainer>
                     <FlowCenterContainer>

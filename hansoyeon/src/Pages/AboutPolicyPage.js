@@ -36,8 +36,9 @@ const AboutPolicyPage = () => {
                         </TextContainer>
                     </BottomContentContainer>
                 </BottomContainer>
+                <Footer/>
             </CenterContainer>
-            <Footer/>
+
         </Container>
     )
 }
@@ -102,7 +103,6 @@ const BottomContainer = styled.div`
 `
 const BottomContentContainer = styled.div`
   background-color: #FDF9EA;
-  margin-bottom: 3rem;
   width: 90%;
   height: auto;
   margin-top: 1rem;
