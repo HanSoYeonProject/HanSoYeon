@@ -382,7 +382,7 @@ const AlgoContainer = styled.div`
   justify-content: center;
   align-items: center;
   width: 80%;
-  
+
 `
 const SmallAlgoContainer = styled.div`
   display: flex;
@@ -454,8 +454,8 @@ const BottomContent = styled.div`
   position: relative;
   overflow: hidden;
   transition: background-color 0.1s ease;
-  height: 100%; 
-  
+  height: 100%;
+
 
   &:hover {
     background-color: #eee;
@@ -468,7 +468,7 @@ const BottomContent = styled.div`
     white-space: nowrap; /* 변경: 텍스트가 다음 줄로 넘어가지 않도록 설정 */
     overflow: hidden;
     text-overflow: ellipsis;
-    
+
   }
 
   img {
@@ -542,7 +542,7 @@ const WritingButton = styled.button`
   &:hover {
     background-color: darkorange;
   }
-  
+
 `;
 
 const PaginationContainer = styled.div`
@@ -622,7 +622,7 @@ const StyledButton = styled.button`
   color: white;
   font-size: 16px;
   cursor: pointer;
-  
+
   &:hover {
     background-color: darkorange;
   }

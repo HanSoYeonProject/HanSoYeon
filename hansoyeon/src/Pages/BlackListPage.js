@@ -38,6 +38,7 @@ const BlackListPage = () => {
             .delete(`http://localhost:8050/api/blacklists/${blacklistId}`)
             .then((response) => {
                 fetchBlacklist();
+                alert("삭제 되었습니다.");
             })
             .catch((error) => {
                 console.error("Error deleting blacklist: ", error);
@@ -96,14 +97,14 @@ const BlackListPage = () => {
                 </thead>
                 <tbody>
                 {blacklist.map((user, index) => (
-                    <tr key={index} onClick={() => handleUserClick(user)}>
-                        <td>{user.user.userName}</td>
+                    <tr key={index}>
+                        <td onClick={() => handleUserClick(user)}>{user.user.userName}</td>
                         <td>{user.user.userId}</td>
                         <td>{user.user.userPhone}</td>
                         <td>{user.provider.providerName}({user.provider.companyName})</td>
                         <td>
                             <ButtonContainer>
-                                <DeleteButton onClick={() => handleDelete(user.id)}>삭제</DeleteButton>
+                                <DeleteButton onClick={() => handleDelete(user.blacklistId)}>삭제</DeleteButton>
                             </ButtonContainer>
                         </td>
                     </tr>
@@ -136,7 +137,9 @@ const Header = styled.h2`
   text-align: center;
   margin-top: 50px;
   margin-bottom: 40px;
-  font-weight: bold;
+  //font-size: 48px;
+  font-weight: 500;
+  //font-family: 'omyu_pretty';
 `;
 
 const TabButton = styled.button`
@@ -160,7 +163,7 @@ const TabButton = styled.button`
 const StyledTable = styled(Table)`
   background-color: white;
   width: 80%;
-
+  
   thead {
     background-color: #f8f9fa;
   }
@@ -210,6 +213,8 @@ const ButtonContainer = styled.div`
 const DeleteButton = styled.button`
   background-color: #dc3545;
   color: white;
+  width: 60px;
+  border-radius: 8px;
   border: none;
   padding: 5px 10px;
   cursor: pointer;
