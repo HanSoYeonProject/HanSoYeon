@@ -466,8 +466,20 @@ const ModalHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-
+  
+  h2 {
+    display: flex;
+    text-align: center;
+    font-size: 24px;
+  }
   button {
+    width: 80px;
+    border: none;
+    color: white;
+    height: 40px;
+    font-weight: 700;
+    background-color: green;
+    border-radius: 10px;
     padding: 5px 10px;
     margin-left: 10px;
   }
@@ -514,10 +526,10 @@ const ApproveButton = styled.button`
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  background-color: green;
+  background-color: orangered;
   color: white;
   &:hover {
-    background-color: darkgreen;
+    background-color: red;
   }
 `;
 
