@@ -11,6 +11,7 @@ import useThrottle from "../Components/useThrottle";
 import usePushNotification from "../Components/usePushNotification";
 import Footer from "../Components/Footer";
 import GoogleLogin from "react-google-login";
+import { Bars } from 'react-loader-spinner';
 
 const ReviewPage = () => {
     const navigate = useNavigate();
@@ -345,6 +346,12 @@ const ReviewPage = () => {
         }
     };
 
+    const LoadingComponent = () => (
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+            <Bars type="Bars" color="#00BFFF" height={80} width={80} />
+        </div>
+    );
+
     return (
         <Container>
             <MiddleContainer>
@@ -362,7 +369,7 @@ const ReviewPage = () => {
                 <NewsTitle>
                     <ReviewPageContentContainer>
                         {isLoading &&
-                            <LoadingContainer>Loading...</LoadingContainer>
+                            <LoadingComponent />
                         }
                         {currentItems.map(item => (
                             <ReviewPageContentItem key={item.reviewId} onClick={() => handleReviewClick(item)}>

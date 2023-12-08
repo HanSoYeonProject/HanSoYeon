@@ -184,6 +184,20 @@ const SigninPage = () => {
         setShowMemberForm(false);
     };
 
+    const handleKeyPress = (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            handleLogin();
+        }
+    }
+
+    const handleCompanyKeyPress = (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            handleCompanyLogin();
+        }
+    }
+
     return (
         <PageContainer>
             <ContentContainer>
@@ -207,7 +221,7 @@ const SigninPage = () => {
                                 <FontAwesomeIcon icon={faArrowLeft} />
                             </BackButton>
                             <LogoImg src={logo} alt="Logo" />
-                            <Form>
+                            <Form onKeyPress={handleKeyPress}>
                                 <StyledFormGroup controlId="formBasicId">
                                     <StyledFormControl
                                         type="text"
@@ -258,7 +272,7 @@ const SigninPage = () => {
                                 <FontAwesomeIcon icon={faArrowLeft} />
                             </BackButton>
                             <LogoImg src={logo} alt="Logo" />
-                            <Form>
+                            <Form onKeyPress={handleCompanyKeyPress}>
                                 <StyledFormGroup controlId="formBasicId">
                                     <StyledFormControl
                                         type="text"

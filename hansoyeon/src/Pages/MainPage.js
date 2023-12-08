@@ -191,11 +191,10 @@ const MainPage = () => {
             .catch((error) => console.error('Error fetching reviews:', error));
 
         // 추가된 부분: 테마별 코스 데이터 가져오기
-        fetchThemeCourses();
+        //fetchThemeCourses();
     }, []);
 
     // 추가된 함수: 테마별 코스 데이터 가져오기
-
     const fetchThemeCourses = async () => {
         try {
             // 테마별 코스를 불러오는 API 요청 수행

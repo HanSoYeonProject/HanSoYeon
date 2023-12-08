@@ -5,6 +5,7 @@ import axios from "axios";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import banner2 from "../imgs/banner2.png";
+import {useUserStore} from "../stores";
 const Payment = () => {
     // 값 가져오기
     const { state } = useLocation();
@@ -13,8 +14,10 @@ const Payment = () => {
     const [selectedLevel, setSelectedLevel] = useState(null);
     const [fetchedUser, setFetchedUser] = useState();
     const [IMP, setIMP] = useState(null);
-    const [cookies, setCookies] = useCookies();
+    const [cookies, setCookie, removeCookie] = useCookies(['token']);
+    const {user, setUser} = useUserStore();
     const navigate = useNavigate();
+    const userType = cookies.userType;
 
     const levels = [
         {price: 100, order: 1},
@@ -37,8 +40,8 @@ const Payment = () => {
             merchant_uid: `mid_${new Date().getTime()}`, // 주문번호
             amount: selectedPrice,
             name: "한소연 매칭서비스 금액",
-            buyer_name: state.fetchedUser.companyName,
-            buyer_email: state.fetchedUser.providerEmail,
+            buyer_name: user.companyName,
+            buyer_email: user.providerEmail,
         };
 
         IMP.request_pay(data, (response) => callback(response, data));
@@ -59,7 +62,33 @@ const Payment = () => {
         return () => {
             document.body.removeChild(script);
         };
+
+        if (cookies.token) {
+            axios.get('http://localhost:8050/api/auth/currentCompany', {
+                headers: {
+                    Authorization: `Bearer ${cookies.token}`
+                }
+            }).then(response => {
+                // 토큰이 유효한 경우
+                const fetchedUser = response.data;
+                setUser(fetchedUser)
+            }).catch(error => {
+                // 토큰이 유효하지 않은 경우
+                console.error("Token verification failed:", error);
+                handleLogout();
+            });
+        }
     }, []);
+
+    useEffect(() => {
+        fetchCompanyPayments(user.providerEmail)
+    }, [user]);
+
+    const handleLogout = () => {
+        removeCookie('token');
+        setUser(null);
+        navigate("/");
+    };
 
     // 결제 성공 여부
     const callback = async (response, paymentData) => {
@@ -112,20 +141,17 @@ const Payment = () => {
     };
 
 
-// 해당 기업 결제 포인트
+    // 해당 기업 결제 포인트
     const fetchCompanyPayments = async (email) => {
         try {
             const response = await axios.get(`http://localhost:8050/api/payment/company/${email}`);
             const pointPayments = response.data;
             console.log(pointPayments);
-            setMoney(pointPayments); // 서버에서 받아온 데이터를 상태에 설정
+            setMoney(pointPayments);
         } catch (error) {
             console.error(error);
         }
     };
-    useEffect(() => {
-        fetchCompanyPayments();
-    }, []);
 
     return (
         <Container>
