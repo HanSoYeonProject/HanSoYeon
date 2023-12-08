@@ -273,7 +273,9 @@ const MainPage = () => {
                             .slice(0, 5)
                             .map((recruitment) => ({
                                 id: recruitment.job_id,
-                                title: recruitment.title,
+                                title: recruitment.title.length > 25
+                                    ? `${recruitment.title.substring(0, 25)}...`
+                                    : recruitment.title,
                                 date: recruitment.startDate,
                                 image: recruitment.image[0]
                             }))}
