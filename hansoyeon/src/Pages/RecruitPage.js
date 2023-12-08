@@ -407,6 +407,7 @@ const SmallAlgoContainer = styled.div`
   align-items: center;
   border-radius: 10px;
 `
+
 const RadioContainer = styled.div`
   display: flex;
   height: 50px;
