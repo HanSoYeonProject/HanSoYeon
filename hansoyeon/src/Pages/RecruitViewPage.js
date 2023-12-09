@@ -2,10 +2,7 @@ import React, { useEffect, useState } from "react";
 import {useNavigate, useParams} from 'react-router-dom';
 import axios from "axios";
 import styled from "styled-components";
-import about1 from "../imgs/about1.png";
-import about2 from "../imgs/about2.png";
-import about3 from "../imgs/about3.png";
-import about4 from "../imgs/about4.jpg";
+
 import location from "../imgs/location.png";
 import {useUserStore} from "../stores";
 import {useCookies} from "react-cookie";

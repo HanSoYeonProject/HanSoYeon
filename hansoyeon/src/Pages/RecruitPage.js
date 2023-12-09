@@ -115,6 +115,9 @@ const RecruitPage = (props) => {
 
                             axios.get('http://localhost:8050/api/recruitments')
                                 .then(response => {
+                                    for(let i=0; i<100; i++) {
+                                        console.log(i);
+                                    }
                                     console.log("start");
                                     const filteredRecruitments = response.data.filter(recruitment => {
                                         const startDate = new Date(recruitment.startDate);

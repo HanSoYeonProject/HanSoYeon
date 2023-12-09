@@ -36,6 +36,7 @@ import banner1 from '../imgs/banner4.png';
 import banner2 from '../imgs/banner5.png';
 import banner3 from '../imgs/banner6.png';
 import noImage from '../imgs/noImage.png';
+import '../Components/cover.css';
 
 SwiperCore.use([Autoplay, Pagination]);
 
@@ -50,12 +51,12 @@ const SectionContainer = styled.div`
   display: flex;
   flex-direction: column;
   height: auto;
-  border: 1px solid #e1e1e1;
+  //border: 1px solid #e1e1e1;
   margin-bottom: 40px;
   background-color: #ffffff;
   overflow: hidden;
   border-radius: 12px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  //box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
   position: relative;
 `;
 
@@ -74,7 +75,7 @@ const SubTitleStyle = styled.div`
 `;
 
 const SwiperContainer = styled.div`
-  padding: 20px;
+  padding: 0 20px;
   margin-bottom: 20px;
 `;
 
@@ -109,17 +110,14 @@ const ReviewCardContainer = styled.div`
 `;
 
 const DetailButton = styled.button`
-  position: absolute;
-  bottom: 0;
-  right: 10px;
+  text-align: right;
   background-color: #ffffff;
   color: black; // 버튼 텍스트 색상
   border: none;
   border-radius: 5px;
-  padding: 5px 10px;
+  padding: 8px 22px;
   cursor: pointer;
-  transition: background-color 0.3s;
-
+  transition: all 0.3s;
 `;
 
 const ReviewItem = styled.div`
@@ -249,11 +247,11 @@ const MainPage = () => {
                 <SectionContainer>
                     <TitleStyle>테마별 코스</TitleStyle>
                     <SubTitleStyle>원하는 테마를 선택하세요</SubTitleStyle>
+                    <DetailButton onClick={handleCourse}>더보기</DetailButton>
                     <Link to={`/newcourse`}>
                     <SwiperSection
                         images={[theme1, theme2, theme3, theme4, theme5, theme6, theme7, theme8]} />
                     </Link>
-                    <DetailButton onClick={handleCourse}>더보기</DetailButton>
                 </SectionContainer>
 
                 <SectionContainer>
@@ -317,10 +315,10 @@ const SwiperSection = ({ images }) => {
                 spaceBetween={30}
                 modules={[Pagination, Autoplay]}
                 className="mySwiper"
-                autoplay={{
-                    delay: 2000,
-                    disableOnInteraction: false,
-                }}
+                // autoplay={{
+                //     delay: 2000,
+                //     disableOnInteraction: false,
+                // }}
                 speed={1300}
             >
                 {images.map((image, index) => (
@@ -415,7 +413,6 @@ const CardContent = styled.div`
 
 const SwiperStyle = styled(Swiper)`
   height: 500px;
-  margin-bottom: 20px;
 `;
 
 const StyledImage = styled.img`
