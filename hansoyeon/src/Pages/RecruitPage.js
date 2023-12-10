@@ -219,8 +219,6 @@ const RecruitPage = (props) => {
         fetchRecruitments();
     }, [fetchRecruitments]);
 
-
-
     // 글 제목 클릭시 상세내용 페이지 이동
     const viewRecruitment = async (Id) => {
         try {
@@ -240,6 +238,10 @@ const RecruitPage = (props) => {
     }
 
     const handleHistoryApplication = () => {
+        if(user === null){
+            alert("로그인이 필요한 서비스입니다.");
+            return;
+        }
         navigate("/recruitHistory")
     }
 
