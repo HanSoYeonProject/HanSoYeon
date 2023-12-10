@@ -3,7 +3,7 @@ import {Navbar, Nav, Container, Button, Badge, Dropdown } from 'react-bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import styled from "styled-components";
 import {useLocation, useNavigate} from 'react-router-dom';
-import logo from '../imgs/logo.png';
+import logo from '../imgs/logo5.png';
 import { useCookies } from 'react-cookie';
 import { useUserStore } from '../stores';
 import defaultProfilePic from '../imgs/default_profile.png';
@@ -216,16 +216,26 @@ const Navigate = () => {
         <TopNav>
             <Navbar style={{
                 display: "flex",
-                flex: "1",
+                maxWidth: "1440px",
+                width: "100%",
+                padding: "0 20px"
             }}>
-                <Navbar.Brand>
-                    <Nav_Str>
+                <Navbar.Brand style={{
+                    display: "block",
+                    width: "100%",
+                    margin: "0"
+                }}>
+                    <Nav_Str style={{
+                        display: "flex",
+                        width: "100%",
+                        justifyContent: "space-between"
+                    }}>
                         <UserContainer>
                             <UserImg onClick={MainButton}>
                                 <img className="logoImage" alt="Logo" src={logo}/>
                             </UserImg>
                         </UserContainer>
-                        <PageNav style={{marginRight: `${size}rem`}}>
+                        <PageNav>
                             <AboutPageInfo onClick={AboutPageButton}>한소연이란?</AboutPageInfo>
                             <CoursePageInfo onClick={CoursePageButton}>코스</CoursePageInfo>
                             <RecruitPageInfo onClick={RecruitPageButton}>모집 일정</RecruitPageInfo>
@@ -337,18 +347,15 @@ const UserImg = styled.button`
   background: none;
   border: none;
   position: relative;
-  margin-bottom: 10px;
-  margin-right: 30px;
+  padding: 0;
 
   img {
-    width: 200px;
-    height: 80px;
+    width: 250px;
   }
 `;
 
 const Nav_Str = styled.div`
   display: flex;
-  width: 100vw;
   flex-direction: row;
   align-items: center;
 `
@@ -362,8 +369,6 @@ const ProfileImage = styled.img`
 
 const UserContainer = styled.div`
   display: flex;
-  flex: 2;
-  height: 80px;
   align-items: center;
   justify-content: center;
 `
@@ -396,11 +401,9 @@ const ProfileSection = styled.div`
 
 const PageNav = styled.div`
   display: flex;
-  flex: 6;
   align-items: center;
   justify-content: space-between;
-  height: 80px;
-  margin-left: 4rem;
+  gap: 60px;
 `
 const MypageConatiner = styled.div`
   display: flex;
@@ -414,42 +417,54 @@ const AboutPageInfo = styled.button`
   border: none;
   background-color: white;
   font-weight: 600;
-  font-size: 24px;
-  color: #D1774C;
+  font-size: 20px;
+  &:hover {
+    color: #D1774C;
+  }
 `
 const CoursePageInfo = styled.button`
   border: none;
   background-color: white;
   font-weight: 600;
-  font-size: 24px;
-  color: #D1774C;
+  font-size: 20px;
+  &:hover {
+    color: #D1774C;
+  }
 `
 const RecruitPageInfo =styled.button`
   border: none;
   background-color: white;
   font-weight: 600;
-  font-size: 24px;
-  color: #D1774C;
+  font-size: 20px;
+  &:hover {
+    color: #D1774C;
+  }
 `
 const ReviewButton = styled.button`
   border: none;
   font-weight: 600;
-  font-size: 24px;
+  font-size: 20px;
   background-color: white;
-  color: #D1774C;
+  &:hover {
+    color: #D1774C;
+  }
 `
 const AnnouncementPageInfo = styled.button`
   border: none;
   background-color: white;
   font-weight: 600;
-  font-size: 24px;
-  color: #D1774C;
+  font-size: 20px;
+  &:hover {
+    color: #D1774C;
+  }
 `
 const PayButton = styled.button`
   border: none;
   background-color: white;
   font-weight: 600;
-  font-size: 24px;
-  color: #D1774C;
+  font-size: 20px;
+  &:hover {
+    color: #D1774C;
+  }
 `
 export default Navigate;

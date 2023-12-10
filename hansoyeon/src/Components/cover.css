@@ -1,3 +1,6 @@
+.swiper {
+    overflow: inherit;
+}
 .swiper:not(.mySwiper)::after {
     content: "";
     display: block;
@@ -28,23 +31,29 @@
     width: 15px;
     height: 15px;
 }
-.fnOUZv {
-    margin-top: 40px !important;
+
+.content-wrapper {
+    max-width: 1440px;
+    padding: 0 20px;
+    margin: 0 auto;
 }
-.gRZmZp .swiper,
-.gRZmZp .swiper-wrapper {
-    height: 350px;
+
+.sub-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-left: 20px;
+    margin-bottom: 20px;
 }
-.gRZmZp .swiper-slide {
-    overflow: hidden;
-    height: 350px !important;
-    border-radius: 12px;
+.sub-title > div,
+.sub-title > button {
+  flex: 1 0 auto;
 }
-.gRZmZp .swiper-slide img {
-    width: 100% !important;
-    height: 100% !important;
-    border-radius: 0 !important;
+.review-info-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
-.cihuXJ:hover {
-    color: #764b36;
+.review-info-box p {
+    margin: 0;
 }
