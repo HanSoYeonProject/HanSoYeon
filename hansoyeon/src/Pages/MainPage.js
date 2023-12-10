@@ -54,17 +54,30 @@ const SectionContainer = styled.div`
   //border: 1px solid #e1e1e1;
   margin-bottom: 40px;
   background-color: #ffffff;
-  overflow: hidden;
+  //overflow: hidden;
   border-radius: 12px;
   //box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
   position: relative;
 `;
 
 const TitleStyle = styled.h1`
-  color: #000000;
-  margin: 20px 0;
-  font-size: 48px;
+  color: #764b36;
+  font-size: 54px;
   font-family: 'omyu_pretty';
+  margin: 60px 0 5px;
+  position: relative;
+  padding-left: 20px;
+  
+  &::after {
+    position: absolute;
+    left: 0;
+    top: 10px;
+    content: "";
+    display: block;
+    width: 6px;
+    height: 90px;
+    background: #764b36;
+  }
 `;
 
 const SubTitleStyle = styled.div`
@@ -75,49 +88,53 @@ const SubTitleStyle = styled.div`
 `;
 
 const SwiperContainer = styled.div`
-  padding: 0 20px;
   margin-bottom: 20px;
+  height: 450px;
+
+  @media (max-width: 1400px) {
+    height: 350px;
+  } 
+  @media (max-width: 1200px) {
+    height: 280px;
+  }
 `;
 
 const SlideImage = styled.img`
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 12px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  //box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
 `;
 
 const ReviewContainer = styled.div`
-  border: 1px solid #e1e1e1;
   border-radius: 12px;
   overflow: hidden;
-  padding: 20px;
-  margin-bottom: 10px;
   background-color: #ffffff;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  //box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
 `;
 
 const ReviewCardContainer = styled.div`
   border-radius: 12px;
   overflow: hidden;
-  padding: 20px;
   margin-bottom: 20px;
   background-color: #ffffff;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); // 카드의 최소 너비를 250px로 설정
-  gap: 20px;
+  //grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); // 카드의 최소 너비를 250px로 설정
+  gap: 60px;
   position: relative;
 `;
 
 const DetailButton = styled.button`
   text-align: right;
-  background-color: #ffffff;
+  background-color: transparent;
   color: black; // 버튼 텍스트 색상
   border: none;
-  border-radius: 5px;
-  padding: 8px 22px;
   cursor: pointer;
   transition: all 0.3s;
+  &:hover {
+    color: #764b36;
+    font-weight: bold;
+  }
 `;
 
 const ReviewItem = styled.div`
@@ -129,12 +146,32 @@ const ReviewItem = styled.div`
   padding: 15px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease;
-  margin-bottom: 10px;
 
   &:hover {
     transform: translateY(-5px);
   }
 `;
+
+const ReviewItem2 = styled.div`
+  background: #fff;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  
+  img {
+    height: 450px;
+  }
+  
+  h3 {
+    font-size: 34px;
+    margin-top: 10px;
+    margin-bottom: 12px;
+  }
+  p {
+    font-size: 22px;    
+  }
+`;
+
 
 const ReviewImage = styled.img`
   width: 100%;
@@ -154,16 +191,20 @@ const ReviewContent = styled.p`
 `;
 
 const ReviewInfo = styled.p`
-  margin-top: 10px;
-  font-size: 14px;
+  margin: 0;
+  font-size: 18px;
   color: #777777;
+  
+  span {
+    font-size: 18px;
+  }
 `;
 const Author = styled.span`
-  display: block; // 블록 요소로 만들어 줄바꿈 효과 적용
+  //display: block; // 블록 요소로 만들어 줄바꿈 효과 적용
 `;
 
 const Date = styled.span`
-  display: block; // 블록 요소로 만들어 줄바꿈 효과 적용
+  //display: block; // 블록 요소로 만들어 줄바꿈 효과 적용
 `;
 
 
@@ -231,6 +272,7 @@ const MainPage = () => {
                     <SwiperStyle
                         spaceBetween={50}
                         slidesPerView={1}
+                        centeredSlides={true}
                         pagination={{clickable : true}}
                         autoplay= {{delay:4000}}>
                         <SwiperSlide>
@@ -244,28 +286,37 @@ const MainPage = () => {
                         </SwiperSlide>
                     </SwiperStyle>
                 </div>
+                <div className="content-wrapper" >
                 <SectionContainer>
                     <TitleStyle>테마별 코스</TitleStyle>
-                    <SubTitleStyle>원하는 테마를 선택하세요</SubTitleStyle>
-                    <DetailButton onClick={handleCourse}>더보기</DetailButton>
+                    <div className="sub-title">
+                        <SubTitleStyle>원하는 테마를 선택하세요</SubTitleStyle>
+                        <DetailButton onClick={handleCourse}>더보기 ></DetailButton>
+                    </div>
+
                     <Link to={`/newcourse`}>
                     <SwiperSection
-                        images={[theme1, theme2, theme3, theme4, theme5, theme6, theme7, theme8]} />
+                        images={[theme1, theme2, theme3, theme4, theme5, theme6, theme7, theme8]} sec={10000} />
                     </Link>
                 </SectionContainer>
 
                 <SectionContainer>
                     <TitleStyle>지역별 코스</TitleStyle>
+                    <div className="sub-title">
                     <SubTitleStyle>지역별로 분류된 코스</SubTitleStyle>
+                    <DetailButton onClick={handleCourse}>더보기 ></DetailButton>
+                    </div>
                     <Link to={`/newcourse`}>
-                    <SwiperSection images={[region1, region2, region3, region4, region5, region6, region7, region8]} />
+                        <SwiperSection images={[region1, region2, region3, region4, region5, region6, region7, region8]} sec={20000} />
                     </Link>
-                    <DetailButton onClick={handleCourse}>더보기</DetailButton>
                 </SectionContainer>
 
                 <SectionContainer>
                     <TitleStyle>모집일정</TitleStyle>
-                    <SubTitleStyle>여행 계획에 맞는 일자리를 찾아보세요</SubTitleStyle>
+                    <div className="sub-title">
+                        <SubTitleStyle>여행 계획에 맞는 일자리를 찾아보세요</SubTitleStyle>
+                        <DetailButton onClick={handleRecruit}>더보기 ></DetailButton>
+                    </div>
                     <RecruitmentSchedule
                         schedule={recruitments
                             .slice(0, 5)
@@ -278,52 +329,89 @@ const MainPage = () => {
                                 image: recruitment.image[0]
                             }))}
                     />
-                    <DetailButton onClick={handleRecruit}>더보기</DetailButton>
                 </SectionContainer>
 
                 <ReviewContainer>
                     <TitleStyle>체험 후기</TitleStyle>
-                    <SubTitleStyle>다양한 체험 후기를 들어보세요</SubTitleStyle>
+                    <div className="sub-title">
+                        <SubTitleStyle>다양한 체험 후기를 들어보세요</SubTitleStyle>
+                        <DetailButton onClick={handleReview}>더보기 ></DetailButton>
+                    </div>
                     <ReviewCardContainer>
                         {reviews.map((review) => (
-                            <ReviewItem key={review.reviewId} onClick={() => handleReviewClick(review.reviewId)}>
+                            <ReviewItem2 key={review.reviewId} onClick={() => handleReviewClick(review.reviewId)}>
                                 <ReviewImage src={review.reviewImage || noImage} alt={review.reviewTitle} />
                                 <ReviewTitle>{review.reviewTitle}</ReviewTitle>
-                                <ReviewContent>{review.reviewContent}</ReviewContent>
-                                <ReviewInfo>
+                                <div className="review-info-box">
+                                    <ReviewContent>{review.reviewContent}</ReviewContent>
                                     <ReviewInfo>
-                                        <Author>작성자: {review.userId}</Author>
-                                        <Date>작성일: {review.reviewWriteDate}</Date>
+                                        <ReviewInfo>
+                                            <Author>작성자: {review.userId}</Author>
+                                            <Date>작성일: {review.reviewWriteDate}</Date>
+                                        </ReviewInfo>
                                     </ReviewInfo>
-                                </ReviewInfo>
-                            </ReviewItem>
+                                </div>
+                            </ReviewItem2>
                         ))}
-                        <DetailButton onClick={handleReview}>더보기</DetailButton>
                     </ReviewCardContainer>
                 </ReviewContainer>
+                </div>
             </MainContainer>
             <Footer />
         </div>
     );
 };
 
-const SwiperSection = ({ images }) => {
+const SwiperSection = ({ images, sec }) => {
+    const SwiperSlideInner = styled.div`
+      overflow: hidden;
+      height: 450px;
+      border-radius: 12px;
+      transition: all 0.3s;
+      
+      &:hover {
+        transform: translateY(-10px);
+      }
+
+      @media (max-width: 1400px) {
+        height: 350px;
+      }
+      @media (max-width: 1200px) {
+        height: 280px;
+      }
+    `;
+
     return (
         <SwiperContainer>
             <Swiper
-                slidesPerView={3}
+
+                breakpoints={{
+
+                    768:{
+                        slidesPerView:2
+                    },
+                    1024:{
+                        slidesPerView:3
+                    }
+
+                }}
                 spaceBetween={30}
                 modules={[Pagination, Autoplay]}
                 className="mySwiper"
-                // autoplay={{
-                //     delay: 2000,
-                //     disableOnInteraction: false,
-                // }}
-                speed={1300}
+                autoplay={{
+                    delay: 300,
+                    disableOnInteraction: false,
+                    pauseOnMouseEnter: true
+                }}
+                loop = {true}
+                centeredSlides={true}
+                speed={sec}
             >
                 {images.map((image, index) => (
                     <SwiperSlide key={index}>
-                        <SlideImage src={image} alt={`slide-${index}`} />
+                        <SwiperSlideInner>
+                            <SlideImage src={image} alt={`slide-${index}`} />
+                        </SwiperSlideInner>
                     </SwiperSlide>
                 ))}
             </Swiper>
@@ -367,6 +455,10 @@ const RecruitmentItem = styled.div`
 const RecruitmentTitle = styled.h3`
   font-weight: bold;
   color: #333;
+  width:100%;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
 `;
 
 const RecruitmentDate = styled.div`
@@ -376,39 +468,35 @@ const RecruitmentDate = styled.div`
 `;
 
 const RecruitmentGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
-  padding: 20px;
-  margin-bottom: 20px;
+  display: flex;
+  gap: 40px;
 `;
 
 const RecruitmentCard = styled.div`
   background: #fff;
   border-radius: 15px;
   overflow: hidden;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 3px 10px 2px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease;
-  height: 350px; // 카드의 높이 조정
   padding: 20px; // 내부 여백 추가
-  margin-bottom: 15px;
   cursor : pointer;
+  flex: 1 0 calc((100% - 80px) / 3);
   
   &:hover {
-    transform: translateY(-5px);
-  }
+    transform: translateY(-5px) scale(1.04);
 `;
 
 const CardImage = styled.img`
   width: 100%;
-  height: 200px; // 이미지 높이 조정
+  height: 300px; // 이미지 높이 조정
   margin-bottom: 8px;
   object-fit: cover;
+  border-radius: 12px;
+  transition: all 0.3s;
 `;
 
 const CardContent = styled.div`
-  padding: 15px;
-  text-align: center;
+  padding: 15px 0;
 `;
 
 const SwiperStyle = styled(Swiper)`
