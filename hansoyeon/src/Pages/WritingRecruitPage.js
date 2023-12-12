@@ -25,6 +25,8 @@ const WritingRecruitPage = () => {
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
 
+    const [payMoney, setPayMoney] = useState(0);
+
     const [cookies, setCookie, removeCookie] = useCookies(['token']);
     const {user, setUser} = useUserStore();
 
@@ -45,6 +47,8 @@ const WritingRecruitPage = () => {
                 console.error("Token verification failed:", error);
                 handleLogout();
             });
+
+            fetchCompanyPayments(user.providerEmail);
         }
     }, []);
 
@@ -75,8 +79,23 @@ const WritingRecruitPage = () => {
         setImage([...e.target.files]);
     };
 
+    const fetchCompanyPayments = async (email) => {
+        try {
+            const response = await axios.get(`http://localhost:8050/api/payment/company/${email}`);
+            const pointPayments = response.data;
+            setPayMoney(pointPayments[0].points);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if(payMoney === 0){
+            alert("포인트가 부족합니다.")
+            return;
+        }
 
         try {
             const formData = new FormData();
@@ -153,8 +172,17 @@ const WritingRecruitPage = () => {
 
                 if (response.status === 201) {
                     console.log(response.data);
-                    // 글 작성 성공 시, 페이지를 이동
-                    navigate('/recruit');
+                    try {
+                        const reduceResponse = await axios.post(`http://localhost:8050/api/payment/company/${user.providerEmail}/reduceMoney`);
+                        if (reduceResponse.status === 200) {
+                            console.log("포인트 삭감 완료");
+                            navigate('/recruit');
+                        } else {
+                            console.error("포인트 삭감 실패", reduceResponse.status);
+                        }
+                    } catch (error) {
+                        console.error("에러", error);
+                    }
                 } else {
                     console.error(`Http 오류! 상태 코드: ${response.status}`);
                 }

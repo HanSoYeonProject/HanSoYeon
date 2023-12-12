@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.dto.PaymentDto;
 import com.example.demo.entity.PaymentEntity;
+import com.example.demo.entity.ReviewEntity;
 import com.example.demo.repository.PaymentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -49,6 +50,14 @@ public class PaymentService {
     public List<PaymentDto> getPaymentsByCompany(String email) {
         List<PaymentEntity> payments = paymentRepository.findByEmail(email);
         return payments.stream().map(this::convertToDto).collect(Collectors.toList());
+    }
+
+    public void reduceMoney(String providerEmail){
+        List<PaymentEntity> payments = paymentRepository.findByEmail(providerEmail);
+        for (PaymentEntity payment : payments) {
+            payment.setPoints(payment.getPoints()-10000);
+            paymentRepository.save(payment);
+        }
     }
 
 }

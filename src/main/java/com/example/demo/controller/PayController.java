@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.dto.PaymentDto;
 import com.example.demo.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,5 +37,11 @@ public class PayController {
     @GetMapping("/company/{email}")
     public List<PaymentDto> getPaymentsByCompany(@PathVariable String email) {
         return paymentService.getPaymentsByCompany(email);
+    }
+
+    @PostMapping("/company/{email}/reduceMoney")
+    public ResponseEntity<Void> reduceMoney(@PathVariable String email) {
+        paymentService.reduceMoney(email);
+        return ResponseEntity.ok().build();
     }
 }
