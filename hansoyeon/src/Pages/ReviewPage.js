@@ -570,7 +570,7 @@ const Button = styled.button`
   background-color: orange;
   color: white;
   font-size: 24px;
-  width: 80px;
+  width: 100px;
   padding: 5px 10px;
   font-weight: 500;
   border: none;

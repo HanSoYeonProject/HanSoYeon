@@ -248,6 +248,7 @@ const ReviewImage = styled.img`
 
 const ReviewDetails = styled.div`
   font-size: 18px;
+  margin-bottom: 10px;
 `;
 
 const DetailItem = styled.p`
@@ -267,6 +268,7 @@ const LoadingContainer = styled.div`
 `;
 
 const ButtonContainer = styled.div`
+  display: flex;
   position: absolute;
   bottom: 20px;
   right: 20px;

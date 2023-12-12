@@ -10,14 +10,19 @@ const FooterContainer = styled.div`
   flex-direction: column;
   align-items: flex-end;
   height: 200px;
+  margin-top: 80px;
 `;
 
 const Footer2Image = styled.div`
-  display: flex;
+  width: 100px;
   height: 100px;
-  width: auto;
-  margin-top: 18px;
-  margin-left: 1200px; /* 원하는 값으로 조절 */
+  position: absolute;
+  right: 100px;
+  bottom: -15px;
+
+  img {
+    width: 100%;
+  }
 `;
 
 const Footer1ImageContainer = styled.div`
@@ -26,12 +31,15 @@ const Footer1ImageContainer = styled.div`
 `;
 
 const Footer1Image = styled.div`
-  display: flex;
   height: 70px;
   width: 70px;
   position: absolute; // 절대 위치 사용
-  right: 800px; // 오른쪽에서 50px 떨어진 곳에 위치
-  top: 36px; // 상단에서 36px 떨어진 곳에 위치
+  left: 10%;
+  bottom: -6px;
+
+  img {
+    width: 100%;
+  }
 `;
 
 const FooterContent = styled.div`
@@ -41,11 +49,10 @@ const FooterContent = styled.div`
   max-width: 100%; /* 변경된 부분 */
   flex: 3;
   justify-content: space-between;
-  padding: 0 20px;
 `;
 
 const ImageContainer = styled.div`
-  width: 80%;
+  width: 100%;
   height: 100%;
   align-self: flex-start;
   display: flex;
@@ -64,15 +71,22 @@ const LogoImage = styled.img`
 `;
 
 const FooterInfo = styled.div`
-  margin-top: 20px;
+  padding: 25px 0;
   color: white;
   display: flex;
   justify-content: center;
   width: 100%;
-  flex: 3; /* 변경된 부분: 7에서 3으로 조절 */
+  flex-direction: column;
+  text-align: center;
   h2 {
-    margin-right: 5rem;
-    font-size: 20px;
+    font-size: 18px;
+    margin: 0;
+    line-height: 28px;
+  }
+  p {
+    font-size: 15px;
+    margin-top: 8px;
+    margin-bottom: 0;
   }
 
   .color2 {
@@ -121,11 +135,9 @@ function Footer() {
             <FirstRow>
                 <FooterContent>
                     <ImageContainer>
-                        <Footer1ImageContainer>
-                            <Footer1Image>
-                                <img src={footer1} alt="Footer1" />
-                            </Footer1Image>
-                        </Footer1ImageContainer>
+                        <Footer1Image>
+                            <img src={footer1} alt="Footer1" />
+                        </Footer1Image>
                         <Footer2Image>
                             <img src={footer2} alt="Footer2" />
                         </Footer2Image>
@@ -135,18 +147,15 @@ function Footer() {
 
             <SecondRow>
                 <King>
-                    <LogoContainer>
-                        <LogoImageCon>
-                            <LogoImage className="logoImage" alt="Logo" src={logo} />
-                        </LogoImageCon>
-                    </LogoContainer>
                     <InfoContainer>
                         <FooterInfo>
                             <h2 className="color2 f-w_600">
                                 충청남도 아산시 탕정면 선문로 221번길 70<br />
-                                한소연 Copyright(C)<br />
-                                HanSoYeon all rights reserved.
+                                한소연 Copyright(C)
                             </h2>
+                            <p>
+                                HanSoYeon all rights reserved.
+                            </p>
                         </FooterInfo>
                     </InfoContainer>
                 </King>

@@ -36,6 +36,7 @@ import banner1 from '../imgs/banner4.png';
 import banner2 from '../imgs/banner5.png';
 import banner3 from '../imgs/banner6.png';
 import noImage from '../imgs/noImage.png';
+import '../Components/cover.css';
 
 SwiperCore.use([Autoplay, Pagination]);
 
@@ -122,19 +123,23 @@ const DetailButton = styled.button`
 
 `;
 
-const ReviewItem = styled.div`
+const ReviewItem2 = styled.div`
   background: #fff;
-  border: 1px solid #e1e1e1;
   border-radius: 12px;
-  overflow: hidden;
   cursor: pointer;
-  padding: 15px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease;
-  margin-bottom: 10px;
 
-  &:hover {
-    transform: translateY(-5px);
+  img {
+    height: 250px;
+  }
+
+  h3 {
+    font-size: 34px;
+    margin-top: 10px;
+    margin-bottom: 12px;
+  }
+  p {
+    font-size: 22px;
   }
 `;
 
@@ -153,6 +158,12 @@ const ReviewTitle = styled.h3`
 
 const ReviewContent = styled.p`
   color: #666;
+  overflow: hidden;        // Hide the overflow text
+  text-overflow: ellipsis; // Add ellipsis at the end of truncated text
+  white-space: nowrap;     // Keep the text in a single line
+  display: block;          // Use block display for width control
+  width: 100%;             // Set width to fill the container
+  margin: 0;               // Adjust margin as needed
 `;
 
 const ReviewInfo = styled.p`
@@ -247,37 +258,45 @@ const MainPage = () => {
                 </div>
                 <SectionContainer>
                     <TitleStyle>테마별 코스</TitleStyle>
-                    <SubTitleStyle>원하는 테마를 선택하세요</SubTitleStyle>
+                    <div className="sub-title">
+                        <SubTitleStyle>원하는 테마를 선택하세요</SubTitleStyle>
+                        <DetailButton onClick={handleCourse}>더보기 ></DetailButton>
+                    </div>
                     <Link to={`/newcourse`}>
                     <SwiperSection
-                        images={[theme1, theme2, theme3, theme4, theme5, theme6, theme7, theme8]} />
+                        images={[theme1, theme2, theme3, theme4, theme5, theme6, theme7, theme8]} sec={10000} />
                     </Link>
-                    <DetailButton onClick={handleCourse}>더보기</DetailButton>
                 </SectionContainer>
 
                 <SectionContainer>
                     <TitleStyle>지역별 코스</TitleStyle>
-                    <SubTitleStyle>지역별로 분류된 코스</SubTitleStyle>
+                    <div className="sub-title">
+                        <SubTitleStyle>지역별로 분류된 코스</SubTitleStyle>
+                        <DetailButton onClick={handleCourse}>더보기 ></DetailButton>
+                    </div>
                     <Link to={`/newcourse`}>
-                    <SwiperSection images={[region1, region2, region3, region4, region5, region6, region7, region8]} />
+                    <SwiperSection images={[region1, region2, region3, region4, region5, region6, region7, region8]} sec={20000} />
                     </Link>
-                    <DetailButton onClick={handleCourse}>더보기</DetailButton>
                 </SectionContainer>
 
                 <SectionContainer>
                     <TitleStyle>모집일정</TitleStyle>
-                    <SubTitleStyle>여행 계획에 맞는 일자리를 찾아보세요</SubTitleStyle>
+                    <div className="sub-title">
+                        <SubTitleStyle>여행 계획에 맞는 일자리를 찾아보세요</SubTitleStyle>
+                        <DetailButton onClick={handleRecruit}>더보기 ></DetailButton>
+                    </div>
                     <RecruitmentSchedule
                         schedule={recruitments
                             .slice(0, 5)
                             .map((recruitment) => ({
                                 id: recruitment.job_id,
-                                title: recruitment.title,
+                                title: recruitment.title.length > 25
+                                    ? `${recruitment.title.substring(0, 25)}...`
+                                    : recruitment.title,
                                 date: recruitment.startDate,
                                 image: recruitment.image[0]
                             }))}
                     />
-                    <DetailButton onClick={handleRecruit}>더보기</DetailButton>
                 </SectionContainer>
 
                 <ReviewContainer>
@@ -285,19 +304,20 @@ const MainPage = () => {
                     <SubTitleStyle>다양한 체험 후기를 들어보세요</SubTitleStyle>
                     <ReviewCardContainer>
                         {reviews.map((review) => (
-                            <ReviewItem key={review.reviewId} onClick={() => handleReviewClick(review.reviewId)}>
+                            <ReviewItem2 key={review.reviewId} onClick={() => handleReviewClick(review.reviewId)}>
                                 <ReviewImage src={review.reviewImage || noImage} alt={review.reviewTitle} />
                                 <ReviewTitle>{review.reviewTitle}</ReviewTitle>
-                                <ReviewContent>{review.reviewContent}</ReviewContent>
-                                <ReviewInfo>
+                                <div className="review-info-box">
+                                    <ReviewContent>{review.reviewContent}</ReviewContent>
                                     <ReviewInfo>
-                                        <Author>작성자: {review.userId}</Author>
-                                        <Date>작성일: {review.reviewWriteDate}</Date>
+                                        <ReviewInfo>
+                                            <Author>작성자: {review.userId}</Author>
+                                            <Date>작성일: {review.reviewWriteDate}</Date>
+                                        </ReviewInfo>
                                     </ReviewInfo>
-                                </ReviewInfo>
-                            </ReviewItem>
+                                </div>
+                            </ReviewItem2>
                         ))}
-                        <DetailButton onClick={handleReview}>더보기</DetailButton>
                     </ReviewCardContainer>
                 </ReviewContainer>
             </MainContainer>
@@ -306,29 +326,63 @@ const MainPage = () => {
     );
 };
 
-const SwiperSection = ({ images }) => {
+const SwiperSection = ({ images, sec }) => {
+    const SwiperSlideInner = styled.div`
+      overflow: hidden;
+      height: 450px;
+      border-radius: 12px;
+      transition: all 0.3s;
+      
+      &:hover {
+        transform: translateY(-10px);
+      }
+
+      @media (max-width: 1400px) {
+        height: 350px;
+      }
+      @media (max-width: 1200px) {
+        height: 280px;
+      }
+    `;
+
     return (
         <SwiperContainer>
             <Swiper
-                slidesPerView={3}
+
+                breakpoints={{
+
+                    768:{
+                        slidesPerView:2
+                    },
+                    1024:{
+                        slidesPerView:3
+                    }
+
+                }}
                 spaceBetween={30}
                 modules={[Pagination, Autoplay]}
                 className="mySwiper"
                 autoplay={{
-                    delay: 2000,
+                    delay: 300,
                     disableOnInteraction: false,
+                    pauseOnMouseEnter: true
                 }}
-                speed={1300}
+                loop = {true}
+                centeredSlides={true}
+                speed={sec}
             >
                 {images.map((image, index) => (
                     <SwiperSlide key={index}>
-                        <SlideImage src={image} alt={`slide-${index}`} />
+                        <SwiperSlideInner>
+                            <SlideImage src={image} alt={`slide-${index}`} />
+                        </SwiperSlideInner>
                     </SwiperSlide>
                 ))}
             </Swiper>
         </SwiperContainer>
     );
 };
+
 
 const RecruitmentSchedule = ({ schedule }) => {
     const navigate = useNavigate();
@@ -388,7 +442,7 @@ const RecruitmentCard = styled.div`
   overflow: hidden;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease;
-  height: 350px; // 카드의 높이 조정
+  height: 400px; // 카드의 높이 조정
   padding: 20px; // 내부 여백 추가
   margin-bottom: 15px;
   cursor : pointer;
