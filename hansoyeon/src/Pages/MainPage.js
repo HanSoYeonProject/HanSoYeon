@@ -348,16 +348,13 @@ const SwiperSection = ({ images, sec }) => {
     return (
         <SwiperContainer>
             <Swiper
-
                 breakpoints={{
-
                     768:{
                         slidesPerView:2
                     },
                     1024:{
                         slidesPerView:3
                     }
-
                 }}
                 spaceBetween={30}
                 modules={[Pagination, Autoplay]}
